@@ -121,18 +121,14 @@ const ProductsView = () => {
   }, [currentPage, itemsPerPage]);
 
   const handleSearchChange = (event) => {
-    console.log("handleSearchChange calling setasearchterm");
     const searchValue = event.target.value;
     setSearchTerm(searchValue);
-    console.log("setasearchterm end");
 
     if (searchValue.length < 3) {
       setSearchResults([]);
       setAnchorEl(null);
       return;
     }
-
-    console.log("setting timeout");
 
     clearTimeout(searchDebounceTimeout);
     searchDebounceTimeout = setTimeout(() => {
@@ -234,7 +230,7 @@ const ProductsView = () => {
 
             <TextField
               label={t('Search')}
-              onChange={handleSearchChange}
+              //onChange={handleSearchChange}
               variant="outlined"
               inputRef={searchFieldRef} // Assign the ref to the TextField
               InputLabelProps={{
