@@ -125,7 +125,7 @@ const ProductsView = () => {
 
   const handleSearchChange = (event) => {
     const searchValue = event.target.value;
-    setSearchTerm(searchValue);
+    //setSearchTerm(searchValue);
 
     if (searchValue.length < 3) {
       setSearchResults([]);
@@ -206,7 +206,7 @@ const ProductsView = () => {
           >
             <Select
               //onChange={handleCategoryChange}
-              onChange={(event) => selectedCategoryId = event.target.value}
+              onChange={(event) => { selectedCategoryId = event.target.value; handleSearchChange(event);}}
               defaultValue=""
               displayEmpty
               sx={{
@@ -235,7 +235,7 @@ const ProductsView = () => {
             <TextField
               label={t('Search')}
               //onChange={handleSearchChange}
-              onChange={(event) => search = event.target.value}
+              onChange={(event) => { search = event.target.value; handleSearchChange(event);} }
               variant="outlined"
               inputRef={searchFieldRef} // Assign the ref to the TextField
               InputLabelProps={{
