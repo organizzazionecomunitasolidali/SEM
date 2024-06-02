@@ -202,7 +202,7 @@ const ProductsView = () => {
             }}
           >
             <Select
-              //onChange={handleCategoryChange}
+              onChange={handleCategoryChange}
               defaultValue=""
               displayEmpty
               sx={{
@@ -231,6 +231,7 @@ const ProductsView = () => {
             <TextField
               label={t('Search')}
               //onChange={handleSearchChange}
+              onChange={setSearchTerm(this.value)}
               variant="outlined"
               inputRef={searchFieldRef} // Assign the ref to the TextField
               InputLabelProps={{
