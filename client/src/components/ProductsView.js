@@ -48,7 +48,7 @@ const ProductsView = () => {
 
   const { t } = useTranslation();
 
-  const debounceDelay = 300; // 300 milliseconds
+  const debounceDelay = 1000; // msecs to wait after search box is changed. we wait until the user ends typing.
 
   const isMobile = useMediaQuery('(max-width:960px)');
 
@@ -337,7 +337,7 @@ const ProductsView = () => {
 
         {/* Dropdown for Search Results */}
         <Menu
-          sx={{ mt: '1px', '& .MuiMenu-paper': { backgroundColor: 'black' } }}
+          sx={{ mt: '1px', '& .MuiMenu-paper': { backgroundColor: 'white' } }}
           anchorEl={anchorEl}
           open={Boolean(anchorEl && searchResults.length > 0)}
           onClose={() => setAnchorEl(null)}
