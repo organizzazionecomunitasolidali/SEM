@@ -68,7 +68,7 @@ const ProductsView = () => {
       const productResponse = await fetch(
         SERVER_BASE_URL +
           CONTROLLER_PRODUCT_ID +
-          `?page=${page ? page : currentPage}&limit=${itemsPerPage}&search=${search}&category_id=${selectedCategoryId}` +
+          `?page=${page ? page : currentPage}&limit=${itemsPerPage}&search=${search}&category_id=${selectedCategoryId ? selectedCategoryId : ""}` +
           currenciesQueryString,
       );
       if (!productResponse.ok) {
