@@ -85,7 +85,12 @@ function Login() {
     i18n.changeLanguage(language);
   };
 
-  /* 
+  /* // in <Toolbar> we removed this and replaced it with the img
+        <Typography variant="h6" style={{ flexGrow: 1 }}>
+          {appName}
+        </Typography>
+  */
+
   return (
     <AppBar
       sx={{ bgcolor: 'white', color: 'black', padding: '10px' }}
@@ -355,30 +360,6 @@ function Login() {
       )}
     </AppBar>
   );
-  */
-
-  return (
-    <AppBar
-      sx={{ bgcolor: 'white', color: 'black', padding: '10px' }}
-      position="static"
-    >
-      <Toolbar>
-        <Box
-          component="img"
-          sx={{
-            height: 64,
-            marginRight: 4,
-          }}
-          alt={appName}
-          src={Logo}
-        />
-        <Typography variant="h6" style={{ flexGrow: 1, fontWeight: 900 }}>
-          {appName}
-        </Typography>
-      </Toolbar>      
-    </AppBar>
-  );
-
 }
 
 export default Login;
