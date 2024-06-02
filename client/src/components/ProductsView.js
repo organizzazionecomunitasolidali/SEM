@@ -231,7 +231,7 @@ const ProductsView = () => {
             <TextField
               label={t('Search')}
               //onChange={handleSearchChange}
-              onChange={(event) => setSearchTerm(event.target.value)}
+              onChange={(event) => console.log(event.target.value)}
               variant="outlined"
               inputRef={searchFieldRef} // Assign the ref to the TextField
               InputLabelProps={{
