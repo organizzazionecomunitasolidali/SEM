@@ -202,7 +202,7 @@ const ProductsView = () => {
             }}
           >
             <Select
-              onChange={handleCategoryChange}
+              //onChange={handleCategoryChange}
               defaultValue=""
               displayEmpty
               sx={{
