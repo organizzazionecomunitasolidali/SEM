@@ -48,11 +48,10 @@ const ProductsView = () => {
 
   const { t } = useTranslation();
 
-  const debounceDelay = 1000; // msecs to wait after search box is changed. we wait until the user ends typing.
+  const debounceDelay = 80; // milliseconds waiting time after the user pressed a key
+  let searchDebounceTimeout = null;
 
   const isMobile = useMediaQuery('(max-width:960px)');
-
-  let searchDebounceTimeout = null;
 
   const fetchProductData = async (page) => {
     setLoading(true);
