@@ -26,7 +26,7 @@ async function bootstrap() {
       credentials: true,
     });
 
-    await app.listen(process.env.SERVER_PORT);
+    await app.listen(process.env.SERVER_PORT,'localhost');
   } catch (error) {
     console.error('Error during Nest application startup', error);
   }
