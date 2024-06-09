@@ -29,6 +29,9 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 // import { fetchProducts } from '../api'; // Assume you have an API function to fetch products
 import { useTranslation } from 'react-i18next';
 
+let search = '';
+let selectedCategoryId = 0;
+
 const SearchIcon = () => <FontAwesomeIcon icon={faMagnifyingGlass} />;
 
 const ProductsView = () => {
@@ -51,9 +54,6 @@ const ProductsView = () => {
   const debounceDelay = 80; // milliseconds waiting time after the user pressed a key
   let searchDebounceTimeout = null;
 
-  let search = "";
-  let selectedCategoryId = 0;
-
   const isMobile = useMediaQuery('(max-width:960px)');
 
   const fetchProductData = async (page) => {
@@ -68,7 +68,7 @@ const ProductsView = () => {
       const productResponse = await fetch(
         SERVER_BASE_URL +
           CONTROLLER_PRODUCT_ID +
-          `?page=${page ? page : currentPage}&limit=${itemsPerPage}&search=${search}&category_id=${selectedCategoryId ? selectedCategoryId : ""}` +
+          `?page=${page ? page : currentPage}&limit=${itemsPerPage}&search=${search}&category_id=${selectedCategoryId ? selectedCategoryId : ''}` +
           currenciesQueryString,
       );
       if (!productResponse.ok) {
@@ -206,7 +206,7 @@ const ProductsView = () => {
           >
             <Select
               //onChange={handleCategoryChange}
-              onChange={(event) => selectedCategoryId = event.target.value}
+              onChange={(event) => (selectedCategoryId = event.target.value)}
               defaultValue=""
               displayEmpty
               sx={{
@@ -235,7 +235,7 @@ const ProductsView = () => {
             <TextField
               label={t('Search')}
               //onChange={handleSearchChange}
-              onChange={(event) => search = event.target.value}
+              onChange={(event) => (search = event.target.value)}
               variant="outlined"
               inputRef={searchFieldRef} // Assign the ref to the TextField
               InputLabelProps={{
