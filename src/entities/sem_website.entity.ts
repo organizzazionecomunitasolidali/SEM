@@ -44,6 +44,9 @@ export class SemWebsite {
   @Column({ nullable: true })
   message: string;
 
+  @Column({ nullable: true })
+  default_product_selector: string;
+
   // @Column()
   // openai_completions_id: number;
 

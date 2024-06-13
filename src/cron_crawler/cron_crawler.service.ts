@@ -629,7 +629,22 @@ export class CronCrawlerService {
           if (!str) {
             return 0;
           }
-          const sanitizedStr = str.replace(/null/g, '0');
+          let sanitizedStr = str.replace(/null/g, '0').trim();
+          let tagPosition = sanitizedStr.indexOf('<');
+          if (tagPosition > 0) {
+            sanitizedStr = sanitizedStr.substring(0, tagPosition).trim();
+          }
+          let spacePosition = sanitizedStr.search(/[ \t\u00A0]/);
+          if (spacePosition > 0) {
+            sanitizedStr = sanitizedStr.substring(0, spacePosition).trim();
+          }
+          // detect if it is has a decimal part with comma and replace it with dot
+          if (sanitizedStr.match(/\d+,\d{1,2}/)) {
+            sanitizedStr = sanitizedStr.replace(',', '.');
+          }
+          // if still with comma, it may be thousands separator. remove it. Otherwise Number will return NaN
+          sanitizedStr = sanitizedStr.replace(',', '');
+          // now parse the number
           const matches = sanitizedStr.match(/\b\d+(?:[.,]\d+)?\b/g) || [];
           return matches.map(Number);
         };
@@ -700,7 +715,10 @@ export class CronCrawlerService {
         $ = cheerio.load(html);
         console.log('cheerio.load done');
 
-        const productElements = $(productHtmlElementStructure.selector).get();
+        let productElements = $(productHtmlElementStructure.selector).get();
+        if (productElements.length == 0) {
+          productElements = $(website.default_product_selector).get();
+        }
         let numbers = [];
 
         // Loop through product elements to insert/update them
