@@ -345,112 +345,127 @@ export class ServiceOpenaiService {
   ): Promise<string> {
     let bodyString: string;
     let bodyHash: string;
+    let models = [
+      process.env.OPENAI_GPT_MODEL_CHEAP,
+      process.env.OPENAI_GPT_MODEL_ENHANCED,
+    ];
 
-    try {
-      // const completions =
-      //   await this.semOpenaiCompletionsService.findOne(completionsId);
-      // console.log(
-      //   'ServiceOpenaiService.parseHtmlElement() completions: ',
-      //   completions,
-      // );
-      const completionsJSON = JSON.parse(completions.body);
-      console.log(
-        'ServiceOpenaiService.parseHtmlElement() completionsJSON: ',
-        completionsJSON,
-      );
-      const completionsMessageIndex = completionsJSON.messages.findIndex(
-        (item) => item.role === 'user',
-      );
-      if (
-        completionsMessageIndex !== -1 &&
-        parameters?.placeholder &&
-        parameters?.content
-      ) {
-        completionsJSON.messages[completionsMessageIndex].content =
-          completionsJSON.messages[completionsMessageIndex].content.replace(
-            parameters.placeholder,
-            parameters.content,
-          );
-        console.log('Updated completionsJSON: ', completionsJSON);
-      }
-
-      const body = {
-        messages: completionsJSON.messages,
-        // messages: [
-        //   { role: 'system', content: 'You are a helpful assistant.' },
-        //   { role: 'user', content: 'Tell me the result of 2 x 2' },
-        // ],
-        model: completionsJSON.model, //"gpt-3.5-turbo",
-      };
-      bodyString = JSON.stringify(body);
-      bodyHash = hashString(bodyString);
-      const semOpenaiCompletionsRequest =
-        await this.semOpenaiCompletionsRequestService.findOneBy(
-          bodyHash,
-          completions,
-          website,
+    for (let i = 0; i < models.length; i++) {
+      try {
+        // const completions =
+        //   await this.semOpenaiCompletionsService.findOne(completionsId);
+        // console.log(
+        //   'ServiceOpenaiService.parseHtmlElement() completions: ',
+        //   completions,
+        // );
+        const completionsJSON = JSON.parse(completions.body);
+        console.log(
+          'ServiceOpenaiService.parseHtmlElement() completionsJSON: ',
+          completionsJSON,
         );
-      if (semOpenaiCompletionsRequest === null) {
-        await this.semOpenaiCompletionsRequestService.findOneBy(
-          bodyHash,
-          completions,
+        const completionsMessageIndex = completionsJSON.messages.findIndex(
+          (item) => item.role === 'user',
         );
-      }
-      if (semOpenaiCompletionsRequest !== null) {
         if (
-          semOpenaiCompletionsRequest.status !== null &&
-          semOpenaiCompletionsRequest.status &
-            OPENAICOMPLETIONS_REQUEST_STATUS_ERROR
+          completionsMessageIndex !== -1 &&
+          parameters?.placeholder &&
+          parameters?.content
         ) {
-          // Retry again for Error: 429 Rate limit reached
-          if (
-            !semOpenaiCompletionsRequest.response.startsWith(
-              'Error: 429 Rate limit reached',
-            )
-          ) {
-            return null;
-          }
-        } else {
-          console.log(
-            `OpenaiCompletionsRequest fetched from cache with hash ${bodyHash} for website id ${website.id} and completions id ${completions.id}`,
+          completionsJSON.messages[completionsMessageIndex].content =
+            completionsJSON.messages[completionsMessageIndex].content.replace(
+              parameters.placeholder,
+              parameters.content,
+            );
+          console.log('Updated completionsJSON: ', completionsJSON);
+        }
+
+        console.log('actually we are using model from .env: ' + models[i]);
+        const body = {
+          messages: completionsJSON.messages,
+          // messages: [
+          //   { role: 'system', content: 'You are a helpful assistant.' },
+          //   { role: 'user', content: 'Tell me the result of 2 x 2' },
+          // ],
+          model: models[i], //"gpt-3.5-turbo",
+        };
+        bodyString = JSON.stringify(body);
+        bodyHash = hashString(bodyString);
+        const semOpenaiCompletionsRequest =
+          await this.semOpenaiCompletionsRequestService.findOneBy(
+            bodyHash,
+            completions,
+            website,
           );
-          return semOpenaiCompletionsRequest.response;
+        if (semOpenaiCompletionsRequest === null) {
+          await this.semOpenaiCompletionsRequestService.findOneBy(
+            bodyHash,
+            completions,
+          );
+        }
+        if (semOpenaiCompletionsRequest !== null) {
+          if (
+            semOpenaiCompletionsRequest.status !== null &&
+            semOpenaiCompletionsRequest.status &
+              OPENAICOMPLETIONS_REQUEST_STATUS_ERROR
+          ) {
+            // Retry again for Error: 429 Rate limit reached
+            if (
+              !semOpenaiCompletionsRequest.response.startsWith(
+                'Error: 429 Rate limit reached',
+              )
+            ) {
+              return null;
+            }
+          } else {
+            console.log(
+              `OpenaiCompletionsRequest fetched from cache with hash ${bodyHash} for website id ${website.id} and completions id ${completions.id}`,
+            );
+            return semOpenaiCompletionsRequest.response;
+          }
+        }
+
+        // The system message helps set the behavior of the assistant
+        const completionsResponse = await openai.chat.completions.create(body);
+        console.log('parseHtmlElement() completion: ', completionsResponse);
+        const response: string = completionsResponse.choices[0].message.content;
+        console.log('parseHtmlElement() response: ', response);
+        await this.semOpenaiCompletionsRequestService.createOpenaiCompletionsRequest(
+          website,
+          bodyHash,
+          response,
+          completions,
+          OPENAICOMPLETIONS_REQUEST_STATUS_SUCCESS,
+          process.env.NODE_ENV === 'test' ? bodyString : null,
+        );
+
+        return response;
+      } catch (error) {
+        this.logger.error(
+          `Failed to run completions id: ${completions.id}`,
+          error.stack,
+        );
+        // throw new Error(
+        //   `Failed to run completions id: ${completions.id}, ${error.stack}`,
+        // );
+
+        await this.semOpenaiCompletionsRequestService.createOpenaiCompletionsRequest(
+          website,
+          bodyHash,
+          error.stack,
+          completions,
+          OPENAICOMPLETIONS_REQUEST_STATUS_ERROR,
+          process.env.NODE_ENV === 'test' ? bodyString : null,
+        );
+        // if the error is related to the context size , we continue by trying with another model
+        // otherwise we abort
+        if (
+          error.stack.indexOf('maximum context length is ') < 0 ||
+          error.stack.indexOf('Please reduce the length of the messages') < 0
+        ) {
+          break;
         }
       }
-
-      // The system message helps set the behavior of the assistant
-      const completionsResponse = await openai.chat.completions.create(body);
-      console.log('parseHtmlElement() completion: ', completionsResponse);
-      const response: string = completionsResponse.choices[0].message.content;
-      console.log('parseHtmlElement() response: ', response);
-      await this.semOpenaiCompletionsRequestService.createOpenaiCompletionsRequest(
-        website,
-        bodyHash,
-        response,
-        completions,
-        OPENAICOMPLETIONS_REQUEST_STATUS_SUCCESS,
-        process.env.NODE_ENV === 'test' ? bodyString : null,
-      );
-
-      return response;
-    } catch (error) {
-      this.logger.error(
-        `Failed to run completions id: ${completions.id}`,
-        error.stack,
-      );
-      // throw new Error(
-      //   `Failed to run completions id: ${completions.id}, ${error.stack}`,
-      // );
-
-      await this.semOpenaiCompletionsRequestService.createOpenaiCompletionsRequest(
-        website,
-        bodyHash,
-        error.stack,
-        completions,
-        OPENAICOMPLETIONS_REQUEST_STATUS_ERROR,
-        process.env.NODE_ENV === 'test' ? bodyString : null,
-      );
-      return null;
     }
+    return null;
   }
 }

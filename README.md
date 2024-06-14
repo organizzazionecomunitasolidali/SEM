@@ -21,6 +21,9 @@ OPENAI_API_KEY=sk-abc........................................xyz
 NODE_ENV=test (or prd)
 CORS_ORIGIN=http://localhost:3001
 SERVER_PORT=3000
+#change these when new models come out
+OPENAI_GPT_MODEL_CHEAP=gpt-3.5-turbo
+OPENAI_GPT_MODEL_ENHANCED=gpt-4o
 ```
 
 .env file in /client subfolder needs the following vars:
