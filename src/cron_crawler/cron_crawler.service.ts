@@ -806,20 +806,10 @@ export class CronCrawlerService {
           );
           productStructure.price_01 =
             numbers && numbers.length > 0 ? numbers[0] : 0;
-          if (!productStructure.price_01) {
-            continue;
-          }
 
           console.log(
             'productStructure.price_01 =  ' + productStructure.price_01,
           );
-
-          const currency_01 = await getCurrency(
-            $,
-            productElement,
-            productHtmlElementStructureJSON.currency_01,
-          );
-          productStructure.currency_01_id = currency_01.id;
 
           numbers = [];
           numbers = extractNumbers(
@@ -836,6 +826,21 @@ export class CronCrawlerService {
                 ? numbers[0]
                 : 0;
 
+          console.log(
+            'productStructure.price_02 =  ' + productStructure.price_02,
+          );
+
+          if (!productStructure.price_01 && !productStructure.price_02) {
+            continue;
+          }
+
+          const currency_01 = await getCurrency(
+            $,
+            productElement,
+            productHtmlElementStructureJSON.currency_01,
+          );
+          productStructure.currency_01_id = currency_01.id;
+
           const currency_02 = await getCurrency(
             $,
             productElement,
@@ -844,8 +849,8 @@ export class CronCrawlerService {
           productStructure.currency_02_id = currency_02 ? currency_02.id : null;
 
           if (
-            !productStructure.currency_01_id &&
-            !productStructure.currency_02_id
+            (productStructure.price_01 && !productStructure.currency_01_id) ||
+            (productStructure.price_02 && !productStructure.currency_02_id)
           ) {
             continue;
           }
