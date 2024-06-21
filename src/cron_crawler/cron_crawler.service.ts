@@ -866,6 +866,14 @@ export class CronCrawlerService {
             continue;
           }
 
+          // if only one of the two prices is set , make it the first
+          if (!productStructure.currency_01_id) {
+            productStructure.currency_01_id = productStructure.currency_02_id;
+            productStructure.price_01 = productStructure.price_02;
+            productStructure.currency_02_id = null;
+            productStructure.price_02 = null;
+          }
+
           const categoryName =
             await this.serviceOpenaiService.getProductCategory(
               productStructure.title,
@@ -887,12 +895,16 @@ export class CronCrawlerService {
             productStructure.url,
           );
           if (product) {
+            console.log('entitiesMatch ' + productStructure.url);
             if (
               entitiesMatch(product, productStructure, {
                 exclude: ['id', 'timestamp'],
               })
             ) {
               // Product already existing in database
+              console.log(
+                'updateProductTimestamp ' + productStructure.timestamp,
+              );
               productAlreadyExist = true;
               product = await this.semProductService.updateProductTimestamp(
                 product,
@@ -903,10 +915,7 @@ export class CronCrawlerService {
               await this.semProductService.delete(product.id);
             }
           }
-          if (
-            !productAlreadyExist &&
-            (productStructure.currency_01_id || productStructure.currency_02_id)
-          ) {
+          if (!productAlreadyExist && productStructure.currency_01_id) {
             console.log('createProduct');
             await this.semProductService.createProduct(
               productStructure,
@@ -975,6 +984,7 @@ export class CronCrawlerService {
       }
       // });
     } catch (error) {
+      console.log(`Failed to crawl: ${url}. ` + error.message);
       console.error(`Failed to crawl: ${url}`, error);
 
       // Update the existing websiteLazy object instead of reassigning it
