@@ -841,6 +841,11 @@ export class CronCrawlerService {
           );
           productStructure.currency_01_id = currency_01.id;
 
+          console.log(
+            'productStructure.currency_01_id =  ' +
+              productStructure.currency_01_id,
+          );
+
           const currency_02 = await getCurrency(
             $,
             productElement,
@@ -848,10 +853,16 @@ export class CronCrawlerService {
           );
           productStructure.currency_02_id = currency_02 ? currency_02.id : null;
 
+          console.log(
+            'productStructure.currency_02_id =  ' +
+              productStructure.currency_02_id,
+          );
+
           if (
             (productStructure.price_01 && !productStructure.currency_01_id) ||
             (productStructure.price_02 && !productStructure.currency_02_id)
           ) {
+            console.log('at least a price has no currency. skip');
             continue;
           }
 
