@@ -917,6 +917,7 @@ export class CronCrawlerService {
 
         if (!paginationHtmlElementData) {
           // if no pagination , infinite scroll. we will scrape from the same page next time.
+          console.log('no pagination. break');
           break;
         }
 
