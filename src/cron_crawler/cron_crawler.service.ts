@@ -297,6 +297,35 @@ export class CronCrawlerService {
     //   return;
     // }
 
+    const getXPath = (element) => {
+      if (element.id !== '') {
+        return `id("${element.id}")`;
+      }
+      if (element === document.body) {
+        return '/html/body';
+      }
+
+      let ix = 0;
+      const siblings = element.parentNode.childNodes;
+      for (let i = 0; i < siblings.length; i++) {
+        const sibling = siblings[i];
+        if (sibling === element) {
+          return `${getXPath(element.parentNode)}/${element.tagName.toLowerCase()}[${ix + 1}]`;
+        }
+        if (sibling.nodeType === 1 && sibling.tagName === element.tagName) {
+          ix++;
+        }
+      }
+    };
+
+    const getXPathBySelector = async (
+      page: puppeteer.Page,
+      selector: string,
+    ) => {
+      let elementHandle = await page.$(selector);
+      return await page.evaluate(getXPath, elementHandle);
+    };
+
     const url = removeTrailingSlash(websiteLazy.url);
 
     const canCrawl = await this.shouldCrawl(url);
@@ -418,6 +447,7 @@ export class CronCrawlerService {
 
         // Function to recursively deduplicate all structures and assign unique groupId
         const deduplicateStructure = async (
+          page: puppeteer.Page,
           structure: TagStructure,
           website: SemWebsite,
         ): Promise<TagStructure> => {
@@ -426,10 +456,13 @@ export class CronCrawlerService {
             structure.groupId = ++globalGroupId;
           }
 
+          let xPath = await getXPathBySelector(page, structure.selector);
+
           // Create a record for the current structure
           await this.semHtmlElementService.createHtmlElement(
             structure.groupId,
             structure.selector,
+            xPath,
             structure.html,
             website,
           );
@@ -442,7 +475,7 @@ export class CronCrawlerService {
             // Then, process each unique child asynchronously and wait for all to complete
             structure.children = await Promise.all(
               uniqueChildren.map((child) =>
-                deduplicateStructure(child, website),
+                deduplicateStructure(page, child, website),
               ),
             );
           }
@@ -455,6 +488,7 @@ export class CronCrawlerService {
 
         // Deduplicate the body structure
         const deduplicatedBodyStructure = await deduplicateStructure(
+          page,
           bodyStructure,
           website,
         );
@@ -526,10 +560,15 @@ export class CronCrawlerService {
           ) {
             // Product and pagination structures have already been identified, no need to call serviceOpenaiService.getHtmlElementType
             if (paginationHtmlElementStructure) {
-              if (
-                updatedHtmlElement.selector ===
-                paginationHtmlElementStructure.selector
-              ) {
+              let xPath = await getXPathBySelector(
+                page,
+                paginationHtmlElementStructure.selector,
+              );
+              console.log(
+                'XPath of Pagination structure element from DB is:',
+                xPath,
+              );
+              if (updatedHtmlElement.xpath === xPath) {
                 paginationHtmlElementData =
                   await this.serviceOpenaiService.getPaginationData(
                     updatedHtmlElement.id,

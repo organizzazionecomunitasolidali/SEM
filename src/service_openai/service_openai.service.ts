@@ -386,7 +386,7 @@ export class ServiceOpenaiService {
           //   { role: 'system', content: 'You are a helpful assistant.' },
           //   { role: 'user', content: 'Tell me the result of 2 x 2' },
           // ],
-          model: models[i], //"gpt-3.5-turbo",
+          model: models[i] ? models[i] : completionsJSON.model, //"gpt-3.5-turbo",
         };
         bodyString = JSON.stringify(body);
         bodyHash = hashString(bodyString);

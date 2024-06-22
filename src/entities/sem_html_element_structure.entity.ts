@@ -24,10 +24,6 @@ export class SemHtmlElementStructure {
   @Column()
   type: number;
 
-  // Pagination is infinite scrolling
-  @Column({ nullable: true })
-  is_infinite_scrolling: boolean;
-
   @Column()
   json: string;
 
