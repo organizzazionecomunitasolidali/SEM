@@ -27,7 +27,6 @@ export class SemHtmlElementService {
   async createHtmlElement(
     groupId: number,
     selector: string,
-    xpath: string,
     content: string,
     website: SemWebsite,
   ): Promise<SemHtmlElement> {
@@ -35,7 +34,6 @@ export class SemHtmlElementService {
     const htmlElement = new SemHtmlElement();
     htmlElement.group_id = groupId;
     htmlElement.selector = selector;
-    htmlElement.xpath = xpath;
     htmlElement.content = content;
     htmlElement.website = website;
 

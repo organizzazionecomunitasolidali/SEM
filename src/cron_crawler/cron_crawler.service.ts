@@ -61,6 +61,13 @@ interface TagStructure {
   selector: string;
 }
 
+declare global {
+  interface Window {
+    // ⚠️ notice that "Window" is capitalized here
+    hello: any;
+  }
+}
+
 @Injectable()
 export class CronCrawlerService {
   private readonly logger = new Logger(CronCrawlerService.name);
@@ -297,35 +304,6 @@ export class CronCrawlerService {
     //   return;
     // }
 
-    const getXPath = (element) => {
-      if (element.id !== '') {
-        return `id("${element.id}")`;
-      }
-      if (element === document.body) {
-        return '/html/body';
-      }
-
-      let ix = 0;
-      const siblings = element.parentNode.childNodes;
-      for (let i = 0; i < siblings.length; i++) {
-        const sibling = siblings[i];
-        if (sibling === element) {
-          return `${getXPath(element.parentNode)}/${element.tagName.toLowerCase()}[${ix + 1}]`;
-        }
-        if (sibling.nodeType === 1 && sibling.tagName === element.tagName) {
-          ix++;
-        }
-      }
-    };
-
-    const getXPathBySelector = async (
-      page: puppeteer.Page,
-      selector: string,
-    ) => {
-      let elementHandle = await page.$(selector);
-      return await page.evaluate(getXPath, elementHandle);
-    };
-
     const url = removeTrailingSlash(websiteLazy.url);
 
     const canCrawl = await this.shouldCrawl(url);
@@ -456,13 +434,10 @@ export class CronCrawlerService {
             structure.groupId = ++globalGroupId;
           }
 
-          let xPath = await getXPathBySelector(page, structure.selector);
-
           // Create a record for the current structure
           await this.semHtmlElementService.createHtmlElement(
             structure.groupId,
             structure.selector,
-            xPath,
             structure.html,
             website,
           );
@@ -560,15 +535,10 @@ export class CronCrawlerService {
           ) {
             // Product and pagination structures have already been identified, no need to call serviceOpenaiService.getHtmlElementType
             if (paginationHtmlElementStructure) {
-              let xPath = await getXPathBySelector(
-                page,
-                paginationHtmlElementStructure.selector,
-              );
-              console.log(
-                'XPath of Pagination structure element from DB is:',
-                xPath,
-              );
-              if (updatedHtmlElement.xpath === xPath) {
+              if (
+                updatedHtmlElement.selector ===
+                paginationHtmlElementStructure.selector
+              ) {
                 paginationHtmlElementData =
                   await this.serviceOpenaiService.getPaginationData(
                     updatedHtmlElement.id,
@@ -964,7 +934,7 @@ export class CronCrawlerService {
         }
 
         if (!paginationHtmlElementData) {
-          // if no pagination , infinite scroll. we will scrape from the same page next time.
+          // if no pagination , infinite scroll?
           console.log('no pagination. break');
           break;
         }
