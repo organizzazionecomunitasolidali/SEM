@@ -113,14 +113,15 @@ export class ServiceOpenaiService {
       if (htmlElement.content == '') {
         return HTML_ELEMENT_TYPE_UNKNOWN;
       }
-      const parseHtmlElementResponse = await this.parseHtmlElement(
+      let parseHtmlElementResponse = await this.parseHtmlElement(
         htmlElement,
         completions,
       );
-      if (htmlElement.selector.indexOf('mt-1.pagination') > 0) {
-        console.log(
-          'htmlElement.selector response: ' + parseHtmlElementResponse,
-        );
+      if (parseHtmlElementResponse) {
+        // response may be not just the number , but may be wrapped in parentheses like (1)
+        parseHtmlElementResponse = parseHtmlElementResponse
+          .replace('(', '')
+          .replace(')', '');
       }
       if (
         isNaN(Number(parseHtmlElementResponse)) ||
@@ -408,11 +409,7 @@ export class ServiceOpenaiService {
             OPENAICOMPLETIONS_REQUEST_STATUS_ERROR
         ) {
           // Retry again for Error: 429 Rate limit reached
-          if (
-            !semOpenaiCompletionsRequest.response.startsWith(
-              'Error: 429 Rate limit reached',
-            )
-          ) {
+          if (!semOpenaiCompletionsRequest.response.startsWith('Error: 429 ')) {
             console.log(
               'OpenAI ERROR: ' + semOpenaiCompletionsRequest.response,
             );
