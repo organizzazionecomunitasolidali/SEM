@@ -71,9 +71,16 @@ export class SemProductService {
       }
     }
 
+    /*
     const [results, total] = await query
       .skip((page - 1) * limit)
       .take(limit)
+      .getManyAndCount();
+      */
+    const [results, total] = await this.semProductRepository
+      .createQueryBuilder('semProduct')
+      .leftJoinAndSelect('semProduct.website', 'website')
+      .select(['semProduct', 'website.name'])
       .getManyAndCount();
 
     const totalPages = Math.ceil(total / limit);

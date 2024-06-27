@@ -296,7 +296,13 @@ const ProductsView = () => {
                   />
                 </a>
 
-                <CardContent>
+                <CardContent
+                  style={{
+                    minHeight: '180px',
+                    paddingBottom: '15px',
+                    position: 'relative',
+                  }}
+                >
                   <a
                     href={product.url}
                     target="_blank"
@@ -333,6 +339,23 @@ const ProductsView = () => {
                         {getCurrencyStringById(product.currency_02_id)}
                       </Typography>
                     )}
+                  {
+                    <Typography
+                      style={{
+                        opacity: 0.7,
+                        marginTop: '15px',
+                        filter: 'saturate(0)',
+                        position: 'absolute',
+                        bottom: '0px',
+                        right: '15px',
+                      }}
+                      color="textSecondary"
+                      gutterBottom
+                      component="small"
+                    >
+                      {'🌐 ' + product.website.name}
+                    </Typography>
+                  }
                   {/* Additional Product Info */}
                 </CardContent>
               </Card>
