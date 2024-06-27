@@ -252,6 +252,18 @@ export class ServiceOpenaiService {
     }
   }
 
+  cleanJsonData(json: string) {
+    let formatterStart = '```json\n';
+    let formatterEnd = '\n```';
+    let indexOfJson = json.indexOf(formatterStart);
+    if (indexOfJson === 0) {
+      json = json.substring(formatterStart.length);
+      indexOfJson = json.indexOf(formatterEnd);
+      json = json.substring(0, indexOfJson);
+    }
+    return json;
+  }
+
   async getPaginationData(
     htmlElementId: number,
     htmlElement?: SemHtmlElement,
@@ -285,10 +297,15 @@ export class ServiceOpenaiService {
           htmlElement.selector,
         );
 
-      const paginationHtmlElementData = await this.parseHtmlElement(
+      let paginationHtmlElementData = await this.parseHtmlElement(
         htmlElement,
         completions,
       );
+      if (paginationHtmlElementData) {
+        paginationHtmlElementData = this.cleanJsonData(
+          paginationHtmlElementData,
+        );
+      }
       if (!this.isValidPaginationData(paginationHtmlElementData)) {
         return null;
       }
