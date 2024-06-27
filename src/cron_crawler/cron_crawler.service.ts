@@ -643,10 +643,6 @@ export class CronCrawlerService {
           if (tagPosition > 0) {
             sanitizedStr = sanitizedStr.substring(0, tagPosition).trim();
           }
-          let spacePosition = sanitizedStr.search(/[ \t\u00A0]/);
-          if (spacePosition > 0) {
-            sanitizedStr = sanitizedStr.substring(0, spacePosition).trim();
-          }
           // detect if it is has a decimal part with comma and replace it with dot
           if (sanitizedStr.match(/\d+,\d{1,2}/)) {
             sanitizedStr = sanitizedStr.replace(',', '.');
