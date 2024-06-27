@@ -81,6 +81,8 @@ export class SemProductService {
       .createQueryBuilder('semProduct')
       .leftJoinAndSelect('semProduct.website', 'website')
       .select(['semProduct', 'website.name'])
+      .skip((page - 1) * limit)
+      .take(limit)
       .getManyAndCount();
 
     const totalPages = Math.ceil(total / limit);
