@@ -77,10 +77,9 @@ export class SemProductService {
       .take(limit)
       .getManyAndCount();
       */
-    const [results, total] = await this.semProductRepository
-      .createQueryBuilder('semProduct')
-      .leftJoinAndSelect('semProduct.website', 'website')
-      .select(['semProduct', 'website.name'])
+    const [results, total] = await query
+      .innerJoinAndSelect('product.website', 'website')
+      .select(['product', 'website.name'])
       .skip((page - 1) * limit)
       .take(limit)
       .getManyAndCount();
@@ -164,6 +163,7 @@ export class SemProductService {
       category_id: productStructure.category_id,
       timestamp: productStructure.timestamp,
       website: website,
+      createdAt: new Date()
     });
     await this.semProductRepository.save(newProduct);
     return newProduct;

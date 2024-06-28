@@ -13,6 +13,8 @@ import {
   CONTROLLER_PROCESS_ID,
   CONTROLLER_OPENAI_COMPLETIONS_ID,
   CONTROLLER_HTML_ELEMENT_STRUCTURE_ID,
+  CONTROLLER_WEBSITE_ID,
+  CONTROLLER_WEBSITE_COUNTERS,
   HTML_ELEMENT_TYPE_PRODUCT,
   HTML_ELEMENT_TYPE_PAGINATION,
 } from '../utils/globals';
@@ -30,6 +32,8 @@ function TaskManager() {
     useState(null);
   // const [pids, setPids] = useState(null);
   const [clearTableDataDialogOpen, setClearTableDataDialogOpen] =
+    useState(false);
+  const [productUpdateWeeklyData, setProductUpdateWeeklyData] =
     useState(false);
   // const clearTableDataDialogItems = ['Item 1', 'Item 2', 'Item 3'];
 
@@ -229,6 +233,19 @@ function TaskManager() {
         );
 
         setOpenaiServiceFunctions(openaiServiceFunctionsResponseJson);
+
+        const counterResponse = await fetch(
+          SERVER_BASE_URL + CONTROLLER_WEBSITE_ID + '/' + CONTROLLER_WEBSITE_COUNTERS,
+        );
+        if (!counterResponse.ok) {
+          throw new Error(
+            'counterResponse: Network response was not ok ' + counterResponse.statusText,
+          );
+        }
+        const counterResponseJson = await counterResponse.json();
+        console.log('TaskManager counterResponseJson: ', counterResponseJson);
+        setProductUpdateWeeklyData(counterResponseJson);
+
       } catch (error) {
         console.error(
           'There has been a problem with your fetch operation:',

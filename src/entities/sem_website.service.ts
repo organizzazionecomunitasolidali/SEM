@@ -1,16 +1,19 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Collection, Repository } from 'typeorm';
 import { SemWebsite } from '../entities/sem_website.entity';
 import { copyExistingFields } from '../utils/globals';
 import { SemProcess } from '../entities/sem_process.entity';
 import { SemProcessService } from './sem_process.service';
+import moment from 'moment';
+import 'moment-timezone';
 import { SemHtmlElementStructure } from './sem_html_element_structure.entity';
 import {
   SemHtmlElementStructureService,
   // SemHtmlElementStructureDto,
 } from './sem_html_element_structure.service';
 import { SemOpenaiCompletionsService } from './sem_openai_completions.service';
+import { SemProduct } from './sem_product.entity';
 const {
   // HTML_ELEMENT_TYPE_UNKNOWN,
   HTML_ELEMENT_TYPE_PRODUCT,
@@ -85,6 +88,38 @@ export class SemWebsiteService {
       where: { id },
       relations: relations,
     });
+  }
+
+  async getProductUpdateCounters(): Promise<Array<object>> {
+
+    const now = moment();
+    let allSites = await this.findAll();
+    let results = [];
+
+    for(let s = 0;s < allSites.length;s++){
+
+      results[s] = {site: allSites[s].name, stats: []};
+
+      for(let i = 0,startOfWeek = now.startOf('week').add(1, 'days');i < 12;i++,startOfWeek = startOfWeek.subtract(7, 'days')){
+        let dateStart = startOfWeek.format("YYYY-MM-DD");
+        let dateEnd = startOfWeek.add(7,'days').format("YYYY-MM-DD");
+        let added = this.semWebsiteRepository.createQueryBuilder('sem_product')
+        .where('sem_product.createdAt >= :createdAt', { dateStart })
+        .andWhere('sem_product.createdAt < :createdAt', { dateEnd })
+        .getCount();
+        let deleted = this.semWebsiteRepository.createQueryBuilder('sem_product')
+        .where('sem_product.deletedAt >= :deletedAt', { dateStart })
+        .andWhere('sem_product.deletedAt < :deletedAt', { dateEnd })
+        .getCount();
+        results[s].stats.push({ 
+          week: dateStart + " - " + startOfWeek.add(6,'days').format("YYYY-MM-DD"),
+          added: added, 
+          deleted: deleted });
+      }
+
+    }
+
+    return results;
   }
 
   async updateWebsiteField(

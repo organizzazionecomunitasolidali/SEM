@@ -51,11 +51,17 @@ export class SemProduct {
   @Column({ nullable: true })
   category_id: number;
 
+  // update timestamp
   @Column()
   timestamp: number;
 
+  @Index()
+  @Column({ default: '1970-01-01'})
+  createdAt: Date;
+
   // Soft delete, use the softRemove or softDelete method. To recover a soft-deleted entity, you can use the recover method.
   // Soft deleted entities are not included in query results. If you want to include them, you can use the withDeleted method.
+  @Index()
   @DeleteDateColumn()
   deletedAt: Date;
 
