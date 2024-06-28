@@ -3,6 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   Unique,
+  CreateDateColumn,
   DeleteDateColumn,
   Index,
   ManyToOne,
@@ -56,7 +57,7 @@ export class SemProduct {
   timestamp: number;
 
   @Index()
-  @Column({ default: '1970-01-01'})
+  @CreateDateColumn({ default: '1970-01-01'})
   createdAt: Date;
 
   // Soft delete, use the softRemove or softDelete method. To recover a soft-deleted entity, you can use the recover method.

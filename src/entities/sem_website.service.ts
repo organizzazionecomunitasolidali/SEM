@@ -1,11 +1,12 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Collection, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { SemWebsite } from '../entities/sem_website.entity';
+import { SemProduct } from '../entities/sem_product.entity';
 import { copyExistingFields } from '../utils/globals';
 import { SemProcess } from '../entities/sem_process.entity';
 import { SemProcessService } from './sem_process.service';
-import moment from 'moment';
+import * as moment from 'moment';
 import 'moment-timezone';
 import { SemHtmlElementStructure } from './sem_html_element_structure.entity';
 import {
@@ -13,7 +14,6 @@ import {
   // SemHtmlElementStructureDto,
 } from './sem_html_element_structure.service';
 import { SemOpenaiCompletionsService } from './sem_openai_completions.service';
-import { SemProduct } from './sem_product.entity';
 const {
   // HTML_ELEMENT_TYPE_UNKNOWN,
   HTML_ELEMENT_TYPE_PRODUCT,
@@ -61,8 +61,11 @@ export class SemWebsiteService {
     @Inject(forwardRef(() => SemHtmlElementStructureService))
     private readonly semHtmlElementStructureService: SemHtmlElementStructureService,
     private readonly semOpenaiCompletionsService: SemOpenaiCompletionsService,
+    @InjectRepository(SemProduct)
+    private readonly semProductRepository: Repository<SemProduct>,
   ) {}
 
+  /*
   findAll(): Promise<SemWebsite[]> {
     return this.semWebsiteRepository.find({
       relations: [
@@ -73,6 +76,15 @@ export class SemWebsiteService {
       ],
     });
   }
+  */
+  findAll(): Promise<SemWebsite[]> {
+    return this.semWebsiteRepository.find();
+  }
+  /*
+  findAll(): Promise<SemProcess[]> {
+    return this.semProcessRepository.find({ relations: ['websites'] });
+  }
+  */
 
   async findOne(id: number, relations: string[] = []): Promise<SemWebsite> {
     if (relations.length === 0) {
@@ -92,34 +104,42 @@ export class SemWebsiteService {
 
   async getProductUpdateCounters(): Promise<Array<object>> {
 
-    const now = moment();
-    let allSites = await this.findAll();
+    let now = moment();
+    const allSites = await this.findAll();
     let results = [];
 
-    for(let s = 0;s < allSites.length;s++){
-
-      results[s] = {site: allSites[s].name, stats: []};
-
-      for(let i = 0,startOfWeek = now.startOf('week').add(1, 'days');i < 12;i++,startOfWeek = startOfWeek.subtract(7, 'days')){
-        let dateStart = startOfWeek.format("YYYY-MM-DD");
-        let dateEnd = startOfWeek.add(7,'days').format("YYYY-MM-DD");
-        let added = this.semWebsiteRepository.createQueryBuilder('sem_product')
-        .where('sem_product.createdAt >= :createdAt', { dateStart })
-        .andWhere('sem_product.createdAt < :createdAt', { dateEnd })
+    for(let i = 0,startOfWeek = now.startOf('week').add(1, 'days');i < 25;i++,startOfWeek = startOfWeek.subtract(7, 'days')){
+      
+      let dateStart = startOfWeek.format("YYYY-MM-DD");
+      let dateEnd = startOfWeek.add(7,'days').format("YYYY-MM-DD");
+      let stats = [];
+      
+      for(let s = 0;s < allSites.length;s++){
+        let added = await this.semProductRepository.createQueryBuilder()
+        .where('createdAt >= :dateStart', { dateStart: dateStart })
+        .andWhere('createdAt < :dateEnd', { dateEnd: dateEnd })
+        .andWhere('websiteId = :id', { id: allSites[s].id } )
         .getCount();
-        let deleted = this.semWebsiteRepository.createQueryBuilder('sem_product')
-        .where('sem_product.deletedAt >= :deletedAt', { dateStart })
-        .andWhere('sem_product.deletedAt < :deletedAt', { dateEnd })
+        let deleted = await this.semProductRepository.createQueryBuilder()
+        .withDeleted()
+        .where('deletedAt >= :dateStart', { dateStart: dateStart })
+        .andWhere('deletedAt < :dateEnd', { dateEnd: dateEnd })
+        .andWhere('websiteId = :id', { id: allSites[s].id })
         .getCount();
-        results[s].stats.push({ 
-          week: dateStart + " - " + startOfWeek.add(6,'days').format("YYYY-MM-DD"),
+        stats.push({
+          site: allSites[s].name, 
           added: added, 
           deleted: deleted });
       }
 
+      results[i] = [{
+        week: dateStart + " - " + startOfWeek.add(6,'days').format("YYYY-MM-DD"),
+        stats}];
+        
     }
 
     return results;
+
   }
 
   async updateWebsiteField(

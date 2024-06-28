@@ -162,8 +162,7 @@ export class SemProductService {
       currency_02_id: productStructure.currency_02_id,
       category_id: productStructure.category_id,
       timestamp: productStructure.timestamp,
-      website: website,
-      createdAt: new Date()
+      website: website
     });
     await this.semProductRepository.save(newProduct);
     return newProduct;
