@@ -325,6 +325,34 @@ function TaskManager() {
           // items={clearTableDataDialogItems}
         />
       </div>
+      {productUpdateWeeklyData && (
+      <div style={{marginTop: "50px"}}>
+        <h2 style={{fontWeight: 900, marginLeft: '20px'}}>Product update stats per week and website</h2>
+        {productUpdateWeeklyData.map((item,index) => (
+        <div style={{marginTop: '20px', marginLeft: '20px', display: 'inline-block'}}>
+          <h4 style={{fontWeight: 900, margin: '0px', padding: '5px', background: index==0 ? '#ffffac' : 'transparent',  color: index==0 ? '#222' : 'black' }}>{index==0 ? "This" : ""} Week {item.week}</h4>
+          <table border="0">
+            <thead>
+              <tr style={{backgroundColor: 'black', color: 'white', margin: '0px', padding: '5px'}}>
+                <th style={{padding: '5px'}}>Site</th>
+                <th style={{padding: '5px'}}>Products added</th>
+                <th style={{padding: '5px'}}>Products deleted</th>
+              </tr>
+            </thead>
+            <tbody>
+            {item.stats.map((stats,ind) => (
+              <tr style={{margin: '0px', backgroundColor: (ind % 2) ? '#ccc' : '#ddd', padding: '5px'}}>
+                <td style={{padding: '5px'}}>{stats.site}</td>
+                <td style={{padding: '5px'}}>{stats.added}</td>
+                <td style={{padding: '5px'}}>{stats.deleted}</td>
+              </tr>
+            ))}
+            </tbody>
+          </table>
+        </div>
+        ))}
+      </div>
+      )}
     </div>
   );
 }

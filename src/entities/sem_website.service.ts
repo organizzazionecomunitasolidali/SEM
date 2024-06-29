@@ -108,10 +108,10 @@ export class SemWebsiteService {
     const allSites = await this.findAll();
     let results = [];
 
-    for(let i = 0,startOfWeek = now.startOf('week').add(1, 'days');i < 25;i++,startOfWeek = startOfWeek.subtract(7, 'days')){
+    for(let i = 0,startOfWeek = now.startOf('week').add(1, 'days');i < 25;i++,startOfWeek.subtract(7, 'days')){
       
       let dateStart = startOfWeek.format("YYYY-MM-DD");
-      let dateEnd = startOfWeek.add(7,'days').format("YYYY-MM-DD");
+      let dateEnd = moment(startOfWeek).add(7,'days').format("YYYY-MM-DD");
       let stats = [];
       
       for(let s = 0;s < allSites.length;s++){
@@ -132,9 +132,9 @@ export class SemWebsiteService {
           deleted: deleted });
       }
 
-      results[i] = [{
-        week: dateStart + " - " + startOfWeek.add(6,'days').format("YYYY-MM-DD"),
-        stats}];
+      results[i] = {
+        week: dateStart + " - " + moment(startOfWeek).add(6,'days').format("YYYY-MM-DD"),
+        stats};
         
     }
 
