@@ -196,6 +196,18 @@ function TaskManager() {
         setTaskData(tasks);
         // setPids(pidsArray);
 
+        const counterResponse = await fetch(
+          SERVER_BASE_URL + CONTROLLER_WEBSITE_ID + '/' + CONTROLLER_WEBSITE_COUNTERS,
+        );
+        if (!counterResponse.ok) {
+          throw new Error(
+            'counterResponse: Network response was not ok ' + counterResponse.statusText,
+          );
+        }
+        const counterResponseJson = await counterResponse.json();
+        console.log('TaskManager counterResponseJson: ', counterResponseJson);
+        setProductUpdateWeeklyData(counterResponseJson);
+
         const openaiCompletionsResponse = await fetch(
           SERVER_BASE_URL + CONTROLLER_OPENAI_COMPLETIONS_ID,
         );
@@ -233,19 +245,7 @@ function TaskManager() {
         );
 
         setOpenaiServiceFunctions(openaiServiceFunctionsResponseJson);
-          
-        const counterResponse = await fetch(
-          SERVER_BASE_URL + CONTROLLER_WEBSITE_ID + '/' + CONTROLLER_WEBSITE_COUNTERS,
-        );
-        if (!counterResponse.ok) {
-          throw new Error(
-            'counterResponse: Network response was not ok ' + counterResponse.statusText,
-          );
-        }
-        const counterResponseJson = await counterResponse.json();
-        console.log('TaskManager counterResponseJson: ', counterResponseJson);
-        setProductUpdateWeeklyData(counterResponseJson);
-        
+                  
       } catch (error) {
         console.error(
           'There has been a problem with your fetch operation:',
