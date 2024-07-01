@@ -11,21 +11,22 @@ import './i18n/i18n';
 // TODO Add translation
 
 function App() {
-  if (process.env.NODE_ENV == 'prd') {
+  
     React.useEffect(() => {
-      var _mtm = (window._mtm = window._mtm || []);
-      _mtm.push({ 'mtm.startTime': new Date().getTime(), event: 'mtm.Start' });
-      (function () {
-        var d = document,
-          g = d.createElement('script'),
-          s = d.getElementsByTagName('script')[0];
-        g.async = true;
-        g.src =
-          'https://analytics.comunitasolidali.it/js/container_v2cUbTWC.js';
-        s.parentNode.insertBefore(g, s);
-      })();
+      if (process.env.NODE_ENV == 'prd') {
+        var _mtm = (window._mtm = window._mtm || []);
+        _mtm.push({ 'mtm.startTime': new Date().getTime(), event: 'mtm.Start' });
+        (function () {
+          var d = document,
+            g = d.createElement('script'),
+            s = d.getElementsByTagName('script')[0];
+          g.async = true;
+          g.src =
+            'https://analytics.comunitasolidali.it/js/container_v2cUbTWC.js';
+          s.parentNode.insertBefore(g, s);
+        })();
+      }
     }, []);
-  }
   return (
     <UserProvider>
       <Router>
@@ -37,6 +38,14 @@ function App() {
                 <Login />
                 <ProductsView />
               </>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute roles={['admin']}>
+                <TaskManager />
+              </PrivateRoute>
             }
           />
           <Route

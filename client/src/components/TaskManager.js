@@ -233,7 +233,7 @@ function TaskManager() {
         );
 
         setOpenaiServiceFunctions(openaiServiceFunctionsResponseJson);
-
+          
         const counterResponse = await fetch(
           SERVER_BASE_URL + CONTROLLER_WEBSITE_ID + '/' + CONTROLLER_WEBSITE_COUNTERS,
         );
@@ -245,7 +245,7 @@ function TaskManager() {
         const counterResponseJson = await counterResponse.json();
         console.log('TaskManager counterResponseJson: ', counterResponseJson);
         setProductUpdateWeeklyData(counterResponseJson);
-
+        
       } catch (error) {
         console.error(
           'There has been a problem with your fetch operation:',
