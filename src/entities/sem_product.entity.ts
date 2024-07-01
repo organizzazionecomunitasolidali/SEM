@@ -57,7 +57,7 @@ export class SemProduct {
   timestamp: number;
 
   @Index()
-  @CreateDateColumn({ default: '1970-01-01'})
+  @CreateDateColumn()
   createdAt: Date;
 
   // Soft delete, use the softRemove or softDelete method. To recover a soft-deleted entity, you can use the recover method.
