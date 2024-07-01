@@ -73,7 +73,7 @@ function Login() {
   };
 
   const handleGoToTasks = () => {
-    navigate('/tasks');
+    navigate('/admin');
     setAnchorEl(null);
   };
 
