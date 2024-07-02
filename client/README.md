@@ -77,4 +77,4 @@ with the following variables:
 REACT_APP_NAME=Comunità Solidali
 REACT_APP_SERVER_BASE_URL=http://localhost:3000/
 DANGEROUSLY_DISABLE_HOST_CHECK=true
-NODE_ENV=test #prd in production
+REACT_APP_NODE_ENV=test #prd in production

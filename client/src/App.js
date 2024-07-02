@@ -13,7 +13,7 @@ import './i18n/i18n';
 function App() {
   
     React.useEffect(() => {
-      if (process.env.NODE_ENV == 'prd') {
+      if (process.env.REACT_APP_NODE_ENV == 'prd') {
         console.log("executing Matomo");
         var _mtm = (window._mtm = window._mtm || []);
         _mtm.push({ 'mtm.startTime': new Date().getTime(), event: 'mtm.Start' });
