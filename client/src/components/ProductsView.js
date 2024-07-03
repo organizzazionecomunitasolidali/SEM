@@ -72,12 +72,12 @@ const ProductsView = () => {
         // track product filter with Matomo
         let _paq = window._paq = window._paq || [];
         let customVariableIndex = 1;
-        _paq.push(['setCustomVariable', customVariableIndex++, 'Search', search , scope = 'page']);
-        _paq.push(['setCustomVariable', customVariableIndex++, 'Page', page , scope = 'page']);
+        _paq.push(['setCustomVariable', customVariableIndex++, 'Search', search , 'page']);
+        _paq.push(['setCustomVariable', customVariableIndex++, 'Page', page , 'page']);
         if(selectedCategoryId){
           for(let i = 0;i < categories.length;i++){
             if(categories[i].id == selectedCategoryId){
-              _paq.push(['setCustomVariable', customVariableIndex++, 'Category', categories[i].name , scope = 'page']);
+              _paq.push(['setCustomVariable', customVariableIndex++, 'Category', categories[i].name , 'page']);
               break;
             }
           }
@@ -86,7 +86,7 @@ const ProductsView = () => {
         for(let i = 0;i < selectedCurrencies.length && customVariableIndex <= maxVariables;i++){
           for(let c = 0;c < currencies.length;c++){
             if(currencies[c].id == selectedCurrencies[i]){
-              _paq.push(['setCustomVariable', customVariableIndex++, 'Currencies', currencies[i].name , scope = 'page']);
+              _paq.push(['setCustomVariable', customVariableIndex++, 'Currencies', currencies[i].name , 'page']);
               break;
             }
           }
