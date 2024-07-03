@@ -32,6 +32,9 @@ import { useTranslation } from 'react-i18next';
 let search = '';
 let selectedCategoryId = 0;
 
+// can be overridden by REACT_APP_MAX_MATOMO_CUSTOM_VARIABLES env variable
+const DEFAULT_MAX_MATOMO_CUSTOM_VARIABLES = 20;
+
 const SearchIcon = () => <FontAwesomeIcon icon={faMagnifyingGlass} />;
 
 const ProductsView = () => {
@@ -64,6 +67,32 @@ const ProductsView = () => {
       const currenciesQueryString = `&currencies=${selectedCurrencies.join(
         ',',
       )}`;
+
+      if(process.env.REACT_APP_NODE_ENV == 'prd'){
+        // track product filter with Matomo
+        let _paq = window._paq = window._paq || [];
+        let customVariableIndex = 1;
+        _paq.push(['setCustomVariable', customVariableIndex++, 'Search', search , scope = 'page']);
+        _paq.push(['setCustomVariable', customVariableIndex++, 'Page', page , scope = 'page']);
+        if(selectedCategoryId){
+          for(let i = 0;i < categories.length;i++){
+            if(categories[i].id == selectedCategoryId){
+              _paq.push(['setCustomVariable', customVariableIndex++, 'Category', categories[i].name , scope = 'page']);
+              break;
+            }
+          }
+        }
+        let maxVariables = process.env.REACT_APP_MAX_MATOMO_CUSTOM_VARIABLES || REACT_APP_MAX_MATOMO_CUSTOM_VARIABLES;
+        for(let i = 0;i < selectedCurrencies.length && customVariableIndex <= maxVariables;i++){
+          for(let c = 0;c < currencies.length;c++){
+            if(currencies[c].id == selectedCurrencies[i]){
+              _paq.push(['setCustomVariable', customVariableIndex++, 'Currencies', currencies[i].name , scope = 'page']);
+              break;
+            }
+          }
+        }
+        _paq.push(['trackPageView']); 
+      }
 
       const productResponse = await fetch(
         SERVER_BASE_URL +
@@ -236,6 +265,7 @@ const ProductsView = () => {
               label={t('Search')}
               //onChange={handleSearchChange}
               onChange={(event) => (search = event.target.value)}
+              onKeyUp={(event) => { console.log("keycode:" + event.keyCode); if (event.key === 'Enter' || event.keyCode === 13) fetchProductData(); } }
               variant="outlined"
               inputRef={searchFieldRef} // Assign the ref to the TextField
               InputLabelProps={{
