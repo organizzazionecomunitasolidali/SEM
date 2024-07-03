@@ -82,7 +82,7 @@ const ProductsView = () => {
             }
           }
         }
-        let maxVariables = process.env.REACT_APP_MAX_MATOMO_CUSTOM_VARIABLES || REACT_APP_MAX_MATOMO_CUSTOM_VARIABLES;
+        let maxVariables = process.env.REACT_APP_MAX_MATOMO_CUSTOM_VARIABLES || DEFAULT_MAX_MATOMO_CUSTOM_VARIABLES;
         for(let i = 0;i < selectedCurrencies.length && customVariableIndex <= maxVariables;i++){
           for(let c = 0;c < currencies.length;c++){
             if(currencies[c].id == selectedCurrencies[i]){
