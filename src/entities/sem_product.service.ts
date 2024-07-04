@@ -178,13 +178,10 @@ export class SemProductService {
     return product;
   }
 
-  async deleteOlderThan(timestamp: number, website: SemWebsite): Promise<void> {
+  async deleteOlderThan(timestamp: number, website: SemWebsite, isSoftDelete: boolean): Promise<void> {
     const websiteId = website.id;
-
-    await this.semProductRepository
-      .createQueryBuilder()
-      .delete()
-      .from(SemProduct)
+    const query = isSoftDelete ? this.semProductRepository.createQueryBuilder().softDelete() : this.semProductRepository.createQueryBuilder().delete();
+    await query.from(SemProduct)
       .where('timestamp < :timestamp', { timestamp })
       .andWhere('websiteId = :websiteId', { websiteId })
       .execute();

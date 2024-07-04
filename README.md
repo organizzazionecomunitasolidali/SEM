@@ -21,6 +21,7 @@ OPENAI_API_KEY=sk-abc........................................xyz
 NODE_ENV=test (or prd)
 CORS_ORIGIN=http://localhost:3001
 SERVER_PORT=3000
+OUTDATED_PRODUCT_DELETE_TIMEOUT_DAYS=3 #optional , default 3 if var not defined
 ```
 
 .env file in /client subfolder needs the following vars:
