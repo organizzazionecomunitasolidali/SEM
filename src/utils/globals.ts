@@ -24,6 +24,7 @@ export function entitiesMatch(entity1, entity2, options = { exclude: [] }) {
 
     // Check if the values are different
     if (entity1[key] !== entity2[key]) {
+      console.log("no match: " + key);
       return false;
     }
   }

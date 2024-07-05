@@ -7,6 +7,7 @@ import {
   DeleteDateColumn,
   Index,
   ManyToOne,
+  UpdateDateColumn,
 } from 'typeorm';
 import { SemWebsite } from '../entities/sem_website.entity';
 
@@ -52,13 +53,18 @@ export class SemProduct {
   @Column({ nullable: true })
   category_id: number;
 
-  // update timestamp
-  @Column()
-  timestamp: number;
-
   @Index()
   @CreateDateColumn()
   createdAt: Date;
+
+  // update timestamp. TODO: obsolete?
+  @Column()
+  timestamp: number;
+
+  // update date
+  @Index()
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   // Soft delete, use the softRemove or softDelete method. To recover a soft-deleted entity, you can use the recover method.
   // Soft deleted entities are not included in query results. If you want to include them, you can use the withDeleted method.

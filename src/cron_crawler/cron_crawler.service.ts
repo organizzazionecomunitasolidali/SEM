@@ -92,8 +92,6 @@ export class CronCrawlerService {
   @Cron(CronExpression.EVERY_HOUR) // Runs every hour
   async handleCron() {
     // const isDebug = process.env.NODE_DEBUG === 'true';
-    const deleteTimeoutDays = process.env.OUTDATED_PRODUCT_DELETE_TIMEOUT_DAYS ? parseInt(process.env.OUTDATED_PRODUCT_DELETE_TIMEOUT_DAYS) : 3;
-    const deleteBeforeTimestampMs = Date.now() - deleteTimeoutDays * 86400 * 1000; 
     let timestampMs;
     let intervalMs;
     let processId;
@@ -206,7 +204,7 @@ export class CronCrawlerService {
 
           // if (isDebug) {
           // Delete products that no longer exist
-          await this.semProductService.deleteOlderThan(deleteBeforeTimestampMs, website, true);
+          await this.semProductService.deleteOlderThan(timestampMs, website, true);
           // }
         }
 
@@ -287,7 +285,7 @@ export class CronCrawlerService {
         lastHeight = newHeight;
         console.log('in scrollToBottom newHeight = ' + newHeight);
         // limit scroll for now
-        if (parseInt(lastHeight.toString()) > 1000000) {
+        if (parseInt(lastHeight.toString()) > 1500000) {
           break;
         }
       }
@@ -904,7 +902,6 @@ export class CronCrawlerService {
           if (product) {
             console.log('entitiesMatch ' + productStructure.url);
             if (
-              // TODO: debug this: it NEVER matches
               entitiesMatch(product, productStructure, {
                 exclude: ['id', 'timestamp'],
               })

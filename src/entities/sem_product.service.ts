@@ -174,7 +174,6 @@ export class SemProductService {
   ): Promise<SemProduct> {
     product['timestamp'] = timestamp; // Update the field
     await this.semProductRepository.save(product); // Save the updated process
-
     return product;
   }
 
