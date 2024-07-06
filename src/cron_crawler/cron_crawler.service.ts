@@ -285,7 +285,7 @@ export class CronCrawlerService {
         lastHeight = newHeight;
         console.log('in scrollToBottom newHeight = ' + newHeight);
         // limit scroll for now
-        if (parseInt(lastHeight.toString()) > 1500000) {
+        if (parseInt(lastHeight.toString()) > 1200000) {
           break;
         }
       }
