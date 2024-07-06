@@ -164,7 +164,12 @@ export class SemProductService {
       timestamp: productStructure.timestamp,
       website: website
     });
-    await this.semProductRepository.save(newProduct);
+    await this.semProductRepository.createQueryBuilder()
+    .insert()
+    .into(SemProduct)
+    .values(newProduct)
+    .orIgnore()
+    .execute();
     return newProduct;
   }
 
