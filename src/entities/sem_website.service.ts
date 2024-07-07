@@ -104,11 +104,15 @@ export class SemWebsiteService {
 
   async getProductUpdateCounters(): Promise<Array<object>> {
 
-    let now = moment();
     const allSites = await this.findAll();
     let results = [];
+    let startOfWeek = moment().startOf('week').add(1, 'days');
+    if(moment().day() == 0){
+      // in this case now.startOf('week') would be today (sunday) ! we need to adjust
+      startOfWeek = moment().subtract(1, 'days').startOf('week').add(1, 'days');
+    }
 
-    for(let i = 0,startOfWeek = now.startOf('week').add(1, 'days');i < 25;i++,startOfWeek.subtract(7, 'days')){
+    for(let i = 0;i < 25;i++,startOfWeek.subtract(7, 'days')){
       
       let dateStart = startOfWeek.format("YYYY-MM-DD");
       let dateEnd = moment(startOfWeek).add(7,'days').format("YYYY-MM-DD");
