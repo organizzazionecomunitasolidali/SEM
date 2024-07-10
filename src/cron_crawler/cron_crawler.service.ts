@@ -89,12 +89,13 @@ export class CronCrawlerService {
     private readonly memoryDbConnection: Connection,
   ) {}
 
-  @Cron(CronExpression.EVERY_3_HOURS) // Runs every 3 hours. (We have some sites that take more than 1 hour to crawl).
+  @Cron(CronExpression.EVERY_HOUR) // Runs every hour
   async handleCron() {
     // const isDebug = process.env.NODE_DEBUG === 'true';
     let timestampMs;
     let intervalMs;
     let processId;
+    let hasProcessRunning = false;
 
     // Setup memory db connection table , for blocking requests from the frontend while crawling is running
 
@@ -116,11 +117,12 @@ export class CronCrawlerService {
 
         // Reload process if it has changed from first findAll
         let process = await this.semProcessService.findOne(processId);
-        if (
-          process.status & PROCESS_STATUS_STOPPED ||
-          process.status & PROCESS_STATUS_RUNNING
-        ) {
-          // Skip if it has been stopped or is already running
+        // Skip if it has been stopped or is already running
+        if(process.status & PROCESS_STATUS_RUNNING){
+          hasProcessRunning = true;
+          continue;
+        } else if (
+          process.status & PROCESS_STATUS_STOPPED) {
           continue;
         }
 
@@ -234,7 +236,9 @@ export class CronCrawlerService {
         error.stack,
       );
     } finally {
-      await this.memoryDbConnection.query('DELETE FROM crawler_lock');
+      if(!hasProcessRunning) {
+        await this.memoryDbConnection.query('DELETE FROM crawler_lock');
+      }
     }
   }
 
