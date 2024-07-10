@@ -89,7 +89,7 @@ export class CronCrawlerService {
     private readonly memoryDbConnection: Connection,
   ) {}
 
-  @Cron(CronExpression.EVERY_HOUR) // Runs every hour
+  @Cron(CronExpression.EVERY_3_HOURS) // Runs every 3 hours. (We have some sites that take more than 1 hour to crawl).
   async handleCron() {
     // const isDebug = process.env.NODE_DEBUG === 'true';
     let timestampMs;
