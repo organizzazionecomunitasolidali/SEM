@@ -8,7 +8,7 @@ const PrivateRoute = ({ children, roles }) => {
 
   if (!user.isLoggedIn) {
     // Redirect to login page, preserving the current location
-    return <Navigate to="/" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (roles && !roles.includes(user.role)) {

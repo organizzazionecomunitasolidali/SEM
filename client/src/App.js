@@ -3,7 +3,7 @@ import React from 'react';
 import Login from './components/Login';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import TaskManager from './components/TaskManager';
-import { UserProvider } from './context/UserContext';
+import { UserProvider , UserContext } from './context/UserContext';
 import PrivateRoute from './components/PrivateRoute';
 import ProductsView from './components/ProductsView';
 import './i18n/i18n';
@@ -12,22 +12,25 @@ import './i18n/i18n';
 
 function App() {
   
-    React.useEffect(() => {
-      if (process.env.REACT_APP_NODE_ENV == 'prd') {
-        console.log("executing Matomo");
-        var _mtm = (window._mtm = window._mtm || []);
-        _mtm.push({ 'mtm.startTime': new Date().getTime(), event: 'mtm.Start' });
-        (function () {
-          var d = document,
-            g = d.createElement('script'),
-            s = d.getElementsByTagName('script')[0];
-          g.async = true;
-          g.src =
-            'https://analytics.comunitasolidali.it/js/container_v2cUbTWC.js';
-          s.parentNode.insertBefore(g, s);
-        })();
-      }
-    }, []);
+  const { user } = useContext(UserContext);
+
+  React.useEffect(() => {
+    if (process.env.REACT_APP_NODE_ENV == 'prd') {
+      console.log("executing Matomo");
+      var _mtm = (window._mtm = window._mtm || []);
+      _mtm.push({ 'mtm.startTime': new Date().getTime(), event: 'mtm.Start' });
+      (function () {
+        var d = document,
+          g = d.createElement('script'),
+          s = d.getElementsByTagName('script')[0];
+        g.async = true;
+        g.src =
+          'https://analytics.comunitasolidali.it/js/container_v2cUbTWC.js';
+        s.parentNode.insertBefore(g, s);
+      })();
+    }
+  }, []);
+
   return (
     <UserProvider>
       <Router>
@@ -38,6 +41,14 @@ function App() {
               <>
                 <Login />
                 <ProductsView />
+              </>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <>
+                <Login />
               </>
             }
           />
