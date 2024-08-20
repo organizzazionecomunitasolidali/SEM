@@ -211,8 +211,7 @@ const ProductsView = () => {
     const currency = currencies.find((c) => c.id === currencyId);
     return currency
       ? [currency.name, currency.symbol, currency.ticker]
-          .filter(Boolean)
-          .join(' ')
+          .filter(Boolean)[0]
       : t('(unknown currency)');
   };
 
