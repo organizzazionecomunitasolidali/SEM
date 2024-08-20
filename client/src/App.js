@@ -7,6 +7,7 @@ import { UserProvider , UserContext } from './context/UserContext';
 import PrivateRoute from './components/PrivateRoute';
 import ProductsView from './components/ProductsView';
 import './i18n/i18n';
+import Topbar from './components/TopBar';
 
 // TODO Add translation
 
@@ -78,6 +79,7 @@ function App() {
               path="/"
               element={
                 <>
+                  <Topbar />
                   <ProductsView />
                 </>
               }
