@@ -7,7 +7,7 @@ import { UserProvider , UserContext } from './context/UserContext';
 import PrivateRoute from './components/PrivateRoute';
 import ProductsView from './components/ProductsView';
 import './i18n/i18n';
-import Topbar from './components/TopBar';
+import TopBarNoLogin from './components/TopBarNoLogin';
 
 // TODO Add translation
 
