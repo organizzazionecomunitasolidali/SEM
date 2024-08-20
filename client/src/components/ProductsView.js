@@ -192,9 +192,6 @@ const ProductsView = () => {
       } else {
         setAnchorEl(null);
       }
-      if (searchFieldRef.current) {
-        searchFieldRef.current.focus();
-      }
     } catch (error) {
       console.error(
         'There has been a problem with your fetch operation:',
@@ -269,9 +266,9 @@ const ProductsView = () => {
             <TextField
               id='searchTerms'
               label={t('Search')}
-              onChange={handleSearchChange}
-              //onChange={(event) => (search = event.target.value)}
-              onKeyUp={(event) => { console.log("keycode:" + event.keyCode); if (event.key === 'Enter' || event.keyCode === 13) fetchProductData(); } }
+              //onChange={handleSearchChange}
+              onChange={(event) => (search = event.target.value)}
+              onKeyUp={(event) => { if (event.key === 'Enter' || event.keyCode === 13) fetchProductData(); } }
               variant="outlined"
               inputRef={searchFieldRef} // Assign the ref to the TextField
               InputLabelProps={{
