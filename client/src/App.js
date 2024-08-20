@@ -31,48 +31,88 @@ function App() {
     }
   }, []);
 
-  return (
-    <UserProvider>
-      <Router>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <Login />
-                <ProductsView />
-              </>
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              <>
-                <Login />
-              </>
-            }
-          />
-          <Route
-            path="/admin"
-            element={
-              <PrivateRoute roles={['admin']}>
-                <TaskManager />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/tasks"
-            element={
-              <PrivateRoute roles={['admin']}>
-                <TaskManager />
-              </PrivateRoute>
-            }
-          />
-          <Route path="/unauth" element={<div>Unauthorized</div>} />
-        </Routes>
-      </Router>
-    </UserProvider>
-  );
+  if(user.isLoggedIn){
+
+    return (
+      <UserProvider>
+        <Router>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <Login />
+                  <ProductsView />
+                </>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <PrivateRoute roles={['admin']}>
+                  <TaskManager />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/tasks"
+              element={
+                <PrivateRoute roles={['admin']}>
+                  <TaskManager />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/unauth" element={<div>Unauthorized</div>} />
+          </Routes>
+        </Router>
+      </UserProvider>
+    );
+
+  } else {
+
+    return (
+      <UserProvider>
+        <Router>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <ProductsView />
+                </>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <>
+                  <Login />
+                </>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <PrivateRoute roles={['admin']}>
+                  <TaskManager />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/tasks"
+              element={
+                <PrivateRoute roles={['admin']}>
+                  <TaskManager />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </Router>
+      </UserProvider>
+    );
+          
+  }
+
 }
 
 export default App;
