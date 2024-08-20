@@ -23,6 +23,7 @@ function TopBarNoLogin() {
     // Update local login state based on global user context
     if (user.isLoggedIn) {
       navigate('/');
+      window.location.reload(); 
     }
   }, [user, navigate]);
   
