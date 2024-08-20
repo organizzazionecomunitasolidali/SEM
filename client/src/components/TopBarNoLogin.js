@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { useMediaQuery, Box } from '@mui/material';
 import {
   AppBar,
   Toolbar,
