@@ -79,7 +79,7 @@ function App() {
               path="/"
               element={
                 <>
-                  <Topbar />
+                  <TopBarNoLogin />
                   <ProductsView />
                 </>
               }
