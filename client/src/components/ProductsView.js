@@ -154,13 +154,15 @@ const ProductsView = () => {
 
   const handleSearchChange = (event) => {
     const searchValue = event.target.value;
-    setSearchTerm(searchValue);
 
     if (searchValue.length < 3) {
       setSearchResults([]);
       setAnchorEl(null);
       return;
     }
+
+    setSearchTerm(searchValue);
+    search = event.target.value;
 
     clearTimeout(searchDebounceTimeout);
     searchDebounceTimeout = setTimeout(() => {
@@ -263,8 +265,8 @@ const ProductsView = () => {
 
             <TextField
               label={t('Search')}
-              //onChange={handleSearchChange}
-              onChange={(event) => (search = event.target.value)}
+              onChange={handleSearchChange}
+              //onChange={(event) => (search = event.target.value)}
               onKeyUp={(event) => { console.log("keycode:" + event.keyCode); if (event.key === 'Enter' || event.keyCode === 13) fetchProductData(); } }
               variant="outlined"
               inputRef={searchFieldRef} // Assign the ref to the TextField
