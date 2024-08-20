@@ -192,6 +192,9 @@ const ProductsView = () => {
       } else {
         setAnchorEl(null);
       }
+      if (searchFieldRef.current) {
+        searchFieldRef.current.focus();
+      }
     } catch (error) {
       console.error(
         'There has been a problem with your fetch operation:',
@@ -264,6 +267,7 @@ const ProductsView = () => {
             </Select>
 
             <TextField
+              id='searchTerms'
               label={t('Search')}
               onChange={handleSearchChange}
               //onChange={(event) => (search = event.target.value)}
