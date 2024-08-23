@@ -44,7 +44,7 @@ const ProductsView = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [currencies, setCurrencies] = useState([]);
   const [selectedCurrencies, setSelectedCurrencies] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
@@ -63,6 +63,10 @@ const ProductsView = () => {
     setLoading(true);
 
     try {
+      console.log('ProductsView selectedCategories: ', selectedCategories);
+      const categoriesQueryString = `&category_ids=${selectedCategories.join(
+        ',',
+      )}`;
       console.log('ProductsView selectedCurrencies: ', selectedCurrencies);
       const currenciesQueryString = `&currencies=${selectedCurrencies.join(
         ',',
@@ -74,6 +78,7 @@ const ProductsView = () => {
         let customVariableIndex = 1;
         _paq.push(['setCustomVariable', customVariableIndex++, 'Search', search , 'page']);
         _paq.push(['setCustomVariable', customVariableIndex++, 'Page', page , 'page']);
+        /*
         if(selectedCategoryId){
           for(let i = 0;i < categories.length;i++){
             if(categories[i].id == selectedCategoryId){
@@ -82,22 +87,34 @@ const ProductsView = () => {
             }
           }
         }
+        */
         let maxVariables = process.env.REACT_APP_MAX_MATOMO_CUSTOM_VARIABLES || DEFAULT_MAX_MATOMO_CUSTOM_VARIABLES;
-        for(let i = 0;i < selectedCurrencies.length && customVariableIndex <= maxVariables;i++){
-          for(let c = 0;c < currencies.length;c++){
-            if(currencies[c].id == selectedCurrencies[i]){
-              _paq.push(['setCustomVariable', customVariableIndex++, 'Currencies', currencies[i].name , 'page']);
+        for(let i = 0;i < selectedCategories.length && customVariableIndex <= maxVariables;i++){
+          for(let c = 0;c < categories.length;c++){
+            if(categories[c].id == selectedCategories[i]){
+              _paq.push(['setCustomVariable', customVariableIndex++, 'Categories', categories[i].name , 'page']);
               break;
             }
           }
         }
+        selectedCurrencies.forEach((value,index) => {
+          if(customVariableIndex <= maxVariables){
+            for(let c = 0;c < currencies.length;c++){
+              if(currencies[c].id == value){
+                _paq.push(['setCustomVariable', customVariableIndex++, 'Currencies', currencies[i].name , 'page']);
+                break;
+              }
+            }
+          }
+        });
         _paq.push(['trackPageView']); 
       }
 
       const productResponse = await fetch(
         SERVER_BASE_URL +
           CONTROLLER_PRODUCT_ID +
-          `?page=${page ? page : currentPage}&limit=${itemsPerPage}&search=${search}&category_id=${selectedCategoryId ? selectedCategoryId : ''}` +
+          `?page=${page ? page : currentPage}&limit=${itemsPerPage}&search=${search}` + 
+          categoriesQueryString +
           currenciesQueryString,
       );
       if (!productResponse.ok) {
@@ -215,11 +232,6 @@ const ProductsView = () => {
       : t('(unknown currency)');
   };
 
-  const handleCategoryChange = (event) => {
-    setSelectedCategory(event.target.value);
-    // Filter products based on category
-  };
-
   return (
     <>
       <Grid container spacing={2} p={3}>
@@ -234,33 +246,12 @@ const ProductsView = () => {
               justifyContent: 'center',
             }}
           >
-            <Select
-              //onChange={handleCategoryChange}
-              onChange={(event) => (selectedCategoryId = event.target.value)}
-              defaultValue=""
-              displayEmpty
-              sx={{
-                width: isMobile ? '100%' : 'auto',
-                '.MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#aaa',
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#35a455',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#35a455',
-                },
-              }}
-            >
-              <MenuItem value="">
-                <em>{t('No Category')}</em>
-              </MenuItem>
-              {categories.map((category) => (
-                <MenuItem key={category.id} value={category.id}>
-                  {t(category.name)}
-                </MenuItem>
-              ))}
-            </Select>
+            
+            <CategorySelect
+              setCategories={setCategories}
+              selectedItems={selectedCategories}
+              setSelectedItems={setSelectedCategories}
+            />
 
             <TextField
               id='searchTerms'

@@ -15,14 +15,14 @@ export class SemProductController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('search') search?: string,
-    @Query('category_id') category_id?: number,
+    @Query('category_ids') category_ids?: string,
     @Query('currencies') currencies?: string,
   ) {
     return this.semProductService.findAll(
       page,
       limit,
       search,
-      category_id,
+      category_ids,
       currencies,
     );
   }
