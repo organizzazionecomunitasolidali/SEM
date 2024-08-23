@@ -1,5 +1,7 @@
 {
   "Search": "Cerca",
+  "Category": "Categoria",
+  "Categories": "Categorie",
   "Task manager": "Gestione attività",
   "Logout": "Disconnetti",
   "Logged in as ": "Connesso come ",
@@ -15,7 +17,8 @@
   "Sports": "Sport",
   "Arts": "Arte",
   "Security": "Sicurezza",
-  "Currency": "Valute",
+  "Currency": "Valuta",
+  "Currencies": "Valute",
   "Username": "Utente",
   "Price: ": "Prezzo: ",
   "Alternate/additional Price: ": "Prezzo alternativo/addizionale: ",
