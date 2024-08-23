@@ -81,7 +81,7 @@ const CategorySelect = ({ setCategories, selectedItems, setSelectedItems }) => {
           width: isMobile ? '100%' : '200px',
         }}
       >
-        {t('Category')} ▼
+        {t('Categories')} ▼
       </Button>
       <Menu
         id="simple-menu"

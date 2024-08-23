@@ -81,7 +81,7 @@ const CurrencySelect = ({ setCurrencies, selectedItems, setSelectedItems }) => {
           width: isMobile ? '100%' : '200px',
         }}
       >
-        {t('Currency')} ▼
+        {t('Currencies')} ▼
       </Button>
       <Menu
         id="simple-menu"
