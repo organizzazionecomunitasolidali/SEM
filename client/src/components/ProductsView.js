@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 // import ProductGrid from './ProductGrid';
+import CategorySelect from './CategorySelect';
 import CurrencySelect from './CurrencySelect';
 import {
   SERVER_BASE_URL,
