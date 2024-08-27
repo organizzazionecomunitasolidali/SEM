@@ -34,7 +34,7 @@ const CategorySelect = ({ setCategories, selectedItems, setSelectedItems }) => {
       const allCategoryIds = categoryResponseJson.map(
         (category) => category.id,
       );
-      setSelectedItems(allCategoryIds);
+      //setSelectedItems(allCategoryIds);
     } catch (error) {
       console.error(
         'There has been a problem with your fetch operation:',

@@ -77,7 +77,9 @@ const ProductsView = () => {
         // track product filter with Matomo
         let _paq = window._paq = window._paq || [];
         let customVariableIndex = 1;
-        _paq.push(['setCustomVariable', customVariableIndex++, 'Search', search , 'page']);
+        if(search){
+          _paq.push(['setCustomVariable', customVariableIndex++, 'Search', search , 'page']);
+        }
         _paq.push(['setCustomVariable', customVariableIndex++, 'Page', page , 'page']);
         /*
         if(selectedCategoryId){
@@ -98,13 +100,11 @@ const ProductsView = () => {
             }
           }
         }
-        selectedCurrencies.forEach((value,index) => {
-          if(customVariableIndex <= maxVariables){
-            for(let c = 0;c < currencies.length;c++){
-              if(currencies[c].id == value){
-                _paq.push(['setCustomVariable', customVariableIndex++, 'Currencies', currencies[i].name , 'page']);
-                break;
-              }
+        selectedCurrencies.forEach((value,index) => {          
+          for(let i = 0;i < currencies.length && customVariableIndex <= maxVariables;i++){
+            if(currencies[i].id == value){
+              _paq.push(['setCustomVariable', customVariableIndex++, 'Currencies', currencies[i].name , 'page']);
+              break;
             }
           }
         });

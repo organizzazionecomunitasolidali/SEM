@@ -34,7 +34,7 @@ const CurrencySelect = ({ setCurrencies, selectedItems, setSelectedItems }) => {
       const allCurrencyIds = currencyResponseJson.map(
         (currency) => currency.id,
       );
-      setSelectedItems(allCurrencyIds);
+      //setSelectedItems(allCurrencyIds);
     } catch (error) {
       console.error(
         'There has been a problem with your fetch operation:',
