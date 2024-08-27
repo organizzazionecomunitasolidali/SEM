@@ -165,22 +165,10 @@ const ProductsView = () => {
     }
   };
 
-  /*
   useEffect(() => {
     fetchProductData();
     fetchCategoryData();
   }, [currentPage, itemsPerPage]);
-  */
-
-  const handleCategoriesChange = (newSelectedCategories) => {
-    setSelectedCategories(newSelectedCategories);
-    fetchProductData(1); 
-  };
-
-  const handleCurrenciesChange = (newSelectedCurrencies) => {
-    setSelectedCurrencies(newSelectedCurrencies);
-    fetchProductData(1); 
-  };
 
   const handleSearchChange = (event) => {
     const searchValue = event.target.value;
@@ -263,7 +251,7 @@ const ProductsView = () => {
             <CategorySelect
               setCategories={setCategories}
               selectedItems={selectedCategories}
-              setSelectedItems={handleCategoriesChange}
+              setSelectedItems={setSelectedCategories}
             />
 
             <TextField
@@ -294,7 +282,7 @@ const ProductsView = () => {
             <CurrencySelect
               setCurrencies={setCurrencies}
               selectedItems={selectedCurrencies}
-              setSelectedItems={handleCurrenciesChange}
+              setSelectedItems={setSelectedCurrencies}
             />
 
             <Button
