@@ -73,7 +73,7 @@ const ProductsView = () => {
         ',',
       )}`;
 
-      if(process.env.REACT_APP_NODE_ENV == 'prd'){
+      if(process.env.REACT_APP_NODE_ENV === 'prd'){
         // track product filter with Matomo
         let _paq = window._paq = window._paq || [];
         let customVariableIndex = 1;
@@ -94,7 +94,7 @@ const ProductsView = () => {
         let maxVariables = process.env.REACT_APP_MAX_MATOMO_CUSTOM_VARIABLES || DEFAULT_MAX_MATOMO_CUSTOM_VARIABLES;
         for(let i = 0;i < selectedCategories.length && customVariableIndex <= maxVariables;i++){
           for(let c = 0;c < categories.length;c++){
-            if(categories[c].id == selectedCategories[i]){
+            if(categories[c].id === selectedCategories[i]){
               _paq.push(['setCustomVariable', customVariableIndex++, 'Categories', categories[i].name , 'page']);
               break;
             }
@@ -102,7 +102,7 @@ const ProductsView = () => {
         }
         selectedCurrencies.forEach((value,index) => {          
           for(let i = 0;i < currencies.length && customVariableIndex <= maxVariables;i++){
-            if(currencies[i].id == value){
+            if(currencies[i].id === value){
               _paq.push(['setCustomVariable', customVariableIndex++, 'Currencies', currencies[i].name , 'page']);
               break;
             }
@@ -165,10 +165,12 @@ const ProductsView = () => {
     }
   };
 
+  /*
   useEffect(() => {
     fetchProductData();
     fetchCategoryData();
   }, [currentPage, itemsPerPage]);
+  */
 
   const handleCategoriesChange = (newSelectedCategories) => {
     setSelectedCategories(newSelectedCategories);
