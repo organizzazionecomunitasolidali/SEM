@@ -170,6 +170,16 @@ const ProductsView = () => {
     fetchCategoryData();
   }, [currentPage, itemsPerPage]);
 
+  const handleCategoriesChange = (newSelectedCategories) => {
+    setSelectedCategories(newSelectedCategories);
+    fetchProductData(1); 
+  };
+
+  const handleCurrenciesChange = (newSelectedCurrencies) => {
+    setSelectedCurrencies(newSelectedCurrencies);
+    fetchProductData(1); 
+  };
+
   const handleSearchChange = (event) => {
     const searchValue = event.target.value;
 
@@ -251,7 +261,7 @@ const ProductsView = () => {
             <CategorySelect
               setCategories={setCategories}
               selectedItems={selectedCategories}
-              setSelectedItems={setSelectedCategories}
+              setSelectedItems={handleCategoriesChange}
             />
 
             <TextField
@@ -282,7 +292,7 @@ const ProductsView = () => {
             <CurrencySelect
               setCurrencies={setCurrencies}
               selectedItems={selectedCurrencies}
-              setSelectedItems={setSelectedCurrencies}
+              setSelectedItems={handleCurrenciesChange}
             />
 
             <Button
