@@ -177,6 +177,7 @@ const ProductsView = () => {
   const handleCategoriesChange = (newSelectedCategories) => {
     setSelectedCategories(newSelectedCategories);
     console.log("newSelectedCategories:"+newSelectedCategories);
+    console.log("selectedCategories:"+selectedCategories);
     fetchProductData(1);
   };
 
