@@ -95,6 +95,7 @@ const ProductsView = () => {
         for(let i = 0;i < selectedCategories.length && customVariableIndex <= maxVariables;i++){
           for(let c = 0;c < categories.length;c++){
             if(categories[c].id === selectedCategories[i]){
+              console.log("setCustomVariable Categories " + customVariableIndex + " : " + categories[i].name);
               _paq.push(['setCustomVariable', customVariableIndex++, 'Categories', categories[i].name , 'page']);
               break;
             }
@@ -103,6 +104,7 @@ const ProductsView = () => {
         selectedCurrencies.forEach((value,index) => {          
           for(let i = 0;i < currencies.length && customVariableIndex <= maxVariables;i++){
             if(currencies[i].id === value){
+              console.log("setCustomVariable Currencies " + customVariableIndex + " : " + currencies[i].name + " , value : " + value);
               _paq.push(['setCustomVariable', customVariableIndex++, 'Currencies', currencies[i].name , 'page']);
               break;
             }
@@ -172,12 +174,16 @@ const ProductsView = () => {
 
   const handleCategoriesChange = (newSelectedCategories) => {
     setSelectedCategories(newSelectedCategories);
-    fetchProductData(1); 
+    setTimeout( () => {
+      fetchProductData(1);
+    },100); 
   };
 
   const handleCurrenciesChange = (newSelectedCurrencies) => {
     setSelectedCurrencies(newSelectedCurrencies);
-    fetchProductData(1); 
+    setTimeout( () => {
+      fetchProductData(1);
+    },100); 
   };
 
   const handleSearchChange = (event) => {
