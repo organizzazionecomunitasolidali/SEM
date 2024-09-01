@@ -170,22 +170,18 @@ const ProductsView = () => {
   };
 
   useEffect(() => {
-    fetchProductData();
+    fetchProductData(1);
     fetchCategoryData();
   }, [currentPage, itemsPerPage]);
 
   const handleCategoriesChange = (newSelectedCategories) => {
     setSelectedCategories(newSelectedCategories);
-    setTimeout( () => {
-      fetchProductData(1);
-    },5000); 
+    document.getElementById('submitSearch').click();
   };
 
   const handleCurrenciesChange = (newSelectedCurrencies) => {
     setSelectedCurrencies(newSelectedCurrencies);
-    setTimeout( () => {
-      fetchProductData(1);
-    },5000); 
+    document.getElementById('submitSearch').click();
   };
 
   const handleSearchChange = (event) => {
@@ -304,6 +300,7 @@ const ProductsView = () => {
             />
 
             <Button
+              id='submitSearch'
               disabled={loading}
               variant="contained" // Use 'contained' for a filled button
               onClick={() => fetchProductData(1)}
