@@ -96,8 +96,8 @@ const ProductsView = () => {
         for(let i = 0;i < selectedCategories.length && customVariableIndex <= maxVariables;i++){
           for(let c = 0;c < categories.length;c++){
             if(categories[c].id === selectedCategories[i]){
-              console.log("setCustomVariable Categories " + customVariableIndex + " : " + categories[i].name);
-              _paq.push(['setCustomVariable', customVariableIndex++, 'Categories', categories[i].name , 'page']);
+              console.log("setCustomVariable Categories " + customVariableIndex + " : " + categories[c].name);
+              _paq.push(['setCustomVariable', customVariableIndex++, 'Categories', categories[c].name , 'page']);
               break;
             }
           }
@@ -178,14 +178,14 @@ const ProductsView = () => {
     setSelectedCategories(newSelectedCategories);
     setTimeout( () => {
       fetchProductData(1);
-    },100); 
+    },2000); 
   };
 
   const handleCurrenciesChange = (newSelectedCurrencies) => {
     setSelectedCurrencies(newSelectedCurrencies);
     setTimeout( () => {
       fetchProductData(1);
-    },100); 
+    },2000); 
   };
 
   const handleSearchChange = (event) => {
