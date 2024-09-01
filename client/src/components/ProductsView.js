@@ -92,6 +92,7 @@ const ProductsView = () => {
         }
         */
         let maxVariables = process.env.REACT_APP_MAX_MATOMO_CUSTOM_VARIABLES || DEFAULT_MAX_MATOMO_CUSTOM_VARIABLES;
+        console.log("selectedCategories : " + selectedCategories); 
         for(let i = 0;i < selectedCategories.length && customVariableIndex <= maxVariables;i++){
           for(let c = 0;c < categories.length;c++){
             if(categories[c].id === selectedCategories[i]){
@@ -101,6 +102,7 @@ const ProductsView = () => {
             }
           }
         }
+        console.log("selectedCurrencies : " + selectedCurrencies);
         selectedCurrencies.forEach((value,index) => {          
           for(let i = 0;i < currencies.length && customVariableIndex <= maxVariables;i++){
             if(currencies[i].id === value){
