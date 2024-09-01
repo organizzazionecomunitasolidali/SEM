@@ -176,6 +176,7 @@ const ProductsView = () => {
 
   const handleCategoriesChange = (newSelectedCategories) => {
     setSelectedCategories(newSelectedCategories);
+    selectedCategories = newSelectedCategories;
     console.log("newSelectedCategories:"+newSelectedCategories);
     console.log("selectedCategories:"+selectedCategories);
     fetchProductData(1);
@@ -183,6 +184,7 @@ const ProductsView = () => {
 
   const handleCurrenciesChange = (newSelectedCurrencies) => {
     setSelectedCurrencies(newSelectedCurrencies);
+    selectedCurrencies = newSelectedCurrencies;
     fetchProductData(1);
   };
 
