@@ -176,12 +176,13 @@ const ProductsView = () => {
 
   const handleCategoriesChange = (newSelectedCategories) => {
     setSelectedCategories(newSelectedCategories);
-    document.getElementById('submitSearch').click();
+    console.log("newSelectedCategories:"+newSelectedCategories);
+    fetchProductData(1);
   };
 
   const handleCurrenciesChange = (newSelectedCurrencies) => {
     setSelectedCurrencies(newSelectedCurrencies);
-    document.getElementById('submitSearch').click();
+    fetchProductData(1);
   };
 
   const handleSearchChange = (event) => {
