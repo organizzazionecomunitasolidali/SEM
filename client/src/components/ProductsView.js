@@ -178,14 +178,14 @@ const ProductsView = () => {
     setSelectedCategories(newSelectedCategories);
     setTimeout( () => {
       fetchProductData(1);
-    },2000); 
+    },5000); 
   };
 
   const handleCurrenciesChange = (newSelectedCurrencies) => {
     setSelectedCurrencies(newSelectedCurrencies);
     setTimeout( () => {
       fetchProductData(1);
-    },2000); 
+    },5000); 
   };
 
   const handleSearchChange = (event) => {
