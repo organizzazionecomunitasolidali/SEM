@@ -60,16 +60,16 @@ const ProductsView = () => {
 
   const isMobile = useMediaQuery('(max-width:960px)');
 
-  const fetchProductData = async (page) => {
+  const fetchProductData = async (page, selCategories = selectedCategories, selCurrencies = selectedCurrencies) => {
     setLoading(true);
 
     try {
-      console.log('ProductsView selectedCategories: ', selectedCategories);
-      const categoriesQueryString = `&category_ids=${selectedCategories.join(
+      console.log('ProductsView selCategories: ', selCategories);
+      const categoriesQueryString = `&category_ids=${selCategories.join(
         ',',
       )}`;
-      console.log('ProductsView selectedCurrencies: ', selectedCurrencies);
-      const currenciesQueryString = `&currencies=${selectedCurrencies.join(
+      console.log('ProductsView selCurrencies: ', selCurrencies);
+      const currenciesQueryString = `&currencies=${selCurrencies.join(
         ',',
       )}`;
 
@@ -92,18 +92,18 @@ const ProductsView = () => {
         }
         */
         let maxVariables = process.env.REACT_APP_MAX_MATOMO_CUSTOM_VARIABLES || DEFAULT_MAX_MATOMO_CUSTOM_VARIABLES;
-        console.log("selectedCategories : " + selectedCategories); 
-        for(let i = 0;i < selectedCategories.length && customVariableIndex <= maxVariables;i++){
+        console.log("selCategories : " + selCategories); 
+        for(let i = 0;i < selCategories.length && customVariableIndex <= maxVariables;i++){
           for(let c = 0;c < categories.length;c++){
-            if(categories[c].id === selectedCategories[i]){
+            if(categories[c].id === selCategories[i]){
               console.log("setCustomVariable Categories " + customVariableIndex + " : " + categories[c].name);
               _paq.push(['setCustomVariable', customVariableIndex++, 'Categories', categories[c].name , 'page']);
               break;
             }
           }
         }
-        console.log("selectedCurrencies : " + selectedCurrencies);
-        selectedCurrencies.forEach((value,index) => {          
+        console.log("selCurrencies : " + selCurrencies);
+        selCurrencies.forEach((value,index) => {          
           for(let i = 0;i < currencies.length && customVariableIndex <= maxVariables;i++){
             if(currencies[i].id === value){
               console.log("setCustomVariable Currencies " + customVariableIndex + " : " + currencies[i].name + " , value : " + value);
@@ -176,16 +176,12 @@ const ProductsView = () => {
 
   const handleCategoriesChange = (newSelectedCategories) => {
     setSelectedCategories(newSelectedCategories);
-    selectedCategories = newSelectedCategories;
-    console.log("newSelectedCategories:"+newSelectedCategories);
-    console.log("selectedCategories:"+selectedCategories);
-    fetchProductData(1);
+    fetchProductData(1,newSelectedCategories);
   };
 
   const handleCurrenciesChange = (newSelectedCurrencies) => {
     setSelectedCurrencies(newSelectedCurrencies);
-    selectedCurrencies = newSelectedCurrencies;
-    fetchProductData(1);
+    fetchProductData(1,selectedCategories,newSelectedCurrencies);
   };
 
   const handleSearchChange = (event) => {
