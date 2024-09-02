@@ -53,13 +53,15 @@ export class SemProductService {
     }
     if (category_ids) {
       
-      let categoryCondition = '';
+      let categoryCondition = '(';
       let or = "";
 
       category_ids.split(",").forEach((value,index) => {
         categoryCondition += or + 'product.category_id = ' + parseInt(value);
         or = " OR ";
       });
+
+      categoryCondition += ')';
 
       if (search) {
         query.andWhere(categoryCondition);
