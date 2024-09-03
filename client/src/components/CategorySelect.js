@@ -91,12 +91,9 @@ const CategorySelect = ({ setCategories, selectedItems, setSelectedItems }) => {
         onClose={() => setAnchorEl(null)}
       >
         {items.map((item) => {
-          console.log("category select item.name " + item.name);
-          console.log("category select t(item.name) " + t(item.name));
           const itemLabel = [t(item.name)]
             .filter(Boolean)
             .join(' ');
-          console.log("itemLabel " + itemLabel);
 
           return (
             <MenuItem key={item.id} onClick={() => handleToggle(item.id)}>
