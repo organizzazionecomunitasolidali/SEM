@@ -42,7 +42,8 @@ export class SemProductService {
   constructor(
     @InjectRepository(SemProduct)
     private readonly semProductRepository: Repository<SemProduct>,
-    private readonly semProductThumbnailRepository: Repository<SemProductThumbnail>,
+    @InjectRepository(SemProductThumbnail)
+    private readonly semProductThumbnailRepository: Repository<SemProductThumbnail>
   ) {}
 
   async findAll(
@@ -205,7 +206,7 @@ export class SemProductService {
       }
       // Write the thumbnail image to the file system
       fs.writeFileSync(imagePath, thumbnailImageBuffer);
-      
+
       await this.semProductThumbnailRepository.create({
         url_hash: url_hash,
         url: productStructure.url
