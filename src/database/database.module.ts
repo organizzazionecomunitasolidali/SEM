@@ -17,6 +17,7 @@ import { SemProcessService } from '../entities/sem_process.service';
 import { SemHtmlElementStructure } from '../entities/sem_html_element_structure.entity';
 import { SemHtmlElementStructureService } from '../entities/sem_html_element_structure.service';
 import { SemProduct } from '../entities/sem_product.entity';
+import { SemProductThumbnail } from '../entities/sem_product_thumbnail.entity';
 import { SemProductService } from '../entities/sem_product.service';
 import { SemWebsite } from '../entities/sem_website.entity';
 import { SemWebsiteService } from '../entities/sem_website.service';
@@ -59,6 +60,7 @@ import * as fs from 'fs';
       SemProcess,
       SemHtmlElementStructure,
       SemProduct,
+      SemProductThumbnail,
       SemWebsite,
       SemOpenaiCompletions,
       SemOpenaiCompletionsRequest,
