@@ -91,7 +91,7 @@ const CategorySelect = ({ setCategories, selectedItems, setSelectedItems }) => {
         onClose={() => setAnchorEl(null)}
       >
         {items.map((item) => {
-          const itemLabel = [item.name]
+          const itemLabel = [t(item.name)]
             .filter(Boolean)
             .join(' ');
 
