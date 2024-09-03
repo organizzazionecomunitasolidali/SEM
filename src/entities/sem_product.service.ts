@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SemProduct } from '../entities/sem_product.entity';
+import { SemProductThumbnail } from '../entities/sem_product_thumbnail.entity';
 import { SemWebsite } from '../entities/sem_website.entity';
+import crypto from 'crypto';
+import * as fs from 'fs';
+import * as path from 'path';
+
 const {
   VIEW_PRODUCT_ITEMS_PER_PAGE,
   VIEW_PRODUCT_SEARCH_TITLES_LIMIT,
@@ -37,6 +42,7 @@ export class SemProductService {
   constructor(
     @InjectRepository(SemProduct)
     private readonly semProductRepository: Repository<SemProduct>,
+    private readonly semProductThumbnailRepository: Repository<SemProductThumbnail>,
   ) {}
 
   async findAll(
@@ -179,6 +185,34 @@ export class SemProductService {
     .values(newProduct)
     .orIgnore()
     .execute();
+
+    const hash = crypto.createHash('sha256');
+    hash.update(productStructure.url);
+    const url_hash = hash.digest('hex');
+
+    // create thumbnail record if it does not exist
+    const existingThumbnail = await this.semProductThumbnailRepository.findOne({ where: {url_hash: url_hash}});
+    if(!existingThumbnail){
+
+      // now download thumbnail data from thumbnailImageBuffer into <project root dir>/client/public/procuct_images/<url_hash>.jpg
+      // Define the directory and file path for saving the image
+      const imagesDir = path.join(process.cwd(), 'client/public/product_images');
+      const imagePath = path.join(imagesDir, `${url_hash}.jpg`);
+
+      // Ensure the directory exists
+      if (!fs.existsSync(imagesDir)) {
+        fs.mkdirSync(imagesDir, { recursive: true });
+      }
+      // Write the thumbnail image to the file system
+      fs.writeFileSync(imagePath, thumbnailImageBuffer);
+      
+      await this.semProductThumbnailRepository.create({
+        url_hash: url_hash,
+        url: productStructure.url
+      });
+
+    }
+
     return newProduct;
   }
 
