@@ -101,7 +101,7 @@ export class SemProductService {
       const url_hash = hashString(results[i].url);
       const existingThumbnail = await this.semProductThumbnailRepository.findOne({ where: {url_hash: url_hash}});
       if(existingThumbnail){
-        results[i].thumbnail_url = this.getFullThumbnailPathFromHash(existingThumbnail.url_hash);
+        results[i].thumbnail_url = this.getFullThumbnailPathFromHash(url_hash);
       }
     }
 

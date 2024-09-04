@@ -170,7 +170,7 @@ const ProductsView = () => {
   };
 
   useEffect(() => {
-    fetchProductData(1);
+    fetchProductData();
     fetchCategoryData();
   }, [currentPage, itemsPerPage]);
 
