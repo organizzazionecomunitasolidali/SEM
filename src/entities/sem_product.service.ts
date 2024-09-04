@@ -4,9 +4,9 @@ import { Repository } from 'typeorm';
 import { SemProduct } from '../entities/sem_product.entity';
 import { SemProductThumbnail } from '../entities/sem_product_thumbnail.entity';
 import { SemWebsite } from '../entities/sem_website.entity';
-import crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
+import { hashString } from 'src/utils/globals';
 
 const {
   VIEW_PRODUCT_ITEMS_PER_PAGE,
@@ -187,9 +187,7 @@ export class SemProductService {
     .orIgnore()
     .execute();
 
-    const hash = crypto.createHash('sha256');
-    hash.update(productStructure.url);
-    const url_hash = hash.digest('hex');
+    const url_hash = hashString(productStructure.url);
 
     // create thumbnail record if it does not exist
     const existingThumbnail = await this.semProductThumbnailRepository.findOne({ where: {url_hash: url_hash}});
