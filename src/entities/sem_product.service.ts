@@ -205,10 +205,16 @@ export class SemProductService {
       // Write the thumbnail image to the file system
       fs.writeFileSync(imagePath, thumbnailImageBuffer);
 
-      await this.semProductThumbnailRepository.create({
+      const newThumb = await this.semProductThumbnailRepository.create({
         url_hash: url_hash,
         url: productStructure.url
       });
+      await this.semProductThumbnailRepository.createQueryBuilder()
+      .insert()
+      .into(SemProductThumbnail)
+      .values(newThumb)
+      .orIgnore()
+      .execute();
 
     }
 
