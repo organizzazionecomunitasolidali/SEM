@@ -86,14 +86,8 @@ export class SemProductService {
         query.where(currencyCondition, { currencyIds });
       }
     }
-
-    /*
-    const [results, total] = await query
-      .skip((page - 1) * limit)
-      .take(limit)
-      .getManyAndCount();
-      */
-    const [results, total] = await query
+    
+    let [results, total] = await query
       .innerJoinAndSelect('product.website', 'website')
       .select(['product', 'website.name'])
       .skip((page - 1) * limit)
@@ -101,6 +95,15 @@ export class SemProductService {
       .getManyAndCount();
 
     const totalPages = Math.ceil(total / limit);
+
+    // add thumbnail urls if available
+    for(let i = 0;i < results.length;i++){
+      const url_hash = hashString(results[i].url);
+      const existingThumbnail = await this.semProductThumbnailRepository.findOne({ where: {url_hash: url_hash}});
+      if(existingThumbnail){
+        results[i].thumbnail_url = this.getFullThumbnailPathFromHash(existingThumbnail.url_hash);
+      }
+    }
 
     return {
       data: results,
@@ -144,6 +147,15 @@ export class SemProductService {
         url: url,
       },
     });
+  }
+
+  getFullThumbnailPathFromHash(hash){
+    const imagesDir = path.join(process.cwd(), 'client/public/product_images');
+    // Ensure the directory exists
+    if (!fs.existsSync(imagesDir)) {
+      fs.mkdirSync(imagesDir, { recursive: true });
+    }
+    return path.join(imagesDir, `${hash}.jpg`);
   }
 
   async downloadImage(url) {
@@ -195,13 +207,7 @@ export class SemProductService {
 
       // now download thumbnail data from thumbnailImageBuffer into <project root dir>/client/public/procuct_images/<url_hash>.jpg
       // Define the directory and file path for saving the image
-      const imagesDir = path.join(process.cwd(), 'client/public/product_images');
-      const imagePath = path.join(imagesDir, `${url_hash}.jpg`);
-
-      // Ensure the directory exists
-      if (!fs.existsSync(imagesDir)) {
-        fs.mkdirSync(imagesDir, { recursive: true });
-      }
+      const imagePath = this.getFullThumbnailPathFromHash(url_hash);
       // Write the thumbnail image to the file system
       fs.writeFileSync(imagePath, thumbnailImageBuffer);
 

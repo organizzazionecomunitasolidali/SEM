@@ -26,6 +26,8 @@ export class SemProduct {
   @Column('blob', { nullable: true })
   thumbnail: Buffer;
 
+  thumbnail_url: String; // computed by the service , not to be a db column
+
   @Index() // Simple index on the 'title' column
   // @Index({ fulltext: true }) // Full-text index
   @Column()

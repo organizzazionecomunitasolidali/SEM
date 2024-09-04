@@ -328,9 +328,10 @@ const ProductsView = () => {
                   <CardMedia
                     component="img"
                     height="140"
-                    image={arrayToDataUrl(
-                      product.thumbnail ? product.thumbnail.data : null,
-                    )} // Convert buffer to data URL
+                    image={
+                      product.thumbnail_url ? product.thumbnail.url : 
+                      arrayToDataUrl( product.thumbnail ? product.thumbnail.data : null ) // Convert buffer to data URL
+                    } 
                     alt={product.title}
                   />
                 </a>
