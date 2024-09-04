@@ -14,7 +14,7 @@ export class MemoryDatabaseMiddleware implements NestMiddleware {
       'SELECT * FROM crawler_lock WHERE is_locked = 1',
     );
 
-    if (false && queryResult.length > 0) {
+    if (queryResult.length > 0) {
       // Block the request
       console.log(
         'Memory database locked. Blocking the request with 403 Forbidden',
