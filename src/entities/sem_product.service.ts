@@ -6,7 +6,7 @@ import { SemProductThumbnail } from '../entities/sem_product_thumbnail.entity';
 import { SemWebsite } from '../entities/sem_website.entity';
 import * as fs from 'fs';
 import * as path from 'path';
-import { hashString, GetBaseUrl } from 'src/utils/globals';
+import { hashString } from 'src/utils/globals';
 
 const {
   VIEW_PRODUCT_ITEMS_PER_PAGE,
@@ -150,7 +150,7 @@ export class SemProductService {
   }
 
   getThumbnailUrlFromHash(hash){
-    return GetBaseUrl() + `/product_images${hash}.jpg`;
+    return process.env.CORS_ORIGIN + `/product_images${hash}.jpg`;
   }
 
   getFullThumbnailPathFromHash(hash){

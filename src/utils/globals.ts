@@ -1,23 +1,9 @@
 import * as crypto from 'crypto';
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 // export const HTML_ELEMENT_TYPE_UNKNOWN = 0;
 // export const HTML_ELEMENT_TYPE_PRODUCT = 1;
 // export const HTML_ELEMENT_TYPE_CATEGORY = 2;
 // export const HTML_ELEMENT_TYPE_PAGINATION = 3;
-
-export function GetBaseUrl() {
-  /*
-  return createParamDecorator(
-      (data: unknown, ctx: ExecutionContext) => {
-        const request = ctx.switchToHttp().getRequest();
-        return request.headers.host; // Extracts the 'Host' header from the request
-      }
-  );
-  */
- return process.env.BASE_URL;
-}
-
 
 export function hashString(str) {
   return crypto.createHash('sha256').update(str).digest('hex');
