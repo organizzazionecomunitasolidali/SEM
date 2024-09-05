@@ -192,11 +192,6 @@ export class CronCrawlerService {
             '',
           );
 
-          if(website.id != 3){
-            // temp
-            await this.semProductService.deleteOlderThan(timestampMs, website, false);
-          }
-
           await this.crawl(website);
 
           // const websiteUpdated = await this.semWebsiteService.findOne(
