@@ -273,7 +273,7 @@ const ProductsView = () => {
               label={t('Search')}
               //onChange={handleSearchChange}
               onChange={(event) => (search = event.target.value)}
-              onKeyUp={(event) => { if (event.key === 'Enter' || event.keyCode === 13) fetchProductData(); } }
+              onKeyUp={(event) => { if (event.key === 'Enter' || event.keyCode === 13) fetchProductData(1); } }
               variant="outlined"
               inputRef={searchFieldRef} // Assign the ref to the TextField
               InputLabelProps={{
