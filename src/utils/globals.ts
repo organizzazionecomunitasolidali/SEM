@@ -6,13 +6,16 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 // export const HTML_ELEMENT_TYPE_CATEGORY = 2;
 // export const HTML_ELEMENT_TYPE_PAGINATION = 3;
 
-export function GetRequestedDomain() {
+export function GetBaseUrl() {
+  /*
   return createParamDecorator(
       (data: unknown, ctx: ExecutionContext) => {
         const request = ctx.switchToHttp().getRequest();
         return request.headers.host; // Extracts the 'Host' header from the request
       }
   );
+  */
+ return process.env.BASE_URL;
 }
 
 
