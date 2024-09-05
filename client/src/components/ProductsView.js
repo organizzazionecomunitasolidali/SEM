@@ -329,7 +329,7 @@ const ProductsView = () => {
                     component="img"
                     height="140"
                     image={
-                      product.thumbnail_url ? product.thumbnail.url : 
+                      product.thumbnail_url ? product.thumbnail_url : 
                       arrayToDataUrl( product.thumbnail ? product.thumbnail.data : null ) // Convert buffer to data URL
                     } 
                     alt={product.title}
