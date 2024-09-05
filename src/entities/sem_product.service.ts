@@ -150,7 +150,7 @@ export class SemProductService {
   }
 
   getThumbnailUrlFromHash(hash){
-    return process.env.CORS_ORIGIN + `/product_images${hash}.jpg`;
+    return process.env.CORS_ORIGIN + `/product_images/${hash}.jpg`;
   }
 
   getFullThumbnailPathFromHash(hash){
