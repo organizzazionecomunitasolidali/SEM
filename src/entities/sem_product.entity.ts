@@ -55,6 +55,9 @@ export class SemProduct {
   @Column({ nullable: true })
   category_id: number;
 
+  @Column({ nullable: true })
+  is_used: Boolean;
+
   @Index()
   @CreateDateColumn()
   createdAt: Date;
