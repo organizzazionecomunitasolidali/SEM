@@ -387,6 +387,7 @@ const ProductsView = () => {
                         filter: 'saturate(0)',
                         position: 'absolute',
                         bottom: '0px',
+                        zIndex: 2,
                         right: '15px',
                       }}
                       color="textSecondary"
@@ -394,6 +395,26 @@ const ProductsView = () => {
                       component="small"
                     >
                       {'🌐 ' + product.website.name}
+                    </Typography>
+                  }
+                  {
+                    <Typography
+                      style={{
+                        position: 'absolute',
+                        bottom: '0px',
+                        zIndex: 1,
+                        display: product.is_used ? "block" : "none",
+                        padding: "10px",
+                        textAlign: "left",
+                        textTransform: "uppercase",
+                        fontWeight: "bold",
+                        width: "100%",
+                        backgroundColor: "#ff574e",
+                        color: "#000",
+                      }}
+                      component="small"
+                    >
+                      { t('Used')}
                     </Typography>
                   }
                   {/* Additional Product Info */}
