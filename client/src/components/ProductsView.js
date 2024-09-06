@@ -401,6 +401,7 @@ const ProductsView = () => {
                     <Typography
                       style={{
                         position: 'absolute',
+                        left: "0px",
                         bottom: '0px',
                         zIndex: 1,
                         display: product.is_used ? "block" : "none",
