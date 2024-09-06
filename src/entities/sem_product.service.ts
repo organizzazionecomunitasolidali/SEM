@@ -93,6 +93,7 @@ export class SemProductService {
       .select(['product', 'website.name'])
       .skip((page - 1) * limit)
       .take(limit)
+      .orderBy({is_used: "ASC"})
       .getManyAndCount();
 
     const totalPages = Math.ceil(total / limit);
@@ -161,6 +162,16 @@ export class SemProductService {
       fs.mkdirSync(imagesDir, { recursive: true });
     }
     return path.join(imagesDir, `${hash}.jpg`);
+  }
+
+  async downloadText(url) {
+    try {
+      const response = await axios.get(url);
+      return response.data;
+    } catch (error) {
+      console.error('Error downloading the text from' + url + ":", error);
+      return null;
+    }
   }
 
   async downloadImage(url) {

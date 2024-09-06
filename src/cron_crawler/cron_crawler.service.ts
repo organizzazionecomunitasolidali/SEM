@@ -926,6 +926,39 @@ export class CronCrawlerService {
             }
           }
           if (!productAlreadyExist && productStructure.currency_01_id) {
+            if(!productStructure.is_used){
+              // there is a possibility the information about the used status is not in the 
+              // element on the product list , but only in the full product page (example CoseInutili website).
+              // in that case: search in the HTML any hints about it
+              let html = await this.semProductService.downloadText(productStructure.url);
+              if(html){
+                let usedWordInManyLanguages = {
+                  "en" : "Used",
+                  "es": "Usado",
+                  "pt": "Usado",
+                  "de": "Gebraucht",
+                  "it" : "Usato",
+                  "fr": "Utilisé",
+                  "da" : "Brugt",
+                  "sv" : "Begagnad",
+                  "no" : "Brukt",
+                  "fi" : "Käytetty",
+                  "is" : "Notaður",
+                  "et" : "Kasutatud",
+                  "lv" : "Lietots",
+                  "lt" : "Naudotas",
+                  "fo" : "Nýttur",
+                  "kl" : "Atorneqarpoq",
+                  "nl" : "Gebruikt"
+                }
+                for (let key in usedWordInManyLanguages) {
+                  if(html.indexOf(">" + usedWordInManyLanguages[key]) > 0){
+                    productStructure.is_used = true;
+                    break;
+                  }
+                }
+              }
+            }
             console.log('createProduct');
             await this.semProductService.createProduct(
               productStructure,
