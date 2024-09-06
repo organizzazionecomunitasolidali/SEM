@@ -25,6 +25,7 @@ export interface ProductStructure {
   price_02: number;
   currency_02_id: number;
   category_id: number;
+  is_used : Boolean;
   timestamp: number;
 }
 
@@ -193,6 +194,7 @@ export class SemProductService {
       price_02: productStructure.price_02,
       currency_02_id: productStructure.currency_02_id,
       category_id: productStructure.category_id,
+      is_used: productStructure.is_used,
       timestamp: productStructure.timestamp,
       website: website
     });

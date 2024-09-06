@@ -747,6 +747,7 @@ export class CronCrawlerService {
             price_02: null,
             currency_02_id: null,
             category_id: null,
+            is_used: false,
             timestamp: null,
           };
 
