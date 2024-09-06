@@ -93,12 +93,12 @@ export class SemProductService {
       .select(['product', 'website.name'])
       .skip((page - 1) * limit)
       .take(limit)
-      .orderBy({is_used: "ASC"})
+      .orderBy('product.is_used', 'ASC')
       .getManyAndCount();
 
     const totalPages = Math.ceil(total / limit);
 
-    // add thumbnail urls if available
+    // add thumbnail urls if available.
     for(let i = 0;i < results.length;i++){
       const url_hash = hashString(results[i].url);
       const existingThumbnail = await this.semProductThumbnailRepository.findOne({ where: {url_hash: url_hash}});
