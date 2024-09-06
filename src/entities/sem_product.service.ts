@@ -179,10 +179,10 @@ export class SemProductService {
       const response = await axios.get(url, {
         responseType: 'arraybuffer', // This ensures the response is a Buffer
       });
-
+      
       return Buffer.from(response.data, 'binary');
     } catch (error) {
-      console.error('Error downloading the image:', error);
+      console.error('Error downloading the image ' + url + ':', error);
       return null;
     }
   }
