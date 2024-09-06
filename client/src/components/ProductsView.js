@@ -410,7 +410,7 @@ const ProductsView = () => {
                         textTransform: "uppercase",
                         fontWeight: "bold",
                         width: "100%",
-                        backgroundColor: "#ff574e",
+                        backgroundColor: "rgb(255, 160, 155)",
                         color: "#000",
                       }}
                       component="small"
