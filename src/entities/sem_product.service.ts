@@ -55,10 +55,10 @@ export class SemProductService {
     currencies?: string,
     usedOrNew?: string,
   ): Promise<PaginatedResult<SemProduct>> {
-    const query = this.semProductRepository.createQueryBuilder('product');
+    const query = this.semProductRepository.createQueryBuilder('product').where("TRUE");
 
     if (search) {
-      query.where('product.title LIKE :search', { search: `%${search}%` });
+      query.andWhere('product.title LIKE :search', { search: `%${search}%` });
     }
     if (category_ids) {
       
@@ -75,7 +75,7 @@ export class SemProductService {
       if (search) {
         query.andWhere(categoryCondition);
       } else {
-        query.where(categoryCondition);
+        query.andWhere(categoryCondition);
       }
     }
     if (currencies) {
@@ -85,7 +85,7 @@ export class SemProductService {
       if (search || category_ids) {
         query.andWhere(currencyCondition, { currencyIds });
       } else {
-        query.where(currencyCondition, { currencyIds });
+        query.andWhere(currencyCondition, { currencyIds });
       }
     }
 
@@ -99,7 +99,7 @@ export class SemProductService {
     let [results, total] = await query
       .innerJoinAndSelect('product.website', 'website')
       .select(['product', 'website.name'])
-      .where(where)
+      .andWhere(where)
       .orderBy({
         'product.is_used' : usedOrNew == "usedFirst" ? 'DESC' : 'ASC',
         'product.createdAt' : 'DESC'
