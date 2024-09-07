@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 const UsedOrNewSelect = ({ selectedUsedOrNew, setSelectedUsedOrNew }) => {
 
   const [anchorEl, setAnchorEl] = useState(null);
-  
+
   const { t } = useTranslation();
 
   const isMobile = useMediaQuery('(max-width:960px)');
@@ -49,7 +49,7 @@ const UsedOrNewSelect = ({ selectedUsedOrNew, setSelectedUsedOrNew }) => {
             style={{
                 color: '#35a455',
             }}
-            checked={UsedOrNew == 'newFirst'}
+            checked={selectedUsedOrNew == 'newFirst'}
             />
             {t('newFirst')}
         </MenuItem>    
@@ -58,7 +58,7 @@ const UsedOrNewSelect = ({ selectedUsedOrNew, setSelectedUsedOrNew }) => {
             style={{
                 color: '#35a455',
             }}
-            checked={UsedOrNew == 'usedFirst'}
+            checked={selectedUsedOrNew == 'usedFirst'}
             />
             {t('usedFirst')}
         </MenuItem>   
@@ -67,7 +67,7 @@ const UsedOrNewSelect = ({ selectedUsedOrNew, setSelectedUsedOrNew }) => {
             style={{
                 color: '#35a455',
             }}
-            checked={UsedOrNew == 'newOnly'}
+            checked={selectedUsedOrNew == 'newOnly'}
             />
             {t('newOnly')}
         </MenuItem>   
@@ -76,7 +76,7 @@ const UsedOrNewSelect = ({ selectedUsedOrNew, setSelectedUsedOrNew }) => {
             style={{
                 color: '#35a455',
             }}
-            checked={UsedOrNew == 'usedOnly'}
+            checked={selectedUsedOrNew == 'usedOnly'}
             />
             {t('usedOnly')}
         </MenuItem>           
