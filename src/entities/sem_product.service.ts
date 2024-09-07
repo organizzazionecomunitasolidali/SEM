@@ -53,6 +53,7 @@ export class SemProductService {
     search?: string,
     category_ids?: string,
     currencies?: string,
+    usedOrNew?: string,
   ): Promise<PaginatedResult<SemProduct>> {
     const query = this.semProductRepository.createQueryBuilder('product');
 
@@ -87,13 +88,24 @@ export class SemProductService {
         query.where(currencyCondition, { currencyIds });
       }
     }
+
+    let where = "TRUE";
+    if(usedOrNew == "newOnly"){
+      where = "product.is_used IS NULL OR product.is_used = 0";
+    } else if(usedOrNew == "usedOnly"){
+      where = "product.is_used = 1";
+    } 
     
     let [results, total] = await query
       .innerJoinAndSelect('product.website', 'website')
       .select(['product', 'website.name'])
+      .where(where)
+      .orderBy({
+        'product.is_used' : usedOrNew == "usedFirst" ? 'DESC' : 'ASC',
+        'product.createdAt' : 'DESC'
+      })
       .skip((page - 1) * limit)
       .take(limit)
-      .orderBy('product.is_used', 'ASC')
       .getManyAndCount();
 
     const totalPages = Math.ceil(total / limit);

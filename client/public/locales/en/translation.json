@@ -1,5 +1,9 @@
 {
   "Search": "Search",
+  "newFirst" : "New & Used products (New first)",
+  "usedFirst" : "New & Used products (Used first)",
+  "newOnly" : "New only",
+  "usedOnly" : "Used only",
   "Task manager": "Task manager",
   "Logout": "Logout",
   "Logged in as ": "Logged in as ",

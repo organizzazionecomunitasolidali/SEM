@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 // import ProductGrid from './ProductGrid';
 import CategorySelect from './CategorySelect';
 import CurrencySelect from './CurrencySelect';
+import UsedOrNewSelect from './UsedOrNewSelect';
 import {
   SERVER_BASE_URL,
   CONTROLLER_PRODUCT_ID,
@@ -31,7 +32,7 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 
 let search = '';
-let selectedCategoryId = 0;
+let usedOrNew = 'newFirst';
 
 // can be overridden by REACT_APP_MAX_MATOMO_CUSTOM_VARIABLES env variable
 const DEFAULT_MAX_MATOMO_CUSTOM_VARIABLES = 20;
@@ -59,11 +60,14 @@ const ProductsView = () => {
   let searchDebounceTimeout = null;
 
   const isMobile = useMediaQuery('(max-width:960px)');
+  const isLandscapeLarge = useMediaQuery('(min-width:1440px)');
 
   const fetchProductData = async (page, selCategories = selectedCategories, selCurrencies = selectedCurrencies) => {
+    
     setLoading(true);
 
     try {
+
       console.log('ProductsView selCategories: ', selCategories);
       const categoriesQueryString = `&category_ids=${selCategories.join(
         ',',
@@ -74,6 +78,7 @@ const ProductsView = () => {
       )}`;
 
       if(process.env.REACT_APP_NODE_ENV === 'prd'){
+
         // track product filter with Matomo
         let _paq = window._paq = window._paq || [];
         let customVariableIndex = 1;
@@ -81,16 +86,7 @@ const ProductsView = () => {
           _paq.push(['setCustomVariable', customVariableIndex++, 'Search', search , 'page']);
         }
         _paq.push(['setCustomVariable', customVariableIndex++, 'Page', page , 'page']);
-        /*
-        if(selectedCategoryId){
-          for(let i = 0;i < categories.length;i++){
-            if(categories[i].id == selectedCategoryId){
-              _paq.push(['setCustomVariable', customVariableIndex++, 'Category', categories[i].name , 'page']);
-              break;
-            }
-          }
-        }
-        */
+        
         let maxVariables = process.env.REACT_APP_MAX_MATOMO_CUSTOM_VARIABLES || DEFAULT_MAX_MATOMO_CUSTOM_VARIABLES;
         console.log("selCategories : " + selCategories); 
         for(let i = 0;i < selCategories.length && customVariableIndex <= maxVariables;i++){
@@ -102,6 +98,7 @@ const ProductsView = () => {
             }
           }
         }
+
         console.log("selCurrencies : " + selCurrencies);
         selCurrencies.forEach((value,index) => {          
           for(let i = 0;i < currencies.length && customVariableIndex <= maxVariables;i++){
@@ -112,7 +109,9 @@ const ProductsView = () => {
             }
           }
         });
+
         _paq.push(['trackPageView']); 
+
       }
 
       const productResponse = await fetch(
@@ -120,17 +119,20 @@ const ProductsView = () => {
           CONTROLLER_PRODUCT_ID +
           `?page=${page ? page : currentPage}&limit=${itemsPerPage}&search=${search}` + 
           categoriesQueryString +
-          currenciesQueryString,
+          currenciesQueryString + 
+          `&usedOrNew=${usedOrNew}`,
       );
       if (!productResponse.ok) {
         throw new Error(
           'Network response was not ok ' + productResponse.statusText,
         );
       }
+
       const productResponseJson = await productResponse.json();
       console.log('ProductsView productResponseJson: ', productResponseJson);
       setProducts(productResponseJson.data);
       setTotalPages(productResponseJson.totalPages);
+
     } catch (error) {
       console.error(
         'There has been a problem with your fetch operation:',
@@ -139,6 +141,7 @@ const ProductsView = () => {
     }
 
     setLoading(false);
+
   };
 
   const fetchCategoryData = async () => {
@@ -182,6 +185,11 @@ const ProductsView = () => {
   const handleCurrenciesChange = (newSelectedCurrencies) => {
     setSelectedCurrencies(newSelectedCurrencies);
     fetchProductData(1,selectedCategories,newSelectedCurrencies);
+  };
+
+  const handleUsedOrNewChange = (newSelectedUsedOrNew) => {
+    usedOrNew = newSelectedUsedOrNew;
+    fetchProductData(1);
   };
 
   const handleSearchChange = (event) => {
@@ -261,6 +269,11 @@ const ProductsView = () => {
               justifyContent: 'center',
             }}
           >
+            
+            <UsedOrNewSelect 
+              selectedUsedOrNew={usedOrNew}
+              setSelectedUsedOrNew={handleUsedOrNewChange}
+            />
             
             <CategorySelect
               setCategories={setCategories}
