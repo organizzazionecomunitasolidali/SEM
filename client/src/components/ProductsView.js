@@ -326,6 +326,7 @@ const ProductsView = () => {
                 marginTop: isMobile ? 20 : 0, // Add some margin if needed
                 marginBottom: isMobile ? 20 : 0, // Add some margin if needed
                 backgroundColor: '#35a455',
+                opacity: loading ? 0 : 1, 
               }}
             >
               {t('Search')}
