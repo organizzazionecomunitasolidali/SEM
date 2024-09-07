@@ -32,7 +32,7 @@ const UsedOrNewSelect = ({ selectedUsedOrNew, setSelectedUsedOrNew }) => {
             borderColor: '#35a455', // Apply border color on hover
             backgroundColor: 'white',
           },
-          width: isMobile ? '100%' : '200px',
+          width: isMobile ? '100%' : '300px',
         }}
       >
         {t(selectedUsedOrNew)} ▼

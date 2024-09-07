@@ -263,7 +263,7 @@ const ProductsView = () => {
             sx={{
               display: isMobile ? 'block' : 'flex',
               alignItems: 'center',
-              width: isMobile ? '100%' : '900px',
+              width: isMobile ? '100%' : '1100px',
               margin: isMobile ? '0px auto' : '30px auto',
               marginBottom: isMobile ? '0px' : '40px',
               justifyContent: 'center',
@@ -319,7 +319,7 @@ const ProductsView = () => {
               onClick={() => fetchProductData(1)}
               startIcon={<SearchIcon />}
               style={{
-                width: isMobile ? '100%' : '200px',
+                width: isMobile ? '100%' : '300px',
                 height: '100%', // Adjust the height as needed
                 marginLeft: isMobile ? 0 : 8, // Add some margin if needed
                 marginTop: isMobile ? 20 : 0, // Add some margin if needed
