@@ -267,6 +267,7 @@ const ProductsView = () => {
               margin: isMobile ? '0px auto' : '30px auto',
               marginBottom: isMobile ? '0px' : '40px',
               justifyContent: 'center',
+              position: 'relative'
             }}
           >
             
