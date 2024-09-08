@@ -338,7 +338,7 @@ const ProductsView = () => {
           </Box>
         </Grid>
 
-        <div style='display: flex; width: 100%; justify-content: space-between'>
+        <div style={{display: "flex", width: "100%", justifyContent: "space-between"}}>
 
           {(isLandscapeLarge &&
             <div style={{marginLeft: '20px', marginRight: '20px' }}>
@@ -362,7 +362,7 @@ const ProductsView = () => {
                 selectedItems={selectedCurrencies}
                 setSelectedItems={handleCurrenciesChange}
               />
-              
+
             </div>
           )}
 
