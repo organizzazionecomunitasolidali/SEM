@@ -115,7 +115,7 @@ const CategorySelect = ({ isVisible=true, isOnLeftPane=false, setCategories, sel
 
     )}
 
-    {(!isOnLeftPane &&
+    {(isOnLeftPane &&
     <Menu
           id="simple-menu"
           open={true} // Always open

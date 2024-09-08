@@ -113,7 +113,7 @@ const CurrencySelect = ({ isVisible=true, isOnLeftPane=false, setCurrencies, sel
       </Menu>
     )}
 
-    {(!isOnLeftPane &&
+    {(isOnLeftPane &&
     <Menu
           id="simple-menu"
           open={true} // Always open

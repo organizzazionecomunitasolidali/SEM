@@ -90,7 +90,7 @@ const UsedOrNewSelect = ({ isVisible=true, isOnLeftPane=false, selectedUsedOrNew
 
       )}
 
-      {(!isOnLeftPane &&
+      {(isOnLeftPane &&
       <Menu
             id="simple-menu"
             open={true} // Always open
