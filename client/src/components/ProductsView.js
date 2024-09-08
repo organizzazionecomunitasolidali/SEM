@@ -270,7 +270,7 @@ const ProductsView = () => {
               position: 'relative'
             }}
           >
-          
+          {/*
           {(!isLandscapeLarge &&
             <UsedOrNewSelect 
               isOnLeftPane={false}
@@ -287,6 +287,7 @@ const ProductsView = () => {
               setSelectedItems={handleCategoriesChange}
             />
           )}
+          */}
 
             <TextField
               id='searchTerms'
@@ -312,7 +313,7 @@ const ProductsView = () => {
                 },
               }}
             />
-
+            {/*
             {(!isLandscapeLarge &&
             <CurrencySelect
               isOnLeftPane={false}
@@ -321,6 +322,7 @@ const ProductsView = () => {
               setSelectedItems={handleCurrenciesChange}
             />
             )}
+            */}
 
             <Button
               id='submitSearch'
