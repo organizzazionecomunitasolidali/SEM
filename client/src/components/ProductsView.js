@@ -369,7 +369,7 @@ const ProductsView = () => {
           </Grid>
         )}
 
-        <Grid container item xs={isLandscapeLarge ? 9 : 12} spacing={2} p={1} style={{ overflowY: 'auto'}}>
+        <Grid container item xs={isLandscapeLarge ? (isLandscapeVeryLarge ? 10 : 9) : 12} spacing={2} p={1} style={{ overflowY: 'auto'}}>
         
           {!loading &&
             products.map((product) => (
