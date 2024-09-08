@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Menu, MenuItem, Radio, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-const UsedOrNewSelect = ({ isVisible=true, isOnLeftPane=false, selectedUsedOrNew, setSelectedUsedOrNew }) => {
-
-  console.log("UsedOrNewSelect isbisible " + isVisible + " - isOnLeftPane " + isOnLeftPane);
+const UsedOrNewSelect = ({ isOnLeftPane=false, selectedUsedOrNew, setSelectedUsedOrNew }) => {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -22,7 +20,7 @@ const UsedOrNewSelect = ({ isVisible=true, isOnLeftPane=false, selectedUsedOrNew
 
   return (
 
-    (isVisible && !isOnLeftPane &&
+    (!isOnLeftPane &&
       <div>
         <Button
           aria-controls="simple-menu"
@@ -89,7 +87,7 @@ const UsedOrNewSelect = ({ isVisible=true, isOnLeftPane=false, selectedUsedOrNew
       </div>      
       )
 
-      (isVisible && isOnLeftPane &&
+      (isOnLeftPane &&
         
         <div>
 

@@ -3,7 +3,7 @@ import { Button, Menu, MenuItem, Checkbox, useMediaQuery } from '@mui/material';
 import { SERVER_BASE_URL, CONTROLLER_CATEGORY_ID } from '../utils/globals';
 import { useTranslation } from 'react-i18next';
 
-const CategorySelect = ({ isVisible=true, isOnLeftPane=false, setCategories, selectedItems, setSelectedItems }) => {
+const CategorySelect = ({ isOnLeftPane=false, setCategories, selectedItems, setSelectedItems }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   //   const [selectedItems, setSelectedItems] = useState([]);
   const [items, setItems] = useState([]);
@@ -66,7 +66,7 @@ const CategorySelect = ({ isVisible=true, isOnLeftPane=false, setCategories, sel
 
   return (
 
-    (isVisible && !isOnLeftPane &&
+    (!isOnLeftPane &&
 
     <div>
 
@@ -117,7 +117,7 @@ const CategorySelect = ({ isVisible=true, isOnLeftPane=false, setCategories, sel
     
     )
 
-    (isVisible && isOnLeftPane &&
+    (isOnLeftPane &&
     <div>
       <Menu
             id="simple-menu"

@@ -270,19 +270,23 @@ const ProductsView = () => {
               position: 'relative'
             }}
           >
-            
+          
+          {(!isLandscapeLarge &&
             <UsedOrNewSelect 
-              isVisible={isMobile || !isLandscapeLarge}
+              isOnLeftPane={false}
               selectedUsedOrNew={usedOrNew}
               setSelectedUsedOrNew={handleUsedOrNewChange}
             />
+          )}
             
+          {(!isLandscapeLarge &&
             <CategorySelect
-              isVisible={isMobile || !isLandscapeLarge}
+              isOnLeftPane={false}
               setCategories={setCategories}
               selectedItems={selectedCategories}
               setSelectedItems={handleCategoriesChange}
             />
+          )}
 
             <TextField
               id='searchTerms'
@@ -309,12 +313,14 @@ const ProductsView = () => {
               }}
             />
 
+            {(!isLandscapeLarge &&
             <CurrencySelect
-              isVisible={isMobile || !isLandscapeLarge}
+              isOnLeftPane={false}
               setCurrencies={setCurrencies}
               selectedItems={selectedCurrencies}
               setSelectedItems={handleCurrenciesChange}
             />
+            )}
 
             <Button
               id='submitSearch'
@@ -337,35 +343,7 @@ const ProductsView = () => {
             {loading && <div className="loader"></div>}
           </Box>
         </Grid>
-
-        <Grid item xs={12}>
-
-          {(isLandscapeLarge &&
-            <div style={{marginLeft: '20px', marginRight: '20px' }}>
-
-              <UsedOrNewSelect 
-                isOnLeftPane={true}
-                selectedUsedOrNew={usedOrNew}
-                setSelectedUsedOrNew={handleUsedOrNewChange}
-              />
-              
-              <CategorySelect
-                isOnLeftPane={true}
-                setCategories={setCategories}
-                selectedItems={selectedCategories}
-                setSelectedItems={handleCategoriesChange}
-              />
-
-              <CurrencySelect
-                isOnLeftPane={true}
-                setCurrencies={setCurrencies}
-                selectedItems={selectedCurrencies}
-                setSelectedItems={handleCurrenciesChange}
-              />
-
-            </div>
-          )}
-
+        
           {!loading &&
             products.map((product) => (
               <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={product.id}>
@@ -506,8 +484,6 @@ const ProductsView = () => {
               </MenuItem>
             ))}
           </Menu>
-
-        </Grid>
 
       </Grid>
 
