@@ -68,6 +68,7 @@ const CurrencySelect = ({ isOnLeftPane, setCurrencies, selectedItems, setSelecte
     <>
       {isOnLeftPane ? (
         <div>
+          <strong><h4>{t('Currencies')}</h4></strong>
           <Menu
             id="currency-menu"
             open={true} // Always open

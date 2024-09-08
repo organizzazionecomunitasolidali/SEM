@@ -68,6 +68,7 @@ const CategorySelect = ({ isOnLeftPane, setCategories, selectedItems, setSelecte
     <>
       {isOnLeftPane ? (
         <div>
+          <strong><h4>{t('Categories')}</h4></strong>
           <Menu
                 id="categories-menu"
                 open={true} // Always open

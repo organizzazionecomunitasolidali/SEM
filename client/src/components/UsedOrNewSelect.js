@@ -24,6 +24,8 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
         
         <div>
 
+          <strong><h4>{t('usedOrNew')}</h4></strong>
+
           <Menu
                 id="usednew-menu"
                 open={true} // Always open
