@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Menu, MenuItem, Radio, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-const UsedOrNewSelect = ({ selectedUsedOrNew, setSelectedUsedOrNew }) => {
+const UsedOrNewSelect = ({ isVisible=true, isOnLeftPane=false, selectedUsedOrNew, setSelectedUsedOrNew }) => {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -19,7 +19,11 @@ const UsedOrNewSelect = ({ selectedUsedOrNew, setSelectedUsedOrNew }) => {
   };
 
   return (
+    (isVisible &&
     <div>
+
+      {(!isOnLeftPane &&
+
       <Button
         aria-controls="simple-menu"
         aria-haspopup="true"
@@ -36,7 +40,7 @@ const UsedOrNewSelect = ({ selectedUsedOrNew, setSelectedUsedOrNew }) => {
         }}
       >
         {t(selectedUsedOrNew)} ▼
-      </Button>
+      </Button> &&
       <Menu
         id="simple-menu"
         anchorEl={anchorEl}
@@ -81,7 +85,57 @@ const UsedOrNewSelect = ({ selectedUsedOrNew, setSelectedUsedOrNew }) => {
             {t('usedOnly')}
         </MenuItem>           
       </Menu>
+
+      )}
+
+      {(!isOnLeftPane &&
+      <Menu
+            id="simple-menu"
+            open={true} // Always open
+            keepMounted
+            style={{ display: 'block', position: 'static' }} // Ensure it's displayed as a block element and not floating
+      >         
+        <MenuItem key='newFirst' onClick={() => handleToggle('newFirst')}>
+            <Radio
+            style={{
+                color: '#35a455',
+            }}
+            checked={selectedUsedOrNew == 'newFirst'}
+            />
+            {t('newFirst')}
+        </MenuItem>    
+        <MenuItem key='usedFirst' onClick={() => handleToggle('usedFirst')}>
+            <Radio
+            style={{
+                color: '#35a455',
+            }}
+            checked={selectedUsedOrNew == 'usedFirst'}
+            />
+            {t('usedFirst')}
+        </MenuItem>   
+        <MenuItem key='newOnly' onClick={() => handleToggle('newOnly')}>
+            <Radio
+            style={{
+                color: '#35a455',
+            }}
+            checked={selectedUsedOrNew == 'newOnly'}
+            />
+            {t('newOnly')}
+        </MenuItem>   
+        <MenuItem key='usedOnly' onClick={() => handleToggle('usedOnly')}>
+            <Radio
+            style={{
+                color: '#35a455',
+            }}
+            checked={selectedUsedOrNew == 'usedOnly'}
+            />
+            {t('usedOnly')}
+        </MenuItem> 
+      </Menu>
+      )}
+
     </div>
+    )
   );
 };
 

@@ -272,11 +272,13 @@ const ProductsView = () => {
           >
             
             <UsedOrNewSelect 
+              isVisible={isMobile || !isLandscapeLarge}
               selectedUsedOrNew={usedOrNew}
               setSelectedUsedOrNew={handleUsedOrNewChange}
             />
             
             <CategorySelect
+              isVisible={isMobile || !isLandscapeLarge}
               setCategories={setCategories}
               selectedItems={selectedCategories}
               setSelectedItems={handleCategoriesChange}
@@ -308,6 +310,7 @@ const ProductsView = () => {
             />
 
             <CurrencySelect
+              isVisible={isMobile || !isLandscapeLarge}
               setCurrencies={setCurrencies}
               selectedItems={selectedCurrencies}
               setSelectedItems={handleCurrenciesChange}
@@ -334,6 +337,34 @@ const ProductsView = () => {
             {loading && <div className="loader"></div>}
           </Box>
         </Grid>
+
+        <div style='display: flex; width: 100%; justify-content: space-between'>
+
+          {(isLandscapeLarge &&
+            <div style={{marginLeft: '20px', marginRight: '20px' }}>
+
+              <UsedOrNewSelect 
+                isOnLeftPane={true}
+                selectedUsedOrNew={usedOrNew}
+                setSelectedUsedOrNew={handleUsedOrNewChange}
+              />
+              
+              <CategorySelect
+                isOnLeftPane={true}
+                setCategories={setCategories}
+                selectedItems={selectedCategories}
+                setSelectedItems={handleCategoriesChange}
+              />
+
+              <CurrencySelect
+                isOnLeftPane={true}
+                setCurrencies={setCurrencies}
+                selectedItems={selectedCurrencies}
+                setSelectedItems={handleCurrenciesChange}
+              />
+              
+            </div>
+          )}
 
         {!loading &&
           products.map((product) => (
@@ -437,7 +468,9 @@ const ProductsView = () => {
                 </CardContent>
               </Card>
             </Grid>
-          ))}
+        ))}
+
+        </div>
 
         {/* Dropdown for Search Results */}
         <Menu
@@ -490,6 +523,7 @@ const ProductsView = () => {
           }}
         />
       )}
+      
     </>
   );
 };

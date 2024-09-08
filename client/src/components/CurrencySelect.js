@@ -3,7 +3,7 @@ import { Button, Menu, MenuItem, Checkbox, useMediaQuery } from '@mui/material';
 import { SERVER_BASE_URL, CONTROLLER_CURRENCY_ID } from '../utils/globals';
 import { useTranslation } from 'react-i18next';
 
-const CurrencySelect = ({ setCurrencies, selectedItems, setSelectedItems }) => {
+const CurrencySelect = ({ isVisible=true, isOnLeftPane=false, setCurrencies, selectedItems, setSelectedItems }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   //   const [selectedItems, setSelectedItems] = useState([]);
   const [items, setItems] = useState([]);
@@ -65,7 +65,10 @@ const CurrencySelect = ({ setCurrencies, selectedItems, setSelectedItems }) => {
   };
 
   return (
+    (isVisible &&
     <div>
+
+      {(!isOnLeftPane &&
       <Button
         aria-controls="simple-menu"
         aria-haspopup="true"
@@ -82,7 +85,7 @@ const CurrencySelect = ({ setCurrencies, selectedItems, setSelectedItems }) => {
         }}
       >
         {t('Currencies')} ▼
-      </Button>
+      </Button> &&
       <Menu
         id="simple-menu"
         anchorEl={anchorEl}
@@ -108,7 +111,37 @@ const CurrencySelect = ({ setCurrencies, selectedItems, setSelectedItems }) => {
           );
         })}
       </Menu>
+    )}
+
+    {(!isOnLeftPane &&
+    <Menu
+          id="simple-menu"
+          open={true} // Always open
+          keepMounted
+          style={{ display: 'block', position: 'static' }} // Ensure it's displayed as a block element and not floating
+    >      
+      {items.map((item) => {
+        const itemLabel = [item.name, item.symbol, item.ticker]
+          .filter(Boolean)
+          .join(' ');
+
+        return (
+          <MenuItem key={item.id} onClick={() => handleToggle(item.id)}>
+            <Checkbox
+              style={{
+                color: '#35a455',
+              }}
+              checked={selectedItems.includes(item.id)}
+            />
+            {itemLabel || 'Unnamed Item'}
+          </MenuItem>
+        );
+      })}
+    </Menu>
+    )}
+
     </div>
+    )
   );
 };
 
