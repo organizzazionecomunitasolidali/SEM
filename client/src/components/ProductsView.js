@@ -347,7 +347,6 @@ const ProductsView = () => {
 
         {( isLandscapeLarge &&
           <Grid item xs={isLandscapeVeryLarge ? 2 : 3}>
-            {/*
             <UsedOrNewSelect 
               isOnLeftPane={true}
               selectedUsedOrNew={usedOrNew}
@@ -365,7 +364,6 @@ const ProductsView = () => {
               selectedItems={selectedCurrencies}
               setSelectedItems={handleCurrenciesChange}
             />
-            */}
           </Grid>
         )}
 
