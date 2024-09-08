@@ -3,7 +3,7 @@ import { Button, Menu, MenuItem, Checkbox, useMediaQuery } from '@mui/material';
 import { SERVER_BASE_URL, CONTROLLER_CURRENCY_ID } from '../utils/globals';
 import { useTranslation } from 'react-i18next';
 
-const CurrencySelect = ({ isVisible=true, isOnLeftPane=false, setCurrencies, selectedItems, setSelectedItems }) => {
+const CurrencySelect = ({ isOnLeftPane, setCurrencies, selectedItems, setSelectedItems }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   //   const [selectedItems, setSelectedItems] = useState([]);
   const [items, setItems] = useState([]);
@@ -66,7 +66,7 @@ const CurrencySelect = ({ isVisible=true, isOnLeftPane=false, setCurrencies, sel
 
   return (
     
-    (isVisible && !isOnLeftPane &&
+    (!isOnLeftPane &&
 
     <div>
       
@@ -117,7 +117,7 @@ const CurrencySelect = ({ isVisible=true, isOnLeftPane=false, setCurrencies, sel
 
     )
 
-    (isVisible && isOnLeftPane &&
+    (isOnLeftPane &&
       <div>
         <Menu
               id="simple-menu"
