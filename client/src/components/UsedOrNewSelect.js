@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 const UsedOrNewSelect = ({ isVisible=true, isOnLeftPane=false, selectedUsedOrNew, setSelectedUsedOrNew }) => {
 
+  console.log("UsedOrNewSelect isbisible " + isVisible + " - isOnLeftPane " + isOnLeftPane);
+
   const [anchorEl, setAnchorEl] = useState(null);
 
   const { t } = useTranslation();

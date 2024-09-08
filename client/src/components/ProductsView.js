@@ -338,7 +338,7 @@ const ProductsView = () => {
           </Box>
         </Grid>
 
-        <div style={{display: "flex", width: "100%", justifyContent: "space-between"}}>
+        <Grid item xs={12}>
 
           {(isLandscapeLarge &&
             <div style={{marginLeft: '20px', marginRight: '20px' }}>
@@ -366,148 +366,149 @@ const ProductsView = () => {
             </div>
           )}
 
-        {!loading &&
-          products.map((product) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={product.id}>
-              <Card>
-                <a href={product.url} target="_blank" rel="noopener noreferrer">
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image={
-                      product.thumbnail_url ? product.thumbnail_url : 
-                      arrayToDataUrl( product.thumbnail ? product.thumbnail.data : null ) // Convert buffer to data URL
-                    } 
-                    alt={product.title}
-                  />
-                </a>
+          {!loading &&
+            products.map((product) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={product.id}>
+                <Card>
+                  <a href={product.url} target="_blank" rel="noopener noreferrer">
+                    <CardMedia
+                      component="img"
+                      height="140"
+                      image={
+                        product.thumbnail_url ? product.thumbnail_url : 
+                        arrayToDataUrl( product.thumbnail ? product.thumbnail.data : null ) // Convert buffer to data URL
+                      } 
+                      alt={product.title}
+                    />
+                  </a>
 
-                <CardContent
-                  style={{
-                    minHeight: '180px',
-                    paddingBottom: '15px',
-                    position: 'relative',
-                  }}
-                >
-                  <a
-                    href={product.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <CardContent
                     style={{
-                      color: 'black',
-                      textDecoration: 'none',
+                      minHeight: '180px',
+                      paddingBottom: '15px',
+                      position: 'relative',
                     }}
                   >
-                    <Typography
-                      style={{ fontWeight: 900 }}
-                      gutterBottom
-                      variant="h5"
-                      component="h4"
-                    >
-                      {product.title}
-                    </Typography>
-                  </a>
-                  {/* Displaying price information only if it's greater than 0 */}
-                  {(product.price_01 || product.price_01 === 0) &&
-                    product.price_01 > 0 && (
-                      <Typography variant="body1" color="textSecondary">
-                        {t('Price: ')} {product.price_01}{' '}
-                        {getCurrencyStringById(product.currency_01_id)}
-                      </Typography>
-                    )}
-                  {(product.price_02 || product.price_02 === 0) &&
-                    product.price_02 > 0 && (
-                      <Typography variant="body1" color="textSecondary">
-                        {product.price_01 > 0
-                          ? t('Alternate/additional Price: ')
-                          : t('Price: ')}{' '}
-                        {product.price_02}{' '}
-                        {getCurrencyStringById(product.currency_02_id)}
-                      </Typography>
-                    )}
-                  {
-                    <Typography
+                    <a
+                      href={product.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       style={{
-                        opacity: 0.7,
-                        marginTop: '15px',
-                        filter: 'saturate(0)',
-                        position: 'absolute',
-                        bottom: '0px',
-                        zIndex: 2,
-                        right: '15px',
+                        color: 'black',
+                        textDecoration: 'none',
                       }}
-                      color="textSecondary"
-                      gutterBottom
-                      component="small"
                     >
-                      {'🌐 ' + product.website.name}
-                    </Typography>
-                  }
-                  {
-                    <Typography
-                      style={{
-                        position: 'absolute',
-                        left: "0px",
-                        bottom: '0px',
-                        zIndex: 1,
-                        display: product.is_used ? "block" : "none",
-                        padding: "10px",
-                        textAlign: "left",
-                        textTransform: "uppercase",
-                        fontWeight: "bold",
-                        width: "100%",
-                        backgroundColor: "rgb(255, 160, 155)",
-                        color: "#000",
-                      }}
-                      component="small"
-                    >
-                      { t('Used')}
-                    </Typography>
-                  }
-                  {/* Additional Product Info */}
-                </CardContent>
-              </Card>
-            </Grid>
-        ))}
-
-        </div>
-
-        {/* Dropdown for Search Results */}
-        <Menu
-          sx={{ mt: '1px', '& .MuiMenu-paper': { backgroundColor: 'white' } }}
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl && searchResults.length > 0)}
-          onClose={() => setAnchorEl(null)}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-        >
-          {searchResults.map((product, index) => (
-            <MenuItem key={index}>
-              <button
-                onClick={() => window.open(product.url, '_blank')}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: 0,
-                  margin: 0,
-                  color: 'inherit',
-                  textTransform: 'none',
-                  width: '100%',
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                }}
-              >
-                {product.title}
-              </button>
-            </MenuItem>
+                      <Typography
+                        style={{ fontWeight: 900 }}
+                        gutterBottom
+                        variant="h5"
+                        component="h4"
+                      >
+                        {product.title}
+                      </Typography>
+                    </a>
+                    {/* Displaying price information only if it's greater than 0 */}
+                    {(product.price_01 || product.price_01 === 0) &&
+                      product.price_01 > 0 && (
+                        <Typography variant="body1" color="textSecondary">
+                          {t('Price: ')} {product.price_01}{' '}
+                          {getCurrencyStringById(product.currency_01_id)}
+                        </Typography>
+                      )}
+                    {(product.price_02 || product.price_02 === 0) &&
+                      product.price_02 > 0 && (
+                        <Typography variant="body1" color="textSecondary">
+                          {product.price_01 > 0
+                            ? t('Alternate/additional Price: ')
+                            : t('Price: ')}{' '}
+                          {product.price_02}{' '}
+                          {getCurrencyStringById(product.currency_02_id)}
+                        </Typography>
+                      )}
+                    {
+                      <Typography
+                        style={{
+                          opacity: 0.7,
+                          marginTop: '15px',
+                          filter: 'saturate(0)',
+                          position: 'absolute',
+                          bottom: '0px',
+                          zIndex: 2,
+                          right: '15px',
+                        }}
+                        color="textSecondary"
+                        gutterBottom
+                        component="small"
+                      >
+                        {'🌐 ' + product.website.name}
+                      </Typography>
+                    }
+                    {
+                      <Typography
+                        style={{
+                          position: 'absolute',
+                          left: "0px",
+                          bottom: '0px',
+                          zIndex: 1,
+                          display: product.is_used ? "block" : "none",
+                          padding: "10px",
+                          textAlign: "left",
+                          textTransform: "uppercase",
+                          fontWeight: "bold",
+                          width: "100%",
+                          backgroundColor: "rgb(255, 160, 155)",
+                          color: "#000",
+                        }}
+                        component="small"
+                      >
+                        { t('Used')}
+                      </Typography>
+                    }
+                    {/* Additional Product Info */}
+                  </CardContent>
+                </Card>
+              </Grid>
           ))}
-        </Menu>
+
+          {/* Dropdown for Search Results */}
+          <Menu
+            sx={{ mt: '1px', '& .MuiMenu-paper': { backgroundColor: 'white' } }}
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl && searchResults.length > 0)}
+            onClose={() => setAnchorEl(null)}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+          >
+            {searchResults.map((product, index) => (
+              <MenuItem key={index}>
+                <button
+                  onClick={() => window.open(product.url, '_blank')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    margin: 0,
+                    color: 'inherit',
+                    textTransform: 'none',
+                    width: '100%',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {product.title}
+                </button>
+              </MenuItem>
+            ))}
+          </Menu>
+
+        </Grid>
+
       </Grid>
 
       {!loading && (
