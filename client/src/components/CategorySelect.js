@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Menu, MenuItem, Checkbox, useMediaQuery } from '@mui/material';
+import { Button, Menu, MenuItem, Checkbox, useMediaQuery, Typography } from '@mui/material';
 import { SERVER_BASE_URL, CONTROLLER_CATEGORY_ID } from '../utils/globals';
 import { useTranslation } from 'react-i18next';
 
