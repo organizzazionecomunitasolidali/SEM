@@ -65,10 +65,10 @@ const CategorySelect = ({ isVisible=true, isOnLeftPane=false, setCategories, sel
   };
 
   return (
-    (isVisible &&
-    <div>
 
-      {(!isOnLeftPane &&
+    (isVisible && !isOnLeftPane &&
+
+      <div>
 
       <Button
         aria-controls="simple-menu"
@@ -113,37 +113,39 @@ const CategorySelect = ({ isVisible=true, isOnLeftPane=false, setCategories, sel
         })}
       </Menu>
 
-    )}
+    </div>
+    
+    )
 
-    {(isOnLeftPane &&
-    <Menu
-          id="simple-menu"
-          open={true} // Always open
-          keepMounted
-          style={{ display: 'block', position: 'static' }} // Ensure it's displayed as a block element and not floating
-    >       
-      {items.map((item) => {
-        const itemLabel = [t(item.name)]
-          .filter(Boolean)
-          .join(' ');
+    (isVisible && isOnLeftPane &&
+    <div>
+      <Menu
+            id="simple-menu"
+            open={true} // Always open
+            keepMounted
+            style={{ display: 'block', position: 'static' }} // Ensure it's displayed as a block element and not floating
+      >       
+        {items.map((item) => {
+          const itemLabel = [t(item.name)]
+            .filter(Boolean)
+            .join(' ');
 
-        return (
-          <MenuItem key={item.id} onClick={() => handleToggle(item.id)}>
-            <Checkbox
-              style={{
-                color: '#35a455',
-              }}
-              checked={selectedItems.includes(item.id)}
-            />
-            {itemLabel || 'Unnamed Item'}
-          </MenuItem>
-        );
-      })}
-    </Menu>
-    )}
+          return (
+            <MenuItem key={item.id} onClick={() => handleToggle(item.id)}>
+              <Checkbox
+                style={{
+                  color: '#35a455',
+                }}
+                checked={selectedItems.includes(item.id)}
+              />
+              {itemLabel || 'Unnamed Item'}
+            </MenuItem>
+          );
+        })}
+      </Menu>
     </div>
     )
-  );
-};
+  )
+}
 
 export default CategorySelect;

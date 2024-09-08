@@ -65,10 +65,11 @@ const CurrencySelect = ({ isVisible=true, isOnLeftPane=false, setCurrencies, sel
   };
 
   return (
-    (isVisible &&
-    <div>
+    
+    (isVisible && !isOnLeftPane &&
 
-      {(!isOnLeftPane &&
+    <div>
+      
       <Button
         aria-controls="simple-menu"
         aria-haspopup="true"
@@ -111,38 +112,41 @@ const CurrencySelect = ({ isVisible=true, isOnLeftPane=false, setCurrencies, sel
           );
         })}
       </Menu>
-    )}
-
-    {(isOnLeftPane &&
-    <Menu
-          id="simple-menu"
-          open={true} // Always open
-          keepMounted
-          style={{ display: 'block', position: 'static' }} // Ensure it's displayed as a block element and not floating
-    >      
-      {items.map((item) => {
-        const itemLabel = [item.name, item.symbol, item.ticker]
-          .filter(Boolean)
-          .join(' ');
-
-        return (
-          <MenuItem key={item.id} onClick={() => handleToggle(item.id)}>
-            <Checkbox
-              style={{
-                color: '#35a455',
-              }}
-              checked={selectedItems.includes(item.id)}
-            />
-            {itemLabel || 'Unnamed Item'}
-          </MenuItem>
-        );
-      })}
-    </Menu>
-    )}
-
+    
     </div>
+
     )
-  );
-};
+
+    (isVisible && isOnLeftPane &&
+      <div>
+        <Menu
+              id="simple-menu"
+              open={true} // Always open
+              keepMounted
+              style={{ display: 'block', position: 'static' }} // Ensure it's displayed as a block element and not floating
+        >      
+          {items.map((item) => {
+            const itemLabel = [item.name, item.symbol, item.ticker]
+              .filter(Boolean)
+              .join(' ');
+
+            return (
+              <MenuItem key={item.id} onClick={() => handleToggle(item.id)}>
+                <Checkbox
+                  style={{
+                    color: '#35a455',
+                  }}
+                  checked={selectedItems.includes(item.id)}
+                />
+                {itemLabel || 'Unnamed Item'}
+              </MenuItem>
+            );
+          })}
+        </Menu>
+      </div>
+    )
+    
+  )
+}
 
 export default CurrencySelect;
