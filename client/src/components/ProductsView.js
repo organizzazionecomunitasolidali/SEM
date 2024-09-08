@@ -344,7 +344,6 @@ const ProductsView = () => {
           </Box>
         </Grid>
 
-        {/*
         {( isLandscapeLarge && 
           <Grid item xs={3}>
             <UsedOrNewSelect 
@@ -366,7 +365,6 @@ const ProductsView = () => {
             />
           </Grid>
         )}
-        */}
 
         <Grid container item xs={isLandscapeLarge ? 9 : 12}>
         
@@ -513,20 +511,22 @@ const ProductsView = () => {
 
         </Grid>
 
-        {!loading && isLandscapeLarge && (
-          <Pagination
-            count={totalPages}
-            page={currentPage}
-            onChange={(event, page) => setCurrentPage(page)}
-            style={{
-              paddingTop: '30px',
-              paddingBottom: '30px',
-              display: 'flex',
-              justifyContent: 'center',
-              margin: '0px auto'
-            }}
-          />
-        )}
+        {!loading && isLandscapeLarge &&
+          <Grid item xs={12}>
+            <Pagination
+              count={totalPages}
+              page={currentPage}
+              onChange={(event, page) => setCurrentPage(page)}
+              style={{
+                paddingTop: '30px',
+                paddingBottom: '30px',
+                display: 'flex',
+                justifyContent: 'center',
+                margin: '0px auto'
+              }}
+            />
+          </Grid>
+        }
 
       </Grid>
 
