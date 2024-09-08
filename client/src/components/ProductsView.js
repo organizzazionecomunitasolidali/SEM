@@ -344,6 +344,7 @@ const ProductsView = () => {
           </Box>
         </Grid>
 
+        {/*
         {( isLandscapeLarge && 
           <Grid item xs={3}>
             <UsedOrNewSelect 
@@ -365,6 +366,7 @@ const ProductsView = () => {
             />
           </Grid>
         )}
+        */}
 
         <Grid container item xs={isLandscapeLarge ? 9 : 12}>
         
