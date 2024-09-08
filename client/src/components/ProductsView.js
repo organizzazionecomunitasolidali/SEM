@@ -344,7 +344,29 @@ const ProductsView = () => {
           </Box>
         </Grid>
 
-        <Grid container item xs={12}>
+        {( isLandscapeLarge && 
+          <Grid item xs={3}>
+            <UsedOrNewSelect 
+              isOnLeftPane={true}
+              selectedUsedOrNew={usedOrNew}
+              setSelectedUsedOrNew={handleUsedOrNewChange}
+            />          
+            <CategorySelect
+              isOnLeftPane={true}
+              setCategories={setCategories}
+              selectedItems={selectedCategories}
+              setSelectedItems={handleCategoriesChange}
+            />     
+            <CurrencySelect
+              isOnLeftPane={true}
+              setCurrencies={setCurrencies}
+              selectedItems={selectedCurrencies}
+              setSelectedItems={handleCurrenciesChange}
+            />
+          </Grid>
+        )}
+
+        <Grid container item xs={isLandscapeLarge ? 9 : 12}>
         
           {!loading &&
             products.map((product) => (
@@ -499,6 +521,7 @@ const ProductsView = () => {
               paddingBottom: '30px',
               display: 'flex',
               justifyContent: 'center',
+              margin: '0px auto'
             }}
           />
         )}
