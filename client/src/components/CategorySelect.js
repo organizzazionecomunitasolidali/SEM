@@ -114,7 +114,7 @@ const CategorySelect = ({ isOnLeftPane, setCategories, selectedItems, setSelecte
             }}
           >
             {t('Categories')} ▼
-          </Button> &&
+          </Button>
           <Menu
             id="simple-menu"
             anchorEl={anchorEl}
