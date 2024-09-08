@@ -344,8 +344,9 @@ const ProductsView = () => {
           </Box>
         </Grid>
 
-        {( isLandscapeLarge && 
+        {( isLandscapeLarge &&
           <Grid item xs={3}>
+            {/*
             <UsedOrNewSelect 
               isOnLeftPane={true}
               selectedUsedOrNew={usedOrNew}
@@ -363,10 +364,11 @@ const ProductsView = () => {
               selectedItems={selectedCurrencies}
               setSelectedItems={handleCurrenciesChange}
             />
+            */}
           </Grid>
         )}
 
-        <Grid container item xs={isLandscapeLarge ? 9 : 12}>
+        <Grid container item xs={isLandscapeLarge ? 9 : 12} style={{ overflowY: 'auto'}}>
         
           {!loading &&
             products.map((product) => (
@@ -472,44 +474,44 @@ const ProductsView = () => {
               </Grid>
           ))}
 
-          {/* Dropdown for Search Results */}
-          <Menu
-            sx={{ mt: '1px', '& .MuiMenu-paper': { backgroundColor: 'white' } }}
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl && searchResults.length > 0)}
-            onClose={() => setAnchorEl(null)}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-          >
-            {searchResults.map((product, index) => (
-              <MenuItem key={index}>
-                <button
-                  onClick={() => window.open(product.url, '_blank')}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    padding: 0,
-                    margin: 0,
-                    color: 'inherit',
-                    textTransform: 'none',
-                    width: '100%',
-                    textAlign: 'left',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {product.title}
-                </button>
-              </MenuItem>
-            ))}
-          </Menu>
-
         </Grid>
+
+        {/* Dropdown for Search Results */}
+        <Menu
+          sx={{ mt: '1px', '& .MuiMenu-paper': { backgroundColor: 'white' } }}
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl && searchResults.length > 0)}
+          onClose={() => setAnchorEl(null)}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+        >
+          {searchResults.map((product, index) => (
+            <MenuItem key={index}>
+              <button
+                onClick={() => window.open(product.url, '_blank')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  margin: 0,
+                  color: 'inherit',
+                  textTransform: 'none',
+                  width: '100%',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                }}
+              >
+                {product.title}
+              </button>
+            </MenuItem>
+          ))}
+        </Menu>
 
         {!loading && isLandscapeLarge &&
           <Grid item xs={12}>
