@@ -313,7 +313,7 @@ const ProductsView = () => {
                 },
               }}
             />
-            {/*
+            
             {(!isLandscapeLarge &&
             <CurrencySelect
               isOnLeftPane={false}
@@ -322,7 +322,6 @@ const ProductsView = () => {
               setSelectedItems={handleCurrenciesChange}
             />
             )}
-            */}
 
             <Button
               id='submitSearch'
