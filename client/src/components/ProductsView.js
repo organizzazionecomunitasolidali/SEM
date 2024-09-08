@@ -61,6 +61,7 @@ const ProductsView = () => {
 
   const isMobile = useMediaQuery('(max-width:960px)');
   const isLandscapeLarge = useMediaQuery('(min-width:1440px)');
+  const isLandscapeVeryLarge = useMediaQuery('(min-width:1600px)');
 
   const fetchProductData = async (page, selCategories = selectedCategories, selCurrencies = selectedCurrencies) => {
     
@@ -345,7 +346,7 @@ const ProductsView = () => {
         </Grid>
 
         {( isLandscapeLarge &&
-          <Grid item xs={3}>
+          <Grid item xs={isLandscapeVeryLarge ? 2 : 3}>
             {/*
             <UsedOrNewSelect 
               isOnLeftPane={true}
@@ -368,11 +369,11 @@ const ProductsView = () => {
           </Grid>
         )}
 
-        <Grid container item xs={isLandscapeLarge ? 9 : 12} spacing={2} style={{ overflowY: 'auto'}}>
+        <Grid container item xs={isLandscapeLarge ? 9 : 12} spacing={2} p={1} style={{ overflowY: 'auto'}}>
         
           {!loading &&
             products.map((product) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} xl={isLandscapeLarge ? 3 : 2} key={product.id}>
+              <Grid item xs={12} sm={6} md={4} lg={3} xl={isLandscapeVeryLarge ? 2 : 3} key={product.id}>
                 <Card>
                   <a href={product.url} target="_blank" rel="noopener noreferrer">
                     <CardMedia
