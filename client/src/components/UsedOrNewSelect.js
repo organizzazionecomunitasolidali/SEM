@@ -24,14 +24,18 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
         
         <div>
 
-          <strong><h4>{t('usedOrNew')}</h4></strong>
-
           <Menu
                 id="usednew-menu"
                 open={true} // Always open
                 keepMounted
                 style={{ display: 'block', position: 'static' }} // Ensure it's displayed as a block element and not floating
           >         
+
+            {/* Title/Label in bold */}
+            <Typography variant="h6" style={{ fontWeight: 'bold', padding: '10px 16px' }}>
+            {t('usedOrNew')}
+            </Typography>
+          
             <MenuItem key='newFirst' onClick={() => handleToggle('newFirst')}>
                 <Radio
                 style={{

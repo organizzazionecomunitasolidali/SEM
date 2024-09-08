@@ -68,13 +68,16 @@ const CategorySelect = ({ isOnLeftPane, setCategories, selectedItems, setSelecte
     <>
       {isOnLeftPane ? (
         <div>
-          <strong><h4>{t('Categories')}</h4></strong>
           <Menu
                 id="categories-menu"
                 open={true} // Always open
                 keepMounted
                 style={{ display: 'block', position: 'static' }} // Ensure it's displayed as a block element and not floating
           >       
+            {/* Title/Label in bold */}
+            <Typography variant="h6" style={{ fontWeight: 'bold', padding: '10px 16px' }}>
+            {t('Categories')}
+            </Typography>
             {items.map((item) => {
               const itemLabel = [t(item.name)]
                 .filter(Boolean)
