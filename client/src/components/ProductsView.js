@@ -343,6 +343,8 @@ const ProductsView = () => {
             {loading && <div className="loader"></div>}
           </Box>
         </Grid>
+
+        <Grid container item xs={12}>
         
           {!loading &&
             products.map((product) => (
@@ -485,9 +487,25 @@ const ProductsView = () => {
             ))}
           </Menu>
 
+        </Grid>
+
+        {!loading && isLandscapeLarge && (
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={(event, page) => setCurrentPage(page)}
+            style={{
+              paddingTop: '30px',
+              paddingBottom: '30px',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          />
+        )}
+
       </Grid>
 
-      {!loading && (
+      {!loading && !isLandscapeLarge && (
         <Pagination
           count={totalPages}
           page={currentPage}

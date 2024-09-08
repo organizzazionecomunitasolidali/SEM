@@ -69,7 +69,7 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
           </Menu>
 
         </div>
-        
+
       ) : (
         
         <div>
@@ -88,7 +88,7 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
               width: isMobile ? '100%' : '300px',
             }}
           >
-            {t(selectedUsedOrNew)} ▼
+            {t('usedOrNew')} ▼
           </Button>
           <Menu
             id="simple-menu"

@@ -1,5 +1,6 @@
 {
   "Search": "Search",
+  "usedOrNew" : "Filter New/Used",
   "newFirst" : "New & Used products (New first)",
   "usedFirst" : "New & Used products (Used first)",
   "newOnly" : "New only",
