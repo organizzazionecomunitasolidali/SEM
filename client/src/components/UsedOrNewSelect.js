@@ -25,7 +25,7 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
         <div>
 
           <Menu
-                id="simple-menu"
+                id="usednew-menu"
                 open={true} // Always open
                 keepMounted
                 style={{ display: 'block', position: 'static' }} // Ensure it's displayed as a block element and not floating
@@ -74,7 +74,7 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
         
         <div>
           <Button
-            aria-controls="simple-menu"
+            aria-controls="usednew-menu"
             aria-haspopup="true"
             onClick={handleClick}
             sx={{
@@ -91,7 +91,7 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
             {t('usedOrNew')} ▼
           </Button>
           <Menu
-            id="simple-menu"
+            id="usednew-menu"
             anchorEl={anchorEl}
             keepMounted
             open={Boolean(anchorEl)}

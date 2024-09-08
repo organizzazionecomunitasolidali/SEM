@@ -69,7 +69,7 @@ const CategorySelect = ({ isOnLeftPane, setCategories, selectedItems, setSelecte
       {isOnLeftPane ? (
         <div>
           <Menu
-                id="simple-menu"
+                id="categories-menu"
                 open={true} // Always open
                 keepMounted
                 style={{ display: 'block', position: 'static' }} // Ensure it's displayed as a block element and not floating
@@ -99,7 +99,7 @@ const CategorySelect = ({ isOnLeftPane, setCategories, selectedItems, setSelecte
         <div>
 
           <Button
-            aria-controls="simple-menu"
+            aria-controls="categories-menu"
             aria-haspopup="true"
             onClick={handleClick}
             sx={{
@@ -116,7 +116,7 @@ const CategorySelect = ({ isOnLeftPane, setCategories, selectedItems, setSelecte
             {t('Categories')} ▼
           </Button>
           <Menu
-            id="simple-menu"
+            id="categories-menu"
             anchorEl={anchorEl}
             keepMounted
             open={Boolean(anchorEl)}

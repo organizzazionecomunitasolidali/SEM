@@ -69,7 +69,7 @@ const CurrencySelect = ({ isOnLeftPane, setCurrencies, selectedItems, setSelecte
       {isOnLeftPane ? (
         <div>
           <Menu
-            id="simple-menu"
+            id="currency-menu"
             open={true} // Always open
             keepMounted
             style={{ display: 'block', position: 'static' }} // Ensure it's displayed as a block element and not floating
@@ -96,7 +96,7 @@ const CurrencySelect = ({ isOnLeftPane, setCurrencies, selectedItems, setSelecte
       ) : (
         <div>
           <Button
-            aria-controls="simple-menu"
+            aria-controls="currency-menu"
             aria-haspopup="true"
             onClick={handleClick}
             sx={{
@@ -113,7 +113,7 @@ const CurrencySelect = ({ isOnLeftPane, setCurrencies, selectedItems, setSelecte
             {t('Currencies')} ▼
           </Button>
           <Menu
-            id="simple-menu"
+            id="currency-menu"
             anchorEl={anchorEl}
             keepMounted
             open={Boolean(anchorEl)}
