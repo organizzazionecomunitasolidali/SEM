@@ -145,7 +145,9 @@ const CategorySelect = ({ isVisible=true, isOnLeftPane=false, setCategories, sel
       </Menu>
     </div>
     )
+    
   )
+
 }
 
 export default CategorySelect;
