@@ -68,7 +68,7 @@ const CategorySelect = ({ isVisible=true, isOnLeftPane=false, setCategories, sel
 
     (isVisible && !isOnLeftPane &&
 
-      <div>
+    <div>
 
       <Button
         aria-controls="simple-menu"
