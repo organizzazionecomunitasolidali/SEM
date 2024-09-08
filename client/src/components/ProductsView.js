@@ -270,7 +270,7 @@ const ProductsView = () => {
               position: 'relative'
             }}
           >
-          {/*
+            
           {(!isLandscapeLarge &&
             <UsedOrNewSelect 
               isOnLeftPane={false}
@@ -287,7 +287,6 @@ const ProductsView = () => {
               setSelectedItems={handleCategoriesChange}
             />
           )}
-          */}
 
             <TextField
               id='searchTerms'
