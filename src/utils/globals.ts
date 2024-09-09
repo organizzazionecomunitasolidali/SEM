@@ -54,6 +54,10 @@ export function getFormattedUrl(websiteUrl: string, pathUrl: string) {
   const domainUrl = protocol + '//' + domain;
   let path = pathUrl;
 
+  if(pathUrl.startsWith("data:")){
+    return pathUrl;
+  }
+
   const websiteUrlLastSlashIndex = websiteUrl.lastIndexOf('/');
   let websiteUrlPartBeforeLastSlash =
     websiteUrl === domainUrl

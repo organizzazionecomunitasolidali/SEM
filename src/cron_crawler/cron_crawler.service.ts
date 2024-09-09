@@ -764,7 +764,6 @@ export class CronCrawlerService {
             productStructure.url,
           );
 
-          // TODO Check if url or data
           productStructure.thumbnailUrl = extractFromElement(
             $,
             productElement,
