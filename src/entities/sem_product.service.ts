@@ -250,7 +250,7 @@ export class SemProductService {
     .orIgnore()
     .execute();
 
-    const url_hash = hashString(thumbnailImageBuffer);
+    const url_hash = hashString(productStructure.url);
 
     // create thumbnail record if it does not exist
     const existingThumbnail = await this.semProductThumbnailRepository.findOne({ where: {url_hash: url_hash}});
