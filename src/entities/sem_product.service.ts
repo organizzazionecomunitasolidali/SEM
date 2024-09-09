@@ -98,7 +98,7 @@ export class SemProductService {
     
     let [results, total] = await query
       .innerJoinAndSelect('product.website', 'website')
-      .leftJoinAndSelect('product.currency_01','currency_01','currency_01.name = :currencyName', { currencyName: 'EUR' })
+      .leftJoinAndSelect('sem_currency','currency_01','currency_01.id = product.currency_01_id AND currency_01.name = :currencyName', { currencyName: 'EUR' })
       .select(['product', 'website.name'])
       .andWhere(where)
       .orderBy({

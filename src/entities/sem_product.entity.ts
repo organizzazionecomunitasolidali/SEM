@@ -8,8 +8,10 @@ import {
   Index,
   ManyToOne,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { SemWebsite } from '../entities/sem_website.entity';
+import { SemCurrency } from './sem_currency.entity';
 
 @Entity()
 @Unique(['url'])
