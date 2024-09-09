@@ -99,7 +99,8 @@ export class SemProductService {
     let [results, total] = await query
       .innerJoinAndSelect('product.website', 'website')
       .leftJoinAndSelect('sem_currency','currency_01','currency_01.id = product.currency_01_id AND currency_01.ticker = :ticker', { ticker: 'EUR' })
-      .select(['product', 'website.name' , 'currency_01.ticker AS ticker' ])
+      .select(['product', 'website.name'])
+      .addSelect('currency_01.ticker', 'ticker') 
       .andWhere(where)
       .orderBy({
         'product.is_used' : usedOrNew == "usedFirst" ? 'DESC' : 'ASC',
