@@ -226,7 +226,7 @@ export class SemProductService {
 
     const newProduct = this.semProductRepository.create({
       url: productStructure.url,
-      thumbnail: thumbnailImageBuffer,
+      thumbnail: null,
       title: productStructure.title,
       description: productStructure.description,
       price_01: productStructure.price_01,
