@@ -239,9 +239,9 @@ export class SemProductService {
   ): Promise<SemProduct> {
     
     const no_image_url = "file://" + path.join(this.getClientPublicDir(), 'image_not_found.png');
-    let thumbnailImageBuffer = await this.downloadImage(
-        productStructure.thumbnailUrl,
-    );
+    let thumbnailImageBuffer = productStructure.thumbnailUrl ? await this.downloadImage(
+        productStructure.thumbnailUrl
+    ) : null;
     if(!thumbnailImageBuffer){
       thumbnailImageBuffer = await this.downloadImage(no_image_url);
     }
