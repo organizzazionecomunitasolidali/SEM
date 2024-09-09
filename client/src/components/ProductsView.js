@@ -61,7 +61,7 @@ const ProductsView = () => {
 
   const isMobile = useMediaQuery('(max-width:960px)');
   const isLandscapeLarge = useMediaQuery('(min-width:1440px)');
-  const isLandscapeVeryLarge = useMediaQuery('(min-width:1600px)');
+  const isLandscapeVeryLarge = useMediaQuery('(min-width:1900px)');
 
   const fetchProductData = async (page, selCategories = selectedCategories, selCurrencies = selectedCurrencies) => {
     
