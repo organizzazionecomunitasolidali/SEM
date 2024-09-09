@@ -96,9 +96,10 @@ export class SemProductService {
       where = "product.is_used = 1";
     } 
     
+    /* // try to prioritize the products with EUR as primary currency , but it does not work!
     let [results, total] = await query
       .innerJoinAndSelect('product.website', 'website')
-      .leftJoinAndSelect('sem_currency','currency_01','currency_01.id IS NOT NULL AND currency_01.id = product.currency_01_id AND currency_01.ticker = :ticker', { ticker: 'EUR' })
+      .leftJoinAndSelect('sem_currency','currency_01','currency_01.id = product.currency_01_id AND currency_01.ticker = :ticker', { ticker: 'EUR' })
       .select(['product', 'website.name'])
       .addSelect('currency_01.ticker', 'ticker') 
       .andWhere(where)
@@ -110,6 +111,19 @@ export class SemProductService {
       .skip((page - 1) * limit)
       .take(limit)
       .getManyAndCount();
+    */
+
+    let [results, total] = await query
+    .innerJoinAndSelect('product.website', 'website')
+    .select(['product', 'website.name'])
+    .andWhere(where)
+    .orderBy({
+      'product.is_used' : usedOrNew == "usedFirst" ? 'DESC' : 'ASC',
+      'product.createdAt' : 'DESC'
+    })
+    .skip((page - 1) * limit)
+    .take(limit)
+    .getManyAndCount();
 
     const totalPages = Math.ceil(total / limit);
 
