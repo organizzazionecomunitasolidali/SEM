@@ -513,19 +513,22 @@ const ProductsView = () => {
         </Menu>
 
         {!loading && isLandscapeLarge &&
-          <Grid item xs={12}>
-            <Pagination
-              count={totalPages}
-              page={currentPage}
-              onChange={(event, page) => setCurrentPage(page)}
-              style={{
-                paddingTop: '30px',
-                paddingBottom: '30px',
-                display: 'flex',
-                justifyContent: 'center',
-                margin: '0px auto'
-              }}
-            />
+          <Grid item container xs={12} m={0} spacing={0} p={0}>
+            <Grid item xs={isLandscapeVeryLarge ? 2 : 3}></Grid>
+            <Grid item xs={isLandscapeVeryLarge ? 10 : 9}>
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                onChange={(event, page) => setCurrentPage(page)}
+                style={{
+                  paddingTop: '30px',
+                  paddingBottom: '30px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  margin: '0px auto'
+                }}
+              />
+            </Grid>
           </Grid>
         }
 
