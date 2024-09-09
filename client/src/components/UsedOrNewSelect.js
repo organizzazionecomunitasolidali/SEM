@@ -23,14 +23,7 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
       {isOnLeftPane ? (
         
         <div>
-
-          <Menu
-                id="usednew-menu"
-                open={true} // Always open
-                keepMounted
-                style={{ display: 'block', position: 'static' }} // Ensure it's displayed as a block element and not floating
-          >         
-
+          
             {/* Title/Label in bold */}
             <Typography variant="h6" style={{ fontWeight: 'bold', padding: '10px 16px' }}>
             {t('usedOrNew')}
@@ -72,7 +65,6 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
                 />
                 {t('usedOnly')}
             </MenuItem> 
-          </Menu>
 
         </div>
 

@@ -68,12 +68,7 @@ const CategorySelect = ({ isOnLeftPane, setCategories, selectedItems, setSelecte
     <>
       {isOnLeftPane ? (
         <div>
-          <Menu
-                id="categories-menu"
-                open={true} // Always open
-                keepMounted
-                style={{ display: 'block', position: 'static' }} // Ensure it's displayed as a block element and not floating
-          >       
+                
             {/* Title/Label in bold */}
             <Typography variant="h6" style={{ fontWeight: 'bold', padding: '10px 16px' }}>
             {t('Categories')}
@@ -95,7 +90,7 @@ const CategorySelect = ({ isOnLeftPane, setCategories, selectedItems, setSelecte
                 </MenuItem>
               );
             })}
-          </Menu>
+            
         </div>      
     
       ) : (
