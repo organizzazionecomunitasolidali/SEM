@@ -89,7 +89,6 @@ export class SemProductService {
       where = "product.is_used = 1";
     } 
     
-    /*
     // try to prioritize the products with EUR as primary currency , but it does not work!
     let [results, total] = await query
       .innerJoinAndSelect('product.website', 'website')
@@ -105,9 +104,8 @@ export class SemProductService {
       .skip((page - 1) * limit)
       .take(limit)
       .getManyAndCount();
-    
-      */
-
+      
+      /*
     let [results, total] = await query
     .innerJoinAndSelect('product.website', 'website')
     .select(['product', 'website.name'])
@@ -119,6 +117,7 @@ export class SemProductService {
     .skip((page - 1) * limit)
     .take(limit)
     .getManyAndCount();
+    */
     
     console.log("product findall " + results.length);
 
