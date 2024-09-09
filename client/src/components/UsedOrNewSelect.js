@@ -22,7 +22,7 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
     <>
       {isOnLeftPane ? (
         
-        <div style={{marginBottom: "30px", boxShadow: "2px 2px 20px #2222"}}>
+        <div style={{marginBottom: "30px", boxShadow: "2px 2px 20px #2222", padding: "10px"}}>
           
             {/* Title/Label in bold */}
             <Typography variant="h6" style={{ fontWeight: 'bold', padding: '10px 16px' }}>
