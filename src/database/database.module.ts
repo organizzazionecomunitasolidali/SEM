@@ -48,7 +48,7 @@ import * as fs from 'fs';
           database: databasePath,
           entities: [join(__dirname, '..', '**', '*.entity.{ts,js}')],
           synchronize: true,
-          logging: false,
+          logging: true,
         };
       },
       inject: [ConfigService],

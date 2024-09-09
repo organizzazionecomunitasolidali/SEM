@@ -60,6 +60,7 @@ export class SemProductService {
     if (search) {
       query.andWhere('product.title LIKE :search', { search: `%${search}%` });
     }
+
     if (category_ids) {
       
       let categoryCondition = '(';
@@ -70,23 +71,15 @@ export class SemProductService {
         or = " OR ";
       });
 
-      categoryCondition += ')';
-
-      if (search) {
-        query.andWhere(categoryCondition);
-      } else {
-        query.andWhere(categoryCondition);
-      }
+      categoryCondition += ')';      
+      query.andWhere(categoryCondition);
+      
     }
+
     if (currencies) {
       const currencyIds = currencies.split(',').map(Number);
       const currencyCondition = `((product.currency_01_id IN (:...currencyIds) AND product.price_01 >= 0) OR (product.currency_02_id IN (:...currencyIds) AND product.price_02 >= 0))`;
-
-      if (search || category_ids) {
-        query.andWhere(currencyCondition, { currencyIds });
-      } else {
-        query.andWhere(currencyCondition, { currencyIds });
-      }
+      query.andWhere(currencyCondition, { currencyIds });
     }
 
     let where = "TRUE";
@@ -96,10 +89,11 @@ export class SemProductService {
       where = "product.is_used = 1";
     } 
     
+    /*
     // try to prioritize the products with EUR as primary currency , but it does not work!
     let [results, total] = await query
       .innerJoinAndSelect('product.website', 'website')
-      .leftJoinAndSelect('sem_currency','currency_01','currency_01.id = product.currency_01_id AND product.price_01 > 0 AND currency_01.ticker = :ticker', { ticker: 'EUR' })
+      .leftJoinAndSelect('sem_currency','currency_01','currency_01.id = product.currency_01_id AND currency_01.ticker = :ticker AND product.price_01 >= 0.01', { ticker: 'EUR' })
       .select(['product', 'website.name'])
       .addSelect('currency_01.ticker', 'ticker') 
       .andWhere(where)
@@ -112,7 +106,8 @@ export class SemProductService {
       .take(limit)
       .getManyAndCount();
     
-    /*
+      */
+
     let [results, total] = await query
     .innerJoinAndSelect('product.website', 'website')
     .select(['product', 'website.name'])
@@ -124,7 +119,8 @@ export class SemProductService {
     .skip((page - 1) * limit)
     .take(limit)
     .getManyAndCount();
-    */
+    
+    console.log("product findall " + results.length);
 
     const totalPages = Math.ceil(total / limit);
 
