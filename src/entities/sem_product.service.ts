@@ -103,7 +103,7 @@ export class SemProductService {
       .andWhere(where)
       .orderBy({
         'product.is_used' : usedOrNew == "usedFirst" ? 'DESC' : 'ASC',
-        'currency_01.ticker' : 'DESC',
+        'ticker' : 'DESC',
         'product.createdAt' : 'DESC'
       })
       .skip((page - 1) * limit)
