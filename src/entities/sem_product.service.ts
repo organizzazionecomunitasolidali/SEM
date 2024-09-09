@@ -98,10 +98,12 @@ export class SemProductService {
     
     let [results, total] = await query
       .innerJoinAndSelect('product.website', 'website')
+      .leftJoinAndSelect('product.currency_01','currency_01','currency_01.name = :currencyName', { currencyName: 'EUR' })
       .select(['product', 'website.name'])
       .andWhere(where)
       .orderBy({
         'product.is_used' : usedOrNew == "usedFirst" ? 'DESC' : 'ASC',
+        'currency_01.name' : 'DESC',
         'product.createdAt' : 'DESC'
       })
       .skip((page - 1) * limit)
