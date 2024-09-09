@@ -220,15 +220,12 @@ export class SemProductService {
     productStructure: ProductStructure,
     website: SemWebsite,
   ): Promise<SemProduct> {
-
-    let thumbnailImageBuffer = null; 
-    const no_image_url = process.env.CORS_ORIGIN + "/image_not_found.png";
     
-    try {
-      thumbnailImageBuffer = await this.downloadImage(
+    const no_image_url = process.env.CORS_ORIGIN + "/image_not_found.png";
+    let thumbnailImageBuffer = await this.downloadImage(
         productStructure.thumbnailUrl,
-      );
-    } catch(exc){
+    );
+    if(!thumbnailImageBuffer){
       thumbnailImageBuffer = await this.downloadImage(no_image_url);
     }
 
