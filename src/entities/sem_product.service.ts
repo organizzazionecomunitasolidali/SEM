@@ -220,9 +220,17 @@ export class SemProductService {
     productStructure: ProductStructure,
     website: SemWebsite,
   ): Promise<SemProduct> {
-    const thumbnailImageBuffer = await this.downloadImage(
-      productStructure.thumbnailUrl,
-    );
+
+    let thumbnailImageBuffer = null; 
+    const no_image_url = process.env.CORS_ORIGIN + "/image_not_found.png";
+    
+    try {
+      thumbnailImageBuffer = await this.downloadImage(
+        productStructure.thumbnailUrl,
+      );
+    } catch(exc){
+      thumbnailImageBuffer = await this.downloadImage(no_image_url);
+    }
 
     const newProduct = this.semProductRepository.create({
       url: productStructure.url,
@@ -245,7 +253,7 @@ export class SemProductService {
     .orIgnore()
     .execute();
 
-    const url_hash = hashString(productStructure.url);
+    const url_hash = hashString(thumbnailImageBuffer);
 
     // create thumbnail record if it does not exist
     const existingThumbnail = await this.semProductThumbnailRepository.findOne({ where: {url_hash: url_hash}});
