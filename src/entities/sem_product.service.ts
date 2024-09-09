@@ -180,12 +180,20 @@ export class SemProductService {
     });
   }
 
+  getClientDir(){
+    return path.join(process.cwd(), 'client');
+  }
+
+  getClientPublicDir(){
+    return path.join(this.getClientDir(), 'public');
+  }
+
   getThumbnailUrlFromHash(hash){
     return process.env.CORS_ORIGIN + `/product_images/${hash}.jpg`;
   }
 
   getFullThumbnailPathFromHash(hash){
-    const imagesDir = path.join(process.cwd(), 'client/public/product_images');
+    const imagesDir = path.join(this.getClientPublicDir(), 'product_images');
     // Ensure the directory exists
     if (!fs.existsSync(imagesDir)) {
       fs.mkdirSync(imagesDir, { recursive: true });
@@ -205,13 +213,21 @@ export class SemProductService {
 
   async downloadImage(url) {
     try {
-      const response = await axios.get(url, {
-        responseType: 'arraybuffer', // This ensures the response is a Buffer
-      });
-      
-      return Buffer.from(response.data, 'binary');
+      if (url.startsWith('file://')) {
+        // Handle local file URL
+        const filePath = url.replace('file://', ''); // Remove the "file://" part
+        const fileData = fs.readFileSync(filePath); // Read the file as a buffer
+        return fileData;
+      } else {
+        // Handle remote HTTP URL
+        const response = await axios.get(url, {
+          responseType: 'arraybuffer', // This ensures the response is a Buffer
+        });
+        
+        return Buffer.from(response.data, 'binary');
+      }
     } catch (error) {
-      console.error('Error downloading the image ' + url + ':', error);
+      console.error('Error downloading the image ' + url + ' :', error);
       return null;
     }
   }
@@ -221,7 +237,7 @@ export class SemProductService {
     website: SemWebsite,
   ): Promise<SemProduct> {
     
-    const no_image_url = process.env.CORS_ORIGIN + "/image_not_found.png";
+    const no_image_url = "file://" + path.join(this.getClientPublicDir(), 'image_not_found.png');
     let thumbnailImageBuffer = await this.downloadImage(
         productStructure.thumbnailUrl,
     );
