@@ -92,13 +92,13 @@ export class SemProductService {
     // try to prioritize the products with EUR as primary currency , but it does not work!
     let [results, total] = await query
       .innerJoinAndSelect('product.website', 'website')
-      .leftJoinAndSelect('sem_currency','currency_01','currency_01.id = product.currency_01_id AND currency_01.ticker = :ticker AND product.price_01 >= 0.01', { ticker: 'EUR' })
+      .leftJoinAndSelect('sem_currency','currency_01','currency_01.id = product.currency_01_id AND currency_01.name = :name AND product.price_01 >= 0.01', { name: 'Euro' })
       .select(['product', 'website.name'])
-      .addSelect('currency_01.ticker', 'ticker') 
+      .addSelect('currency_01.name', 'euro') 
       .andWhere(where)
       .orderBy({
         'product.is_used' : usedOrNew == "usedFirst" ? 'DESC' : 'ASC',
-        'ticker' : 'DESC',
+        'euro' : 'DESC',
         'product.createdAt' : 'DESC'
       })
       .skip((page - 1) * limit)
