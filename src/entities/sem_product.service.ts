@@ -98,12 +98,12 @@ export class SemProductService {
     
     let [results, total] = await query
       .innerJoinAndSelect('product.website', 'website')
-      .leftJoinAndSelect('sem_currency','currency_01','currency_01.id = product.currency_01_id AND currency_01.name = :currencyName', { currencyName: 'EUR' })
-      .select(['product', 'website.name'])
+      .leftJoinAndSelect('sem_currency','currency_01','currency_01.id = product.currency_01_id AND currency_01.ticker = :ticker', { ticker: 'EUR' })
+      .select(['product', 'website.name' , 'currency_01.ticker' ])
       .andWhere(where)
       .orderBy({
         'product.is_used' : usedOrNew == "usedFirst" ? 'DESC' : 'ASC',
-        'currency_01.name' : 'DESC',
+        'currency_01.ticker' : 'DESC',
         'product.createdAt' : 'DESC'
       })
       .skip((page - 1) * limit)
