@@ -84,7 +84,7 @@ export class SemProductService {
 
     let where = "TRUE";
     if(usedOrNew == "newOnly"){
-      where = "product.is_used IS NULL OR product.is_used = 0";
+      where = "(product.is_used IS NULL OR product.is_used = 0)";
     } else if(usedOrNew == "usedOnly"){
       where = "product.is_used = 1";
     } 
