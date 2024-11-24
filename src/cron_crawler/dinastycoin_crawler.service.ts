@@ -54,6 +54,10 @@ export class DinastycoinCrawlerService {
       let full_product = await apiClient.get<object>(`https://dinastycoin.club/apidcy/marketplace?productid=${prod.id}`);
       console.log("full: ", full_product);
       full_product = full_product['data'];
+
+      if(full_product['pubblicato'] === "N"){
+        return;
+      }
       
       let url = prod["Originalproductpath"] ? prod["Originalproductpath"] : null;
       if(!url){
