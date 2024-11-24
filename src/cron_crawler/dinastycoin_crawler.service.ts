@@ -55,7 +55,7 @@ export class DinastycoinCrawlerService {
       console.log("full: ", full_product);
       full_product = full_product['data'];
 
-      if(full_product['pubblicato'] === "N"){
+      if(full_product['pubblicato'] === "N" || full_product['donazione']){
         return;
       }
       
