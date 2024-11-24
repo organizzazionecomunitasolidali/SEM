@@ -22,6 +22,7 @@ import {
   PaginationHtmlElementData,
 } from '../service_openai/service_openai.service';
 import { SemHtmlElementStructureService } from '../entities/sem_html_element_structure.service';
+import { DinastycoinCrawlerService } from './dinastycoin_crawler.service';
 import {
   SemProductService,
   ProductStructure,
@@ -85,6 +86,7 @@ export class CronCrawlerService {
     private readonly semProductService: SemProductService,
     private readonly semCurrencyService: SemCurrencyService,
     private readonly semCategoryService: SemCategoryService,
+    private readonly dinastycoinCrawlerService: DinastycoinCrawlerService,
     @Inject('MEMORY_DATABASE_CONNECTION')
     private readonly memoryDbConnection: Connection,
   ) {}
@@ -192,7 +194,14 @@ export class CronCrawlerService {
             '',
           );
 
-          await this.crawl(website);
+          if(website.api_alias) {
+            if(website.api_alias === 'Dinastycoin') {
+              await this.dinastycoinCrawlerService.crawl(website);
+            }
+            // TODO add other api_alias crawlers here
+          } else {
+            await this.crawl(website);
+          }
 
           // const websiteUpdated = await this.semWebsiteService.findOne(
           //   website.id,

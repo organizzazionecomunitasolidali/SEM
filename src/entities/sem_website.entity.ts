@@ -47,6 +47,10 @@ export class SemWebsite {
   @Column({ nullable: true })
   default_product_selector: string;
 
+  // e.g. Dinastycoin. This alias will indicate which custom API method to use by crawl(). If empty, the resulta scraping will be done
+  @Column({ nullable: true })
+  api_alias: string;
+
   // @Column()
   // openai_completions_id: number;
 
