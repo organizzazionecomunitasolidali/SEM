@@ -1,6 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SemCategory } from '../entities/sem_category.entity';
 import { SemCategoryService } from '../entities/sem_category.service';
@@ -112,9 +112,15 @@ import * as fs from 'fs';
     SemProductService,
     SemCurrencyService,
     SemCategoryService,
+    {
+      provide: 'PERSISTENT_DATABASE_CONNECTION',
+      useFactory: async (connection: Connection) => connection,
+      inject: [Connection],
+    },
   ],
   exports: [
-    TypeOrmModule,
+    TypeOrmModule, 
+    'PERSISTENT_DATABASE_CONNECTION',
     SemHtmlElementService,
     SemOpenaiCompletionsService,
     SemOpenaiCompletionsRequestService,

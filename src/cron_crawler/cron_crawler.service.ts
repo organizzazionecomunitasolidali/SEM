@@ -195,7 +195,7 @@ export class CronCrawlerService {
           );
 
           if(website.api_alias) {
-            if(website.api_alias === 'Dinastycoin') {
+            if(website.api_alias.toLocaleLowerCase() === 'dinastycoin') {
               await this.dinastycoinCrawlerService.crawl(website);
             }
             // TODO add other api_alias crawlers here

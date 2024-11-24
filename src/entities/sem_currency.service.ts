@@ -44,7 +44,7 @@ export class SemCurrencyService {
     });
   }
 
-  async getCurrencyFromString(currencyString: string): Promise<SemCurrency> {
+  async getCurrencyFromString(currencyString: string, forceTicker: boolean = false): Promise<SemCurrency> {
     let name: string;
     let ticker: string;
     let symbol: string;
@@ -61,20 +61,26 @@ export class SemCurrencyService {
         : nameAndAmount[0];
     }
 
-    switch (currencyString.length) {
-      case 1:
-        symbol = currencyString;
-        currency = await this.findOneBySymbol(symbol);
-        break;
-      case 3:
-        ticker = currencyString;
-        currency = await this.findOneByTicker(ticker);
-        break;
-      default:
-        name = currencyString;
-        currency = await this.findOneByName(name);
-        break;
+    if(forceTicker){
+      ticker = currencyString;
+      currency = await this.findOneByTicker(currencyString);
+    } else {
+      switch (currencyString.length) {
+        case 1:
+          symbol = currencyString;
+          currency = await this.findOneBySymbol(symbol);
+          break;
+        case 3:
+          ticker = currencyString;
+          currency = await this.findOneByTicker(ticker);
+          break;
+        default:
+          name = currencyString;
+          currency = await this.findOneByName(name);
+          break;
+      }
     }
+
     if (!currency) {
       currency = await this.createCurrency(name, ticker, symbol);
     }

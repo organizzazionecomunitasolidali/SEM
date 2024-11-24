@@ -229,6 +229,13 @@ const TaskView = ({
       },
     },
     { title: 'Message', field: 'message', width: 350, formatter: 'textarea' },
+    {
+      title: 'API Alias',
+      field: 'api_alias',
+      editor: 'input',
+      width: 250,
+      headerFilter: 'input',
+    },
   ];
 
   // const handleGroupHeaderPlay = () => {
