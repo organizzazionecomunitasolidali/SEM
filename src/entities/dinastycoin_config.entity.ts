@@ -7,19 +7,13 @@ export class DinastycoinConfig {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  endpoint: string;
-
-  @Column()
+  @Column({ nullable: true })
   apiKey: string;
 
-  @Column()
-  login: string;
+  @Column({ nullable: true })
+  signature: string;
 
-  @Column()
-  password: string;
-
-  @Column()
+  @Column({ nullable: true })
   pin: number;
 
 }

@@ -294,8 +294,39 @@ export class SemProductService {
     timestamp: number,
   ): Promise<SemProduct> {
     product['timestamp'] = timestamp; // Update the field
-    await this.semProductRepository.save(product); // Save the updated process
+    await this.semProductRepository.save(product); // Save the updated product
     return product;
+  }
+
+  async updateProductAvailability(
+    product: SemProduct,
+    is_available: Boolean,
+  ): Promise<SemProduct> {
+    product['is_available'] = is_available; // Update the field
+    await this.semProductRepository.save(product); // Save the updated product
+    return product;
+  }
+
+  async updateProductPrice(
+    product: SemProduct,
+    price_01: number,
+    price_02: number = null, // optional
+  ): Promise<SemProduct> {
+    product['price_01'] = price_01; // Update the field
+    product['price_02'] = price_02; // Update the field
+    await this.semProductRepository.save(product); // Save the updated product
+    return product;
+  }
+
+  async updateProductAvailabilityOfWebsite(
+    websiteId: number,
+    is_available: Boolean,
+  ) {
+    await this.semProductRepository.createQueryBuilder()
+    .update(SemProduct)
+    .set({ is_available: is_available })
+    .andWhere('websiteId = :websiteId', { websiteId })
+    .execute();
   }
 
   async deleteOlderThan(timestamp: number, website: SemWebsite, isSoftDelete: boolean): Promise<void> {

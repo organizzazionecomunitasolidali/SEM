@@ -92,7 +92,7 @@ export class CrawlerJsonApiService {
     throw error;
   }
 
-  async get<T>(url: string, apiKey?: string, bearerToken?: string): Promise<T> {
+  async get<T>(url: string): Promise<T> {
     try {
       const config = this.createConfig();
       const response = await this.axiosInstance.get<T>(url, config);
@@ -102,7 +102,7 @@ export class CrawlerJsonApiService {
     }
   }
 
-  async post<T>(url: string, data: any, apiKey?: string, bearerToken?: string): Promise<T> {
+  async post<T>(url: string, data: any): Promise<T> {
     try {
       const config = this.createConfig();
       const response = await this.axiosInstance.post<T>(url, data, config);
@@ -112,7 +112,7 @@ export class CrawlerJsonApiService {
     }
   }
 
-  async put<T>(url: string, data: any, apiKey?: string, bearerToken?: string): Promise<T> {
+  async put<T>(url: string, data: any): Promise<T> {
     try {
       const config = this.createConfig();
       const response = await this.axiosInstance.put<T>(url, data, config);
@@ -122,7 +122,7 @@ export class CrawlerJsonApiService {
     }
   }
 
-  async patch<T>(url: string, data: any, apiKey?: string, bearerToken?: string): Promise<T> {
+  async patch<T>(url: string, data: any): Promise<T> {
     try {
       const config = this.createConfig();
       const response = await this.axiosInstance.patch<T>(url, data, config);
@@ -132,7 +132,7 @@ export class CrawlerJsonApiService {
     }
   }
 
-  async delete<T>(url: string, apiKey?: string, bearerToken?: string): Promise<T> {
+  async delete<T>(url: string): Promise<T> {
     try {
       const config = this.createConfig();
       const response = await this.axiosInstance.delete<T>(url, config);

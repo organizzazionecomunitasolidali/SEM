@@ -13,6 +13,7 @@ import { SemWebsiteService } from '../entities/sem_website.service';
 import { SemProductService, ProductStructure } from '../entities/sem_product.service';
 import { Connection } from 'typeorm';
 import { DinastycoinConfigService } from '../entities/dinastycoin_config.service';
+import { DinastycoinConfig } from '../entities/dinastycoin_config.entity';
 import { CrawlerJsonApiService } from './crawler_json_api_service';
 import { SemProductSaleStatsService } from '../entities/sem_product_sale_stats.service';
 import { ServiceOpenaiService } from '../service_openai/service_openai.service';
@@ -26,107 +27,135 @@ export class DinastycoinCrawlerService {
     private readonly semCurrencyService: SemCurrencyService,
     private readonly semCategoryService: SemCategoryService,
     private readonly dinastycoinConfigService: DinastycoinConfigService,
+    private dinastycoinConfig: DinastycoinConfig,
     private readonly semProductSaleStatsService: SemProductSaleStatsService,
     private readonly serviceOpenaiService: ServiceOpenaiService,
   ) {}
 
   async getApiClient(): Promise<CrawlerJsonApiService> {
-    const dinastycoinConfig = await this.dinastycoinConfigService.findOneWithMaxId();
-    return new CrawlerJsonApiService("api-key",dinastycoinConfig.apiKey);
+    this.dinastycoinConfig = await this.dinastycoinConfigService.findOneWithMaxId();
+    return new CrawlerJsonApiService("api-key",this.dinastycoinConfig.apiKey,null,this.dinastycoinConfig.signature);
   }
 
-  async crawl(website: SemWebsite) {
+  async crawl(website: SemWebsite, limit_product_creation: number = 20) {
 
     const apiClient = await this.getApiClient();
 
     let exchangeRatesEUR = {};
+    let productsCreated = 0;
 
-    const productsList = await apiClient.get<object>("https://dinastycoin.club/apidcy/productlist?coin=all");
+    try {
 
-    const productsListData = productsList['data'];
-    if (!productsListData) {
-      throw new Error('No data field found in catmarketplace response');
-    }
+      const allDinastycoinCategories = await this.getAllCategories();
+      const productsList = await this.getAllProductsList();
 
-    productsListData.forEach(async (prod) => {
-      
-      console.log(prod);
-      let full_product = await apiClient.get<object>(`https://dinastycoin.club/apidcy/marketplace?productid=${prod.id}`);
-      console.log("full: ", full_product);
-      full_product = full_product['data'];
+      // flag all products as unavailable for this site. then we will update them as available if they are
+      await this.semProductService.updateProductAvailabilityOfWebsite(website.id, false);
 
-      if(full_product['pubblicato'] === "N" || full_product['donazione']){
-        return;
-      }
-      
-      let url = prod["Originalproductpath"] ? prod["Originalproductpath"] : null;
-      if(!url){
-        url = full_product['originalpath'] ? full_product['originalpath'] : "https://dinastycoin.club?art=" + prod.id;
-      }
+      productsList.forEach(async (prod) => {
 
-      if (!exchangeRatesEUR[full_product['coinmain']]) {
+        if(productsCreated >= limit_product_creation){
+          return;
+        }
+        if(prod["qtydisp"] === 0){
+          return;
+        }
+        
+        console.log(prod);
+        let full_product = await apiClient.get<object>(`https://dinastycoin.club/apidcy/ecom/marketplace?productid=${prod["id"]}`);
+        console.log("full: ", full_product);
+        full_product = full_product['data'];
+
+        if(full_product['pubblicato'] === "N" || full_product['donazione']){
+          return;
+        }
+        
+        let url = prod["Originalproductpath"] ? prod["Originalproductpath"] : null;
+        if(!url){
+          url = full_product['originalpath'] ? full_product['originalpath'] : "https://dinastycoin.club?art=" + prod["id"];
+        }
+
+        if (!exchangeRatesEUR[full_product['coinmain']]) {
           let exchangeRateResponse = await apiClient.get<object>(`https://dinastycoin.club/apidcy/exchange/` + full_product['coinmain'] + `EUR`);
           const exchangeRate = Object.values(exchangeRateResponse)[0];
           exchangeRatesEUR[full_product['coinmain']] = parseFloat(exchangeRate);
-      }
-      
-      let defaultThumbnailUrl = "https://dinastycoin.club/images/products/" + full_product['recordid'] + ".jpg";
-      let thumbnailUrl = full_product["immagine1"] ? full_product["immagine1"] : defaultThumbnailUrl;
-      if(!thumbnailUrl.startsWith("http")){
-        thumbnailUrl = "https://dinastycoin.club/images/products/" + full_product['immagine1'];
-      }
+        }
+        const price_01 = full_product['prezzoeuro'] / exchangeRatesEUR[full_product['coinmain']];
 
-      const currency: SemCurrency = await this.semCurrencyService.getCurrencyFromString( full_product['coinmain'] , true );
-    
-      let productStructure: ProductStructure = {
-        url: url,
-        title: full_product["descrizione"],
-        description: full_product["descrizionefull"],
-        description_long: null,
-        is_used: full_product["stato"] !== "N",
-        thumbnailUrl:  thumbnailUrl,
-        price_01: full_product['prezzoeuro'] / exchangeRatesEUR[full_product['coinmain']],
-        currency_01_id: currency.id,
-        price_02: null,
-        currency_02_id: null,
-        category_id: null,
-        timestamp: Date.now(),
-      }
-
-      // now map Dinastycoin category to Sem category
-      let allDinastycoinCategories = await this.getAllCategories();
-      let dinastycoinCategoryPath = this.getCategoryPath(allDinastycoinCategories, full_product["categoriaid"]);
-
-      const categoryName = await this.serviceOpenaiService.getProductCategory(
-        productStructure.title + " (in categoria " + dinastycoinCategoryPath + ")<hr>" + productStructure.description,
-        website,
-      );
-      console.log('Dinastycoin product [' + prod.id + '] ' + productStructure.title + '. categoryName = ' + categoryName);
-      const category = await this.semCategoryService.findOneByName(categoryName);
-      productStructure.category_id = category ? category.id : null;      
-      
-      // Find existing product by Url (it's unique)
-      let product = await this.semProductService.findOneByUrl(
-        productStructure.url,
-      );
-      let productAlreadyExist: boolean = product ? true : false;
-      if (product) {
-        product = await this.semProductService.updateProductTimestamp(
-          product,
-          productStructure.timestamp,
+        // Find existing product by Url (it's unique)
+        let product = await this.semProductService.findOneByUrl(
+          url,
         );
-      }
-      if (!productAlreadyExist) {
-        console.log('createProduct Dinastycoin');
-        product = await this.semProductService.createProduct(
-          productStructure,
-          website,
-        );
-      }
+        let productAlreadyExist: boolean = product ? true : false;
+        if (product) {
+          await this.semProductService.updateProductPrice(
+            product,
+            price_01,
+          );
+          product = await this.semProductService.updateProductAvailability(
+            product,
+            true,
+          );
+          product = await this.semProductService.updateProductTimestamp(
+            product,
+            Date.now()
+          );
+        }
 
-      await this.semProductSaleStatsService.updateTotalSales(product.id, full_product["qtavendute"]);
+        if (!productAlreadyExist) {
+          
+          let defaultThumbnailUrl = "https://dinastycoin.club/images/products/" + full_product['recordid'] + ".jpg";
+          let thumbnailUrl = prod["mainimage"] ? prod["mainimage"] : null;
+          thumbnailUrl = full_product["immagine1"] ? full_product["immagine1"] : thumbnailUrl;
+          thumbnailUrl = thumbnailUrl ? thumbnailUrl : defaultThumbnailUrl;
+          if(!thumbnailUrl.startsWith("http")){
+            thumbnailUrl = "https://dinastycoin.club/images/products/" + thumbnailUrl;
+          }
 
-    });
+          const currency: SemCurrency = await this.semCurrencyService.getCurrencyFromString( full_product['coinmain'] , true );
+        
+          let productStructure: ProductStructure = {
+            url: url,
+            title: full_product["descrizione"],
+            description: full_product["descrizionefull"],
+            description_long: null,
+            is_used: full_product["stato"] !== "N",
+            thumbnailUrl:  thumbnailUrl,
+            price_01: price_01,
+            currency_01_id: currency.id,
+            price_02: null,
+            currency_02_id: null,
+            category_id: null,
+            timestamp: Date.now(),
+          }
+
+          // now map Dinastycoin category to Sem category
+          let dinastycoinCategoryPath = this.getCategoryPath(allDinastycoinCategories, full_product["categoriaid"]);
+          const categoryName = await this.serviceOpenaiService.getProductCategory(
+            productStructure.title + " (in categoria " + dinastycoinCategoryPath + ")<hr>" + productStructure.description,
+            website,
+          );
+          console.log('Dinastycoin product [' + prod["id"] + '] ' + productStructure.title + '. categoryName = ' + categoryName);
+          const category = await this.semCategoryService.findOneByName(categoryName);
+          productStructure.category_id = category ? category.id : null;      
+        
+          console.log('createProduct Dinastycoin');
+          product = await this.semProductService.createProduct(
+            productStructure,
+            website,
+          );
+
+          productsCreated++;
+
+        }
+
+        await this.semProductSaleStatsService.updateTotalSales(product.id, full_product["qtavendute"]);
+
+      });
+
+    } catch (error) {
+      console.error('Error in DinastycoinCrawlerService.crawl', error);
+    }
 
   }
 
@@ -137,7 +166,7 @@ export class DinastycoinCrawlerService {
     
     let categories = [];
     
-    let all_categories_result = await apiClient.get<object>(`https://dinastycoin.club/apidcy/catmarketplace?id=All`);
+    let all_categories_result = await apiClient.get<object>(`https://dinastycoin.club/apidcy/ecom/catmarketplace?id=All`);
     let all_categories = all_categories_result['data'];
 
     all_categories.forEach(element => {
@@ -147,6 +176,18 @@ export class DinastycoinCrawlerService {
     return categories;
       
   }
+
+
+  async getAllProductsList(): Promise<object[]> {
+    const apiClient = await this.getApiClient();
+    const productsList = await apiClient.get<object>("https://dinastycoin.club/apidcy/ecom/productlist?coin=all");
+    const productsListData = productsList['data'];
+    if (!productsListData) {
+      throw new Error('No data field found in catmarketplace response');
+    }
+    return productsListData;
+  }
+
 
   private insertIntoTree(tree: any[], element: any): boolean {
     // If parentid is 0, this is a root element - add directly to tree

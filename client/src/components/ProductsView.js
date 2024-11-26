@@ -30,6 +30,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 // import { fetchProducts } from '../api'; // Assume you have an API function to fetch products
 import { useTranslation } from 'react-i18next';
+import Logo from '../assets/logo270.png';
+import TelegramImage from '../assets/telegram.png';
 
 let search = '';
 let usedOrNew = 'newFirst';
@@ -547,6 +549,59 @@ const ProductsView = () => {
           }}
         />
       )}
+
+      {!loading && (
+        <footer style={{marginTop: '30px', padding: '30px', backgroundColor: '#35a455', color: 'white', display: 'flex', justifyContent: 'center'}}>
+          <Box
+            component="img"
+            sx={{
+              height: 48,
+              marginRight: 4,
+            }}
+            alt={appName}
+            src={Logo}
+          />  
+          {isMobile && (
+            <div>
+              <div>
+                <a href="https://comunitasolidali.it" target="_blank">Sito principale Comunità Solidali</a>
+              </div>
+              <div>
+                <a href="https://t.me/+YguORQ9LQrUzYjNk" target="_blank">
+                  <Box
+                    component="img"
+                    sx={{
+                      height: 48,
+                      marginRight: 4,
+                    }}
+                    alt="Telegram"
+                    src={TelegramImage}
+                  />  
+                </a>
+              </div>
+            </div>
+          )}      
+          {!isMobile && (
+            <>
+              <div style={{marginRight: '30px'}}>
+                <a href="https://comunitasolidali.it" target="_blank">Sito principale Comunità Solidali</a>
+              </div>
+              <div>
+                <a href="https://t.me/+YguORQ9LQrUzYjNk" target="_blank">
+                  <Box
+                    component="img"
+                    sx={{
+                      height: 48,
+                      marginRight: 4,
+                    }}
+                    alt="Telegram"
+                    src={TelegramImage}
+                  />  
+                </a>
+              </div>
+            </>
+          )}   
+        </footer>)}
       
     </>
   );

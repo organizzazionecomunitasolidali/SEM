@@ -60,6 +60,9 @@ export class SemProduct {
   @Column({ nullable: true })
   is_used: Boolean;
 
+  @Column({ nullable: false, default: true })
+  is_available: Boolean;
+
   @Index()
   @CreateDateColumn()
   createdAt: Date;
