@@ -3,10 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SemProductSaleStats } from './sem_product_sale_stats.entity';
 import * as moment from 'moment';
-import { DateUtils } from '../utils/DateUtils';
 import { LessThan } from 'typeorm';
 import { Connection } from 'typeorm';
-
+import { getStartOfWeekTimestamp } from '../utils/DateUtils';
 
 @Injectable()
 export class SemProductSaleStatsService {
@@ -56,7 +55,7 @@ export class SemProductSaleStatsService {
 
 
   async sumAllSalesByProductIdInThePastWeeks(productId: number): Promise<number> {
-    let startOfWeek = DateUtils.getStartOfWeekTimestamp();
+    let startOfWeek = getStartOfWeekTimestamp();
     let statsInPastWeeks = await this.semProductSaleStatsRepository.find({
         where: { 
           productId: productId,
@@ -74,7 +73,7 @@ export class SemProductSaleStatsService {
   async updateTotalSales(productId: number, currentTotalSales: number) {
     let sumPastSales = await this.sumAllSalesByProductIdInThePastWeeks(productId);
     let salesInThisWeek = currentTotalSales - sumPastSales;
-    let weekStartTimestamp = DateUtils.getStartOfWeekTimestamp().unix();
+    let weekStartTimestamp = getStartOfWeekTimestamp().unix();
     // use persistentDbConnection for making a raw query that is compatible to SQLite and Mysql, to insert or update the sales stats record for this product and this week
     const query = `
       REPLACE INTO sem_product_sale_stats (productId, weekTimestampStart, sales)

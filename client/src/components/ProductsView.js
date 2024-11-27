@@ -31,6 +31,7 @@ import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 // import { fetchProducts } from '../api'; // Assume you have an API function to fetch products
 import { useTranslation } from 'react-i18next';
 import Logo from '../assets/logo270.png';
+import LogoGrey from '../assets/logo270-grey.png';
 import TelegramImage from '../assets/telegram.png';
 
 let search = '';
@@ -257,6 +258,10 @@ const ProductsView = () => {
           .filter(Boolean)[0]
       : t('(unknown currency)');
   };
+
+  const appName = process.env.REACT_APP_NAME
+    ? process.env.REACT_APP_NAME
+    : 'SEM';
 
   return (
     <>
@@ -551,7 +556,7 @@ const ProductsView = () => {
       )}
 
       {!loading && (
-        <footer style={{marginTop: '30px', padding: '30px', backgroundColor: '#35a455', color: 'white', display: 'flex', justifyContent: 'center'}}>
+        <footer style={{ position: 'relative', marginTop: '30px', padding: '30px', backgroundColor: '#35a455', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center'}}>
           <Box
             component="img"
             sx={{
@@ -559,22 +564,20 @@ const ProductsView = () => {
               marginRight: 4,
             }}
             alt={appName}
-            src={Logo}
+            src={LogoGrey}
           />  
           {isMobile && (
             <div>
               <div>
-                <a href="https://comunitasolidali.it" target="_blank">Sito principale Comunità Solidali</a>
+                <a href="https://comunitasolidali.it" target="_blank" style={{color: 'white', textDecoration: 'none'}}>Vai al sito principale Comunità Solidali ↗</a>
               </div>
               <div>
-                <a href="https://t.me/+YguORQ9LQrUzYjNk" target="_blank">
+                <a href="https://t.me/+YguORQ9LQrUzYjNk" target="_blank" style={{color: 'white', textDecoration: 'none'}} title="Telegram">
                   <Box
                     component="img"
                     sx={{
-                      height: 48,
-                      marginRight: 4,
+                      height: 36,
                     }}
-                    alt="Telegram"
                     src={TelegramImage}
                   />  
                 </a>
@@ -582,24 +585,22 @@ const ProductsView = () => {
             </div>
           )}      
           {!isMobile && (
-            <>
+            <div style={{position: 'absolute', left: '0px', top: '50%', width: '100%', transform: 'translate(0%, -50%)', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <div style={{marginRight: '30px'}}>
-                <a href="https://comunitasolidali.it" target="_blank">Sito principale Comunità Solidali</a>
+                <a href="https://comunitasolidali.it" target="_blank" style={{color: 'white', textDecoration: 'none'}}>Vai al sito principale Comunità Solidali ↗</a>
               </div>
               <div>
-                <a href="https://t.me/+YguORQ9LQrUzYjNk" target="_blank">
+                <a href="https://t.me/+YguORQ9LQrUzYjNk" target="_blank" style={{color: 'white', textDecoration: 'none'}} title="Telegram">
                   <Box
                     component="img"
                     sx={{
-                      height: 48,
-                      marginRight: 4,
+                      height: 36,
                     }}
-                    alt="Telegram"
                     src={TelegramImage}
                   />  
                 </a>
               </div>
-            </>
+            </div>
           )}   
         </footer>)}
       

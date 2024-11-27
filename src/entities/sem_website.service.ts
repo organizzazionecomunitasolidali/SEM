@@ -8,7 +8,7 @@ import { SemProcess } from '../entities/sem_process.entity';
 import { SemProcessService } from './sem_process.service';
 import * as moment from 'moment';
 import 'moment-timezone';
-import { DateUtils } from '../utils/DateUtils';
+import { getStartOfWeekTimestamp } from '../utils/DateUtils';
 import { SemHtmlElementStructure } from './sem_html_element_structure.entity';
 import {
   SemHtmlElementStructureService,
@@ -107,7 +107,7 @@ export class SemWebsiteService {
 
     const allSites = await this.findAll();
     let results = [];
-    let startOfWeek = DateUtils.getStartOfWeekTimestamp();
+    let startOfWeek = getStartOfWeekTimestamp();
 
     for(let i = 0;i < 25;i++,startOfWeek.subtract(7, 'days')){
       

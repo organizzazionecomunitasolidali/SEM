@@ -21,6 +21,10 @@ import { SemProductThumbnail } from '../entities/sem_product_thumbnail.entity';
 import { SemProductService } from '../entities/sem_product.service';
 import { SemWebsite } from '../entities/sem_website.entity';
 import { SemWebsiteService } from '../entities/sem_website.service';
+import { SemDinastycoinConfig } from '../entities/sem_dinastycoin_config.entity';
+import { SemDinastycoinConfigService } from '../entities/sem_dinastycoin_config.service';
+import { SemProductSaleStats } from '../entities/sem_product_sale_stats.entity';
+import { SemProductSaleStatsService } from '../entities/sem_product_sale_stats.service';
 import { join } from 'path';
 import * as appRoot from 'app-root-path';
 import * as path from 'path';
@@ -64,6 +68,8 @@ import * as fs from 'fs';
       SemWebsite,
       SemOpenaiCompletions,
       SemOpenaiCompletionsRequest,
+      SemDinastycoinConfig,
+      SemProductSaleStats,
     ]),
   ],
   providers: [
@@ -112,6 +118,8 @@ import * as fs from 'fs';
     SemProductService,
     SemCurrencyService,
     SemCategoryService,
+    SemDinastycoinConfigService,
+    SemProductSaleStatsService,
     {
       provide: 'PERSISTENT_DATABASE_CONNECTION',
       useFactory: async (connection: Connection) => connection,
@@ -132,6 +140,8 @@ import * as fs from 'fs';
     SemProductService,
     SemCurrencyService,
     SemCategoryService,
+    SemDinastycoinConfigService,
+    SemProductSaleStatsService
   ],
 })
 export class DatabaseModule {}

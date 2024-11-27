@@ -52,9 +52,9 @@ export class CrawlerJsonApiService {
     if (this.apiKey) {
       let apiKeyHeaderName = this.apiKeyHeaderName || 'X-API-Key';
       config.headers = {
-        ...config.headers,
-        apiKeyHeaderName: this.apiKey
+        ...config.headers
       };
+      config.headers[apiKeyHeaderName] = this.apiKey;
     }
 
     if (this.bearerToken) {

@@ -1,40 +1,35 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
-import * as cheerio from 'cheerio';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as appRoot from 'app-root-path';
 import { SemCurrency } from '../entities/sem_currency.entity';
-import { SemProduct } from '../entities/sem_product.entity';
-import { SemCategory } from '../entities/sem_category.entity';
 import { SemCurrencyService } from '../entities/sem_currency.service';
 import { SemCategoryService } from '../entities/sem_category.service';
 import { SemWebsite } from '../entities/sem_website.entity';
-import { SemWebsiteService } from '../entities/sem_website.service';
 import { SemProductService, ProductStructure } from '../entities/sem_product.service';
-import { Connection } from 'typeorm';
-import { DinastycoinConfigService } from '../entities/dinastycoin_config.service';
-import { DinastycoinConfig } from '../entities/dinastycoin_config.entity';
+import { SemDinastycoinConfigService } from '../entities/sem_dinastycoin_config.service';
+import { SemDinastycoinConfig } from '../entities/sem_dinastycoin_config.entity';
 import { CrawlerJsonApiService } from './crawler_json_api_service';
 import { SemProductSaleStatsService } from '../entities/sem_product_sale_stats.service';
 import { ServiceOpenaiService } from '../service_openai/service_openai.service';
 
 @Injectable()
 export class DinastycoinCrawlerService {
+
+  private apiClient: CrawlerJsonApiService;
     
   constructor(
-    private readonly semWebsiteService: SemWebsiteService,
     private readonly semProductService: SemProductService,
     private readonly semCurrencyService: SemCurrencyService,
     private readonly semCategoryService: SemCategoryService,
-    private readonly dinastycoinConfigService: DinastycoinConfigService,
-    private dinastycoinConfig: DinastycoinConfig,
+    private readonly dinastycoinConfigService: SemDinastycoinConfigService,
     private readonly semProductSaleStatsService: SemProductSaleStatsService,
     private readonly serviceOpenaiService: ServiceOpenaiService,
   ) {}
 
   async getApiClient(): Promise<CrawlerJsonApiService> {
-    this.dinastycoinConfig = await this.dinastycoinConfigService.findOneWithMaxId();
-    return new CrawlerJsonApiService("api-key",this.dinastycoinConfig.apiKey,null,this.dinastycoinConfig.signature);
+    if(!this.apiClient){
+      let dinastycoinConfig: SemDinastycoinConfig = await this.dinastycoinConfigService.findOneWithMaxId();
+      this.apiClient = new CrawlerJsonApiService("api-key",dinastycoinConfig.apiKey,null,dinastycoinConfig.signature);
+    }
+    return this.apiClient;
   }
 
   async crawl(website: SemWebsite, limit_product_creation: number = 20) {
@@ -180,7 +175,7 @@ export class DinastycoinCrawlerService {
 
   async getAllProductsList(): Promise<object[]> {
     const apiClient = await this.getApiClient();
-    const productsList = await apiClient.get<object>("https://dinastycoin.club/apidcy/ecom/productlist?coin=all");
+    const productsList = await apiClient.post<object>("https://dinastycoin.club/apidcy/ecom/productlist?coin=all",{stato: "N"});
     const productsListData = productsList['data'];
     if (!productsListData) {
       throw new Error('No data field found in catmarketplace response');

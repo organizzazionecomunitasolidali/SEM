@@ -1,8 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
 
 @Entity()
-@Unique(['name'])
-export class DinastycoinConfig {
+export class SemDinastycoinConfig {
     
   @PrimaryGeneratedColumn()
   id: number;
