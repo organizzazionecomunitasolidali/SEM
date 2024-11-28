@@ -199,13 +199,11 @@ export class CronCrawlerService {
               await this.dinastycoinCrawlerService.crawl(website);
             }
             // TODO add other api_alias crawlers here
+            continue;
           } else {
             await this.crawl(website);
           }
-
-          // const websiteUpdated = await this.semWebsiteService.findOne(
-          //   website.id,
-          // );
+          
           website = await this.semWebsiteService.updateWebsiteField(
             website.id,
             'status',
@@ -213,10 +211,8 @@ export class CronCrawlerService {
             //website.status | WEBSITE_STATUS_PAUSED, // Setting PAUSED bit
           );
 
-          // if (isDebug) {
-          // Delete products that no longer exist
+          // Soft delete products that no longer exist
           await this.semProductService.deleteOlderThan(timestampMs, website, true);
-          // }
         }
 
         timestampMs = Date.now();

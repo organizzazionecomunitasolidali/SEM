@@ -91,7 +91,7 @@ export class CrawlerJsonApiService {
     }
     throw error;
   }
-
+  
   async get<T>(url: string): Promise<T> {
     try {
       const config = this.createConfig();

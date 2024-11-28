@@ -57,9 +57,9 @@ export class DinastycoinCrawlerService {
         }
         
         console.log(prod);
-        let full_product = await apiClient.get<object>(`https://dinastycoin.club/apidcy/ecom/marketplace?productid=${prod["id"]}`);
+        let full_product = await apiClient.get<object>(`https://dinastycoin.club/apidcy/ecom/marketplace?productid=${prod["Id"]}`);
+        full_product = full_product["data"] ? full_product["data"] : full_product;
         console.log("full: ", full_product);
-        full_product = full_product['data'];
 
         if(full_product['pubblicato'] === "N" || full_product['donazione']){
           return;
@@ -162,7 +162,7 @@ export class DinastycoinCrawlerService {
     let categories = [];
     
     let all_categories_result = await apiClient.get<object>(`https://dinastycoin.club/apidcy/ecom/catmarketplace?id=All`);
-    let all_categories = all_categories_result['data'];
+    let all_categories: object[] = all_categories_result["data"] ? all_categories_result["data"] : all_categories_result;
 
     all_categories.forEach(element => {
       this.insertIntoTree(categories, element);
@@ -175,12 +175,11 @@ export class DinastycoinCrawlerService {
 
   async getAllProductsList(): Promise<object[]> {
     const apiClient = await this.getApiClient();
-    const productsList = await apiClient.post<object>("https://dinastycoin.club/apidcy/ecom/productlist?coin=all",{stato: "N"});
-    const productsListData = productsList['data'];
-    if (!productsListData) {
+    const productsList = await apiClient.post<object[]>("https://dinastycoin.club/apidcy/ecom/productlist?coin=all",{stato: "A"});
+    if (!productsList) {
       throw new Error('No data field found in catmarketplace response');
     }
-    return productsListData;
+    return productsList["data"] ? productsList["data"] : productsList;
   }
 
 
