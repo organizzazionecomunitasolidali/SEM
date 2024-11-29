@@ -83,3 +83,7 @@ export function getFormattedUrl(websiteUrl: string, pathUrl: string) {
   path = path.replace(/&amp;/g, '&');
   return path;
 }
+
+export function parseNum(num){
+  return parseFloat(num.toString().replace(",","."));
+}

@@ -9,6 +9,7 @@ import { SemDinastycoinConfig } from '../entities/sem_dinastycoin_config.entity'
 import { CrawlerJsonApiService } from './crawler_json_api_service';
 import { SemProductSaleStatsService } from '../entities/sem_product_sale_stats.service';
 import { ServiceOpenaiService } from '../service_openai/service_openai.service';
+import { parseNum } from 'src/utils/globals';
 
 @Injectable()
 export class DinastycoinCrawlerService {
@@ -32,6 +33,22 @@ export class DinastycoinCrawlerService {
     return this.apiClient;
   }
 
+  async getExchangeRateEUR(coin){
+    const apiClient = await this.getApiClient();
+    let exchangeRateResponse = await apiClient.get<object>(`https://dinastycoin.club/apidcy/exchange/` + coin + `EUR`);
+    console.log(coin + "exchangeRateResponse: " + JSON.stringify(exchangeRateResponse));
+    if(exchangeRateResponse){
+      const exchangeRate = Object.values(exchangeRateResponse)[0];
+      let rate: number = exchangeRate ? parseNum(exchangeRate) : 0;
+      if(!rate || isNaN(rate)){
+        console.log("Error: Cannot get exchange rate for " + coin);
+      } else {
+        return rate;
+      }
+    }
+    return 0;
+  }
+
   async crawl(website: SemWebsite, limit_product_creation: number = 20) {
 
     const apiClient = await this.getApiClient();
@@ -39,11 +56,19 @@ export class DinastycoinCrawlerService {
     let exchangeRatesEUR = {};
     let productsCreated = 0;
 
+    let ETHVrate = await this.getExchangeRateEUR("ETHV");
+    if(ETHVrate && !isNaN(ETHVrate)){
+      exchangeRatesEUR["ETHV"] = ETHVrate;
+    } else {
+      console.error("Dinastycoin rate api issue");
+      return;
+    }
+
     try {
 
       const allDinastycoinCategories = await this.getAllCategories();
       const productsList = await this.getAllProductsList();
-
+         
       // flag all products as unavailable for this site. then we will update them as available if they are
       await this.semProductService.updateProductAvailabilityOfWebsite(website.id, false);
 
@@ -58,6 +83,9 @@ export class DinastycoinCrawlerService {
         
         console.log(prod);
         let full_product = await apiClient.get<object>(`https://dinastycoin.club/apidcy/ecom/marketplace?productid=${prod["Id"]}`);
+        if(!full_product){
+          return;
+        }
         full_product = full_product["data"] ? full_product["data"] : full_product;
         console.log("full: ", full_product);
 
@@ -71,12 +99,18 @@ export class DinastycoinCrawlerService {
         }
 
         if (!exchangeRatesEUR[full_product['coinmain']]) {
-          let exchangeRateResponse = await apiClient.get<object>(`https://dinastycoin.club/apidcy/exchange/` + full_product['coinmain'] + `EUR`);
-          const exchangeRate = Object.values(exchangeRateResponse)[0];
-          exchangeRatesEUR[full_product['coinmain']] = parseFloat(exchangeRate);
+          let rate = await this.getExchangeRateEUR(full_product['coinmain']);
+          if(rate && !isNaN(rate)){
+            exchangeRatesEUR[full_product['coinmain']] = rate;
+          } 
         }
-        const price_01 = full_product['prezzoeuro'] / exchangeRatesEUR[full_product['coinmain']];
-
+        const price_01 = exchangeRatesEUR[full_product['coinmain']] ? (parseNum(full_product['prezzoeuro']) / exchangeRatesEUR[full_product['coinmain']]) : 0;
+        if(!price_01 || isNaN(price_01)){
+          console.log("Error: price Nan. skipping to next product");
+          return;
+          //throw new Error("price NaN");
+        }
+        
         // Find existing product by Url (it's unique)
         let product = await this.semProductService.findOneByUrl(
           url,
@@ -125,7 +159,7 @@ export class DinastycoinCrawlerService {
           }
 
           // now map Dinastycoin category to Sem category
-          let dinastycoinCategoryPath = this.getCategoryPath(allDinastycoinCategories, full_product["categoriaid"]);
+          let dinastycoinCategoryPath = this.getCategoryPath(allDinastycoinCategories, prod["categoriaid"]);
           const categoryName = await this.serviceOpenaiService.getProductCategory(
             productStructure.title + " (in categoria " + dinastycoinCategoryPath + ")<hr>" + productStructure.description,
             website,

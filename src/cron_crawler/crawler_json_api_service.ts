@@ -1,6 +1,7 @@
 import { Injectable, HttpException } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
+
 @Injectable()
 export class CrawlerJsonApiService {
   private axiosInstance: AxiosInstance;
@@ -68,6 +69,7 @@ export class CrawlerJsonApiService {
   }
 
   private handleError(error: any) {
+    /*
     if (error.response) {
       const status = error.response.status;
       const message = error.response.data?.message || error.message;
@@ -90,8 +92,41 @@ export class CrawlerJsonApiService {
       }
     }
     throw error;
+    */
   }
   
+
+  async getByCurl<T>(url: string): Promise<T> {
+    try {
+      const config = this.createConfig();
+      const headers = config.headers || {};
+      
+      const headerArgs = Object.entries(headers).map(([key, value]) => 
+        `--header '${key}: ${value}'`
+      ).join(' ');
+
+      const curlCommand = `curl -s ${headerArgs} '${url}'`;
+      
+      const { exec } = require('child_process');
+      const response = await new Promise<string>((resolve, reject) => {
+        exec(curlCommand, (error: Error, stdout: string, stderr: string) => {
+          if (error) {
+            reject(error);
+          } else if (stderr) {
+            reject(new Error(stderr));
+          } else {
+            resolve(stdout);
+          }
+        });
+      });
+
+      return JSON.parse(response) as T;
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+  
+
   async get<T>(url: string): Promise<T> {
     try {
       const config = this.createConfig();
@@ -100,7 +135,7 @@ export class CrawlerJsonApiService {
     } catch (error) {
       this.handleError(error);
     }
-  }
+  }  
 
   async post<T>(url: string, data: any): Promise<T> {
     try {
