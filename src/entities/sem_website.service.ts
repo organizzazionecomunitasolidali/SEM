@@ -116,8 +116,10 @@ export class SemWebsiteService {
       
       for(let s = 0;s < allSites.length;s++){
         let site = allSites[s];
-        let sales = await this.semProductSaleStatsService.sumAllByWebsiteIdAndWeek(site.id,startOfWeek.unix());
         if(site.api_alias){
+          // this site has an API , so it provides the number of units sold directly , 
+          // no need to estimate from added and delete products
+          let sales = await this.semProductSaleStatsService.sumAllByWebsiteIdAndWeek(site.id,startOfWeek.unix());
           stats.push({
             site: site.name, 
             salesEstimate: sales });
