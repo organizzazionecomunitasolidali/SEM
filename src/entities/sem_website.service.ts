@@ -139,7 +139,7 @@ export class SemWebsiteService {
             site: site.name, 
             added: added, 
             deleted: deleted,
-            salesEstimate: added - deleted });
+            salesEstimate: deleted });
         }
       }
 
