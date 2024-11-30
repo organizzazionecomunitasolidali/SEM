@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToOne, JoinColumn } from 'typeorm';
+import { SemProduct } from './sem_product.entity';
 
 @Entity()
 @Unique(['productId', 'weekTimestampStart'])
@@ -15,5 +16,8 @@ export class SemProductSaleStats {
 
   @Column()
   sales: number;
+
+  @ManyToOne(() => SemProduct, (product) => product.stats)
+  product: SemProduct;
 
 }

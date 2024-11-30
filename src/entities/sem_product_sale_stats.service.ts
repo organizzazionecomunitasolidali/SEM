@@ -40,19 +40,22 @@ export class SemProductSaleStatsService {
     await this.semProductSaleStatsRepository.delete(id);
   }
 
-  async findByProductId(productId: number): Promise<SemProductSaleStats[]> {
-    return this.semProductSaleStatsRepository.find({
-      where: { productId },
-      order: { weekTimestampStart: 'DESC' },
+  async sumAllByWebsiteIdAndWeek(websiteId: number,weekTimestampStart: number): Promise<number> {
+    const records = await this.semProductSaleStatsRepository.find({
+      relations: {
+        product: true
+      },
+      where: { 
+        product: { website: { id: websiteId } },
+        weekTimestampStart: weekTimestampStart 
+      }
     });
+    let sum = 0;
+    for(let i = 0;i < records.length;i++){
+      sum += records[i].sales;
+    }
+    return sum;
   }
-
-  async findByWeekTimestamp(weekTimestampStart: number): Promise<SemProductSaleStats[]> {
-    return this.semProductSaleStatsRepository.find({
-      where: { weekTimestampStart },
-    });
-  }
-
 
   async sumAllSalesByProductIdInThePastWeeks(productId: number): Promise<number> {
     let startOfWeek = getStartOfWeekTimestamp();

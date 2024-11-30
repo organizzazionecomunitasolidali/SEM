@@ -3,13 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SemWebsite } from '../entities/sem_website.entity';
 import { SemProduct } from '../entities/sem_product.entity';
-import { copyExistingFields } from '../utils/globals';
-import { SemProcess } from '../entities/sem_process.entity';
 import { SemProcessService } from './sem_process.service';
+import { SemProductSaleStatsService } from '../entities/sem_product_sale_stats.service';
 import * as moment from 'moment';
 import 'moment-timezone';
 import { getStartOfWeekTimestamp } from '../utils/DateUtils';
-import { SemHtmlElementStructure } from './sem_html_element_structure.entity';
 import {
   SemHtmlElementStructureService,
   // SemHtmlElementStructureDto,
@@ -59,6 +57,7 @@ export class SemWebsiteService {
     @InjectRepository(SemWebsite)
     private readonly semWebsiteRepository: Repository<SemWebsite>,
     private readonly semProcessService: SemProcessService,
+    private readonly semProductSaleStatsService: SemProductSaleStatsService,
     @Inject(forwardRef(() => SemHtmlElementStructureService))
     private readonly semHtmlElementStructureService: SemHtmlElementStructureService,
     private readonly semOpenaiCompletionsService: SemOpenaiCompletionsService,
@@ -116,21 +115,30 @@ export class SemWebsiteService {
       let stats = [];
       
       for(let s = 0;s < allSites.length;s++){
-        let added = await this.semProductRepository.createQueryBuilder()
-        .where('createdAt >= :dateStart', { dateStart: dateStart })
-        .andWhere('createdAt < :dateEnd', { dateEnd: dateEnd })
-        .andWhere('websiteId = :id', { id: allSites[s].id } )
-        .getCount();
-        let deleted = await this.semProductRepository.createQueryBuilder()
-        .withDeleted()
-        .where('deletedAt >= :dateStart', { dateStart: dateStart })
-        .andWhere('deletedAt < :dateEnd', { dateEnd: dateEnd })
-        .andWhere('websiteId = :id', { id: allSites[s].id })
-        .getCount();
-        stats.push({
-          site: allSites[s].name, 
-          added: added, 
-          deleted: deleted });
+        let site = allSites[s];
+        let sales = await this.semProductSaleStatsService.sumAllByWebsiteIdAndWeek(site.id,startOfWeek.unix());
+        if(site.api_alias){
+          stats.push({
+            site: site.name, 
+            salesEstimate: sales });
+        } else {
+          let added = await this.semProductRepository.createQueryBuilder()
+          .where('createdAt >= :dateStart', { dateStart: dateStart })
+          .andWhere('createdAt < :dateEnd', { dateEnd: dateEnd })
+          .andWhere('websiteId = :id', { id: site.id } )
+          .getCount();
+          let deleted = await this.semProductRepository.createQueryBuilder()
+          .withDeleted()
+          .where('deletedAt >= :dateStart', { dateStart: dateStart })
+          .andWhere('deletedAt < :dateEnd', { dateEnd: dateEnd })
+          .andWhere('websiteId = :id', { id: site.id })
+          .getCount();
+          stats.push({
+            site: site.name, 
+            added: added, 
+            deleted: deleted,
+            salesEstimate: added - deleted });
+        }
       }
 
       results[i] = {

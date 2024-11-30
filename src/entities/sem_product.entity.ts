@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { SemWebsite } from '../entities/sem_website.entity';
 import { SemCurrency } from './sem_currency.entity';
+import { SemProductSaleStats } from './sem_product_sale_stats.entity';
 
 @Entity()
 @Unique(['url'])
@@ -84,4 +85,8 @@ export class SemProduct {
 
   @ManyToOne(() => SemWebsite, (website) => website.products)
   website: SemWebsite;
+
+  @OneToMany(() => SemProductSaleStats, (stats) => stats.product, { cascade: true })
+  stats: SemProductSaleStats[];
+
 }

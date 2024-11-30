@@ -337,14 +337,16 @@ function TaskManager() {
                 <th style={{padding: '5px'}}>Site</th>
                 <th style={{padding: '5px'}}>Products added</th>
                 <th style={{padding: '5px'}}>Products deleted</th>
+                <th style={{padding: '5px'}}>Sales estimate</th>
               </tr>
             </thead>
             <tbody>
             {item.stats.map((stats,ind) => (
               <tr style={{margin: '0px', backgroundColor: (ind % 2) ? '#ccc' : '#ddd', padding: '5px'}}>
                 <td style={{padding: '5px'}}>{stats.site}</td>
-                <td style={{padding: '5px'}}>{stats.added}</td>
-                <td style={{padding: '5px'}}>{stats.deleted}</td>
+                <td style={{padding: '5px'}}>{stats.added ? stats.added : "-"}</td>
+                <td style={{padding: '5px'}}>{stats.deleted ? stats.deleted : "-"}</td>
+                <td style={{padding: '5px'}}>{stats.salesEstimate}</td>
               </tr>
             ))}
             </tbody>
