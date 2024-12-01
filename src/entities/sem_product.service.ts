@@ -55,7 +55,7 @@ export class SemProductService {
     currencies?: string,
     usedOrNew?: string,
   ): Promise<PaginatedResult<SemProduct>> {
-    const query = this.semProductRepository.createQueryBuilder('product').where("TRUE");
+    const query = this.semProductRepository.createQueryBuilder('product').where("is_available = 1");
 
     if (search) {
       query.andWhere('product.title LIKE :search', { search: `%${search}%` });
