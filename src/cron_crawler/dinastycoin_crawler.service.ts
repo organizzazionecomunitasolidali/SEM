@@ -183,6 +183,20 @@ export class DinastycoinCrawlerService {
 
       });
 
+      // update currencies with their real name
+      let allPairs = await this.apiClient.get<object[]>("https://dinastycoin.club/apidcy/exchange/listaallpairs");
+      if(allPairs){
+        allPairs = allPairs["data"] ?  allPairs["data"] : allPairs;
+        allPairs.forEach(async(pair) => {
+          let currency: SemCurrency = await this.semCurrencyService.findOneByNameAndTicker(pair["coinacro"],pair["coinacro"]);
+          if(currency){
+            currency.name = pair["coinname"];
+            await this.semCurrencyService.save(currency);
+          }
+        }); 
+      }
+
+
     } catch (error) {
       console.error('Error in DinastycoinCrawlerService.crawl', error);
     }

@@ -44,6 +44,15 @@ export class SemCurrencyService {
     });
   }
 
+  async findOneByNameAndTicker(name: string, ticker: string): Promise<SemCurrency> {
+    return this.semCurrencyRepository.findOne({
+      where: {
+        name: name,
+        ticker: ticker
+      },
+    });
+  }
+
   async getCurrencyFromString(currencyString: string, forceTicker: boolean = false): Promise<SemCurrency> {
     let name: string;
     let ticker: string;
@@ -99,7 +108,7 @@ export class SemCurrencyService {
     currency.ticker = ticker;
     currency.symbol = symbol;
     try {
-      return await this.semCurrencyRepository.save(currency);
+      return await this.save(currency);
     } catch(error){
       if(ignoreDuplicateError){
         if(error.message.indexOf("UNIQUE constraint failed") >= 0){
@@ -116,6 +125,10 @@ export class SemCurrencyService {
       }
       throw error;
     }
+  }
+
+  async save(currency: SemCurrency){
+    return await this.semCurrencyRepository.save(currency);
   }
   
 }
