@@ -164,7 +164,7 @@ export class DinastycoinCrawlerService {
             productStructure.title + " (in categoria " + dinastycoinCategoryPath + ")<hr>" + productStructure.description,
             website,
           );
-          console.log('Dinastycoin product [' + prod["id"] + '] ' + productStructure.title + '. categoryName = ' + categoryName);
+          console.log('Dinastycoin product [' + prod["Id"] + '] ' + productStructure.title + '. categoryName = ' + categoryName);
           const category = await this.semCategoryService.findOneByName(categoryName);
           productStructure.category_id = category ? category.id : null;      
         
