@@ -1,7 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
 
 @Entity()
-@Unique(['name', 'ticker', 'symbol'])
+@Unique(['name', 'ticker'])
+@Unique(['name', 'symbol'])
+@Unique(['ticker', 'symbol'])
 export class SemCurrency {
   @PrimaryGeneratedColumn()
   id: number;

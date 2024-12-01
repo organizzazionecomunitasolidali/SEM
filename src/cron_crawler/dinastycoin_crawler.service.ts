@@ -141,8 +141,9 @@ export class DinastycoinCrawlerService {
             thumbnailUrl = "https://dinastycoin.club/images/products/" + thumbnailUrl;
           }
 
-          const currency: SemCurrency = await this.semCurrencyService.getCurrencyFromString( full_product['coinmain'] , true );
-        
+          const ticker = full_product['coinmain'].toString().toUpperCase();
+          const currency: SemCurrency = await this.semCurrencyService.createCurrency(ticker,ticker,"",true);
+
           let productStructure: ProductStructure = {
             url: url,
             title: full_product["descrizione"],

@@ -92,12 +92,30 @@ export class SemCurrencyService {
     name: string,
     ticker: string,
     symbol: string,
+    ignoreDuplicateError = false
   ): Promise<SemCurrency> {
     const currency = new SemCurrency();
     currency.name = name;
     currency.ticker = ticker;
     currency.symbol = symbol;
-
-    return await this.semCurrencyRepository.save(currency);
+    try {
+      return await this.semCurrencyRepository.save(currency);
+    } catch(error){
+      if(ignoreDuplicateError){
+        if(error.message.indexOf("UNIQUE constraint failed") >= 0){
+          let existingCurrency: SemCurrency;
+          if(ticker){
+            existingCurrency = await this.findOneByTicker(ticker);
+          } else if(name){
+            existingCurrency = await this.findOneByName(name);
+          } else {
+            existingCurrency = await this.findOneBySymbol(symbol);
+          }
+          return existingCurrency;
+        }
+      }
+      throw error;
+    }
   }
+  
 }
