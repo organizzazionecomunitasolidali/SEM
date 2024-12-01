@@ -199,7 +199,6 @@ export class CronCrawlerService {
               await this.dinastycoinCrawlerService.crawl(website);
             }
             // TODO add other api_alias crawlers here
-            continue;
           } else {
             await this.crawl(website);
           }
@@ -210,6 +209,10 @@ export class CronCrawlerService {
             WEBSITE_STATUS_PAUSED, // Setting PAUSED bit only
             //website.status | WEBSITE_STATUS_PAUSED, // Setting PAUSED bit
           );
+
+          if(website.api_alias) {
+            continue;
+          }
 
           // Soft delete products that no longer exist
           await this.semProductService.deleteOlderThan(timestampMs, website, true);
