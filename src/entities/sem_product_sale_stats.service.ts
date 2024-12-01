@@ -77,12 +77,26 @@ export class SemProductSaleStatsService {
     let sumPastSales = await this.sumAllSalesByProductIdInThePastWeeks(productId);
     let salesInThisWeek = currentTotalSales - sumPastSales;
     let weekStartTimestamp = getStartOfWeekTimestamp().unix();
-    // use persistentDbConnection for making a raw query that is compatible to SQLite and Mysql, to insert or update the sales stats record for this product and this week
-    const query = `
-      REPLACE INTO sem_product_sale_stats (productId, weekTimestampStart, sales)
-      VALUES (${productId}, ${weekStartTimestamp}, ${salesInThisWeek})
-    `;
-    await this.persistentDbConnection.query(query);
+
+    await this.semProductSaleStatsRepository
+      .createQueryBuilder()
+      .insert()
+      .into(SemProductSaleStats)
+      .values({
+        productId: productId,
+        weekTimestampStart: weekStartTimestamp,
+        sales: salesInThisWeek
+      })
+      .orIgnore()
+      .execute();
+
+    await this.semProductSaleStatsRepository
+      .createQueryBuilder()
+      .update(SemProductSaleStats)
+      .set({ sales: salesInThisWeek })
+      .where('productId = :productId', { productId })
+      .andWhere('weekTimestampStart = :weekStartTimestamp', { weekStartTimestamp })
+      .execute();
   }
 
 }

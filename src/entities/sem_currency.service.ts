@@ -113,10 +113,10 @@ export class SemCurrencyService {
       if(ignoreDuplicateError){
         if(error.message.indexOf("UNIQUE constraint failed") >= 0){
           let existingCurrency: SemCurrency;
-          if(ticker){
-            existingCurrency = await this.findOneByTicker(ticker);
-          } else if(name){
+          if(name){
             existingCurrency = await this.findOneByName(name);
+          } else if(ticker){
+            existingCurrency = await this.findOneByTicker(ticker);
           } else {
             existingCurrency = await this.findOneBySymbol(symbol);
           }
