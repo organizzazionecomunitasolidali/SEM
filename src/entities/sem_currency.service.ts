@@ -115,9 +115,11 @@ export class SemCurrencyService {
           let existingCurrency: SemCurrency;
           if(name){
             existingCurrency = await this.findOneByName(name);
-          } else if(ticker){
+          }  
+          if(ticker && !existingCurrency){
             existingCurrency = await this.findOneByTicker(ticker);
-          } else {
+          }  
+          if(symbol && !existingCurrency){
             existingCurrency = await this.findOneBySymbol(symbol);
           }
           return existingCurrency;

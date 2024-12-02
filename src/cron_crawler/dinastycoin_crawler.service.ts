@@ -184,9 +184,10 @@ export class DinastycoinCrawlerService {
       });
 
       // update currencies with their real name
-      let allPairs = await this.apiClient.get<object[]>("https://dinastycoin.club/apidcy/exchange/listaallpairs");
+      let allPairs = await this.apiClient.get<object[]>("https://dinastycoin.club/apidcy/exchange/listallpairs");
       if(allPairs){
         allPairs = allPairs["data"] ?  allPairs["data"] : allPairs;
+        allPairs.push({"coinname": "Ethic Voucher", "coinacro" : "ETHV"});
         allPairs.forEach(async(pair) => {
           let currency: SemCurrency = await this.semCurrencyService.findOneByNameAndTicker(pair["coinacro"],pair["coinacro"]);
           if(currency){
