@@ -99,8 +99,8 @@ export class CronCrawlerService {
     let processId;
     let hasProcessRunning = false;
 
-    // Setup memory db connection table , for blocking requests from the frontend while crawling is running
-
+    // Setup memory db connection table , for blocking requests from the frontend while the crawler is running.
+    // We block such requests by checking if a certain flag in the memory db is set.
     await this.memoryDbConnection.query(
       'CREATE TABLE IF NOT EXISTS crawler_lock(is_locked INT NOT NULL PRIMARY KEY)',
     );
@@ -108,6 +108,8 @@ export class CronCrawlerService {
     this.logger.debug('Starting crawler job');
 
     try {
+
+      // set the flag to block requests by frontend
       await this.memoryDbConnection.query(
         'INSERT OR IGNORE INTO crawler_lock (is_locked) VALUES (1)',
       );
@@ -116,11 +118,26 @@ export class CronCrawlerService {
 
       for (const processLazy of processArray) {
         processId = processLazy.id;
+        timestampMs = Date.now();
 
         // Reload process if it has changed from first findAll
         let process = await this.semProcessService.findOne(processId);
         // Skip if it has been stopped or is already running
         if(process.status & PROCESS_STATUS_RUNNING){
+          // temporary patch BEGIN
+          /* We have this issue https://github.com/organizzazionecomunitasolidali/SEM/issues/5
+            In short: a process sometimes crashes with status left to Running.
+            We temporarily ignore if the status is running , when the last_start is beyond a certain
+            time span limit , say 3 hours ago , assuming the previous execution crashed.
+          */
+          if(process.last_start == 0 || process.last_start < timestampMs - 3 * 3600 * 1000){
+            await this.semProcessService.updateProcessField(
+              process.id,
+              'status',
+              PROCESS_STATUS_PAUSED, // Setting PAUSED bit only
+            );
+          }
+          // temporary patch END
           hasProcessRunning = true;
           continue;
         } else if (
@@ -130,7 +147,6 @@ export class CronCrawlerService {
 
         intervalMs = process.interval * 60 * 60 * 1000;
 
-        timestampMs = Date.now();
         if (process.last_start > 0) {
           // Not first run
           if (timestampMs - process.last_start < intervalMs) {
