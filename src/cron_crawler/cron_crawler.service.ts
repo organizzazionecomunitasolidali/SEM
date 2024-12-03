@@ -176,7 +176,9 @@ export class CronCrawlerService {
 
         this.logger.debug('process id:', process.id);
 
-        for (const websiteLazy of process.websites) {
+        let websitesSorted = process.websites.sort((a, b) => a.last_start - b.last_start);
+
+        for (const websiteLazy of websitesSorted) {
           // Reload website if it has changed from first findAll
           let website = await this.semWebsiteService.findOne(websiteLazy.id);
 
