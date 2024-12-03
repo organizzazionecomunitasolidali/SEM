@@ -187,6 +187,20 @@ export class CronCrawlerService {
             website.status & WEBSITE_STATUS_RUNNING
           ) {
             // Skip if it has been stopped or is already running
+            // temporary patch BEGIN
+            /* We have this issue https://github.com/organizzazionecomunitasolidali/SEM/issues/5
+              In short: a process/website sometimes crashes with status left to Running.
+              We temporarily ignore if the status is running , when the last_start is beyond a certain
+              time span limit , say 3 hours ago , assuming the previous execution crashed.
+            */
+            if(website.last_start == 0 || website.last_start < timestampMs - 3 * 3600 * 1000){
+              await this.semWebsiteService.updateWebsiteField(
+                process.id,
+                'status',
+                WEBSITE_STATUS_PAUSED, // Setting PAUSED bit only
+              );
+            }
+            // temporary patch END
             continue;
           }
 
