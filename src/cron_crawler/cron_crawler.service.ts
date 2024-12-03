@@ -176,9 +176,23 @@ export class CronCrawlerService {
 
         this.logger.debug('process id:', process.id);
 
-        let websitesSorted = process.websites.sort((a, b) => a.last_start - b.last_start);
+        // we do just a few random sites at a time, not all of them , for debugging this https://github.com/organizzazionecomunitasolidali/SEM/issues/5
+        // We do not take them in a specific order, but randomly ,
+        // to avoid any site to crash and prevent other sites from being crawled.
+        let numberOfWebsitesToProcess = 1;
+        let websiteIndexes = [];
+        for (let i = 0; websiteIndexes.length < numberOfWebsitesToProcess; i++) {
+          let randomIndex = Math.floor(Math.random() * process.websites.length);
+          if(!websiteIndexes.includes(randomIndex)) {
+            websiteIndexes.push(randomIndex);
+          }
+        }
+        let websitesToProcess = [];
+        for (const index of websiteIndexes) {
+          websitesToProcess.push(process.websites[index]);
+        }        
 
-        for (const websiteLazy of websitesSorted) {
+        for (const websiteLazy of websitesToProcess) {
           // Reload website if it has changed from first findAll
           let website = await this.semWebsiteService.findOne(websiteLazy.id);
 
