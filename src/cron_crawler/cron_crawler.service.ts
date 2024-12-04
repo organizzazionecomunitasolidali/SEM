@@ -116,7 +116,7 @@ export class CronCrawlerService {
       await this.memoryDbConnection.query(
         'INSERT OR IGNORE INTO crawler_lock (is_locked) VALUES (1)',
       );
-
+      */
 
       const processArray = await this.semProcessService.findAll();
 
