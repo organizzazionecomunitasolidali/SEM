@@ -149,7 +149,9 @@ export class CronCrawlerService {
           continue;
         }
 
-        intervalMs = process.interval * 60 * 60 * 1000;
+        //intervalMs = process.interval * 60 * 60 * 1000;
+        // temporarily set to 2 hours for debugging
+        intervalMs = 60 * 60 * 1000;
 
         if (process.last_start > 0) {
           // Not first run
