@@ -259,6 +259,16 @@ const ProductsView = () => {
       : t('(unknown currency)');
   };
 
+  // Function to display prices with reasonable amount of dedimals
+  const getPriceString = (price) => {
+    if(price > 10){
+      return price.toFixed(2);
+    } else if(price > 1){
+      return price.toFixed(4);
+    }
+    return price;
+  };
+
   const appName = process.env.REACT_APP_NAME
     ? process.env.REACT_APP_NAME
     : 'SEM';
@@ -421,7 +431,7 @@ const ProductsView = () => {
                     {(product.price_01 || product.price_01 === 0) &&
                       product.price_01 > 0 && (
                         <Typography variant="body1" color="textSecondary">
-                          {t('Price: ')} {product.price_01}{' '}
+                          {t('Price: ')} {getPriceString(product.price_01)}{' '}
                           {getCurrencyStringById(product.currency_01_id)}
                         </Typography>
                       )}
@@ -431,7 +441,7 @@ const ProductsView = () => {
                           {product.price_01 > 0
                             ? t('Alternate/additional Price: ')
                             : t('Price: ')}{' '}
-                          {product.price_02}{' '}
+                          {getPriceString(product.price_02)}{' '}
                           {getCurrencyStringById(product.currency_02_id)}
                         </Typography>
                       )}
