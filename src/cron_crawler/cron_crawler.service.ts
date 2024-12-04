@@ -110,9 +110,13 @@ export class CronCrawlerService {
     try {
 
       // set the flag to block requests by frontend
+      /* Temporarily commented out, because it gets locked too much time
+      when this issue happens https://github.com/organizzazionecomunitasolidali/SEM/issues/5
+      We will uncomment it when we solve the issue.
       await this.memoryDbConnection.query(
         'INSERT OR IGNORE INTO crawler_lock (is_locked) VALUES (1)',
       );
+
 
       const processArray = await this.semProcessService.findAll();
 
