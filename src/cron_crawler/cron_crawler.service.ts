@@ -189,10 +189,13 @@ export class CronCrawlerService {
         for (let i = 0; websiteIndexes.length < numberOfWebsitesToProcess; i++) {
           let randomIndex = Math.floor(Math.random() * process.websites.length);
           let website = process.websites[randomIndex];
+          this.logger.debug('randomIndex = ' + randomIndex + ' for website ' + website.url);
           if(website.status & WEBSITE_STATUS_STOPPED){
+            this.logger.debug('website ' + website.url + ' is stopped, skipping it');
             continue;
           }
           if(!websiteIndexes.includes(randomIndex)) {
+            this.logger.debug('website ' + website.url + ' is not stopped, including it');
             websiteIndexes.push(randomIndex);
             websitesToProcess.push(website);
           }
