@@ -187,12 +187,19 @@ export class CronCrawlerService {
         // to avoid any site to crash and prevent other sites from being crawled.
         let numberOfWebsitesToProcess = 2;
         let websiteIndexes = [];
+        let stoppedWebsiteIndexes = [];
         let websitesToProcess = [];
         for (let i = 0; websiteIndexes.length < numberOfWebsitesToProcess; i++) {
+          if(stoppedWebsiteIndexes.length + websiteIndexes.length == process.websites.length){
+            break;
+          }
           let randomIndex = Math.floor(Math.random() * process.websites.length);
           let website = process.websites[randomIndex];
           this.logger.debug('randomIndex = ' + randomIndex + ' for website ' + website.url);
           if(website.status & WEBSITE_STATUS_STOPPED){
+            if(!stoppedWebsiteIndexes.includes(randomIndex)){
+              stoppedWebsiteIndexes.push(randomIndex);
+            }
             this.logger.debug('website ' + website.url + ' is stopped, skipping it');
             continue;
           }
