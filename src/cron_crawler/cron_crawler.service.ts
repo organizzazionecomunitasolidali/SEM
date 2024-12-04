@@ -779,10 +779,6 @@ export class CronCrawlerService {
           'scrollToBottom finished. Re-downloading the whole HTML from the page.',
         );
         // infinite scrolling finished , continue the crawling.
-        // Lock the db to prevent the frontend to use it during crawling
-        await this.memoryDbConnection.query(
-          'INSERT OR IGNORE INTO crawler_lock (is_locked) VALUES (1)',
-        );
         console.log('Downloading html of page ' + page.url());
         // now reload the whole html to get all products at once, if the site had infinite scroll
         html = await page.content();
