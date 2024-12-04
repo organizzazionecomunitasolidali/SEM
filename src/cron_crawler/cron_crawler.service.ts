@@ -132,9 +132,9 @@ export class CronCrawlerService {
           /* We have this issue https://github.com/organizzazionecomunitasolidali/SEM/issues/5
             In short: a process sometimes crashes with status left to Running.
             We temporarily ignore if the status is running , when the last_start is beyond a certain
-            time span limit , say 3 hours ago , assuming the previous execution crashed.
+            time span limit , say 2 hours ago , assuming the previous execution crashed.
           */
-          if(process.last_start == 0 || process.last_start < timestampMs - 3 * 3600 * 1000){
+          if(process.last_start == 0 || process.last_start < timestampMs - 2 * 3600 * 1000){
             await this.semProcessService.updateProcessField(
               process.id,
               'status',
