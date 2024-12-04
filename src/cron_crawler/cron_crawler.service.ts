@@ -183,21 +183,19 @@ export class CronCrawlerService {
         // we do just a few random sites at a time, not all of them , for debugging this https://github.com/organizzazionecomunitasolidali/SEM/issues/5
         // We do not take them in a specific order, but randomly ,
         // to avoid any site to crash and prevent other sites from being crawled.
-        let numberOfWebsitesToProcess = 1;
+        let numberOfWebsitesToProcess = 2;
         let websiteIndexes = [];
+        let websitesToProcess = [];
         for (let i = 0; websiteIndexes.length < numberOfWebsitesToProcess; i++) {
           let randomIndex = Math.floor(Math.random() * process.websites.length);
-          if(!websiteIndexes.includes(randomIndex)) {
-            websiteIndexes.push(randomIndex);
-          }
-        }
-        let websitesToProcess = [];
-        for (const index of websiteIndexes) {
-          let website = process.websites[index];
+          let website = process.websites[randomIndex];
           if(website.status & WEBSITE_STATUS_STOPPED){
             continue;
           }
-          websitesToProcess.push(website);
+          if(!websiteIndexes.includes(randomIndex)) {
+            websiteIndexes.push(randomIndex);
+            websitesToProcess.push(website);
+          }
         }
 
         for (const websiteLazy of websitesToProcess) {
