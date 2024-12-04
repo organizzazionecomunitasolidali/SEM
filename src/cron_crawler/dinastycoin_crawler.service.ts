@@ -14,6 +14,7 @@ import { parseNum } from 'src/utils/globals';
 export class DinastycoinCrawlerService {
 
   private apiClient: CrawlerJsonApiService;
+  private readonly logger = new Logger(DinastycoinCrawlerService.name);
     
   constructor(
     private readonly semProductService: SemProductService,
@@ -22,7 +23,6 @@ export class DinastycoinCrawlerService {
     private readonly dinastycoinConfigService: SemDinastycoinConfigService,
     private readonly semProductSaleStatsService: SemProductSaleStatsService,
     private readonly serviceOpenaiService: ServiceOpenaiService,
-    private readonly logger: Logger,
   ) {}
 
   async getApiClient(): Promise<CrawlerJsonApiService> {
