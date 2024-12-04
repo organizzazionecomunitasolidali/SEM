@@ -261,10 +261,12 @@ const ProductsView = () => {
 
   // Function to display prices with reasonable amount of dedimals
   const getPriceString = (price) => {
-    if(price > 10){
-      return price.toFixed(2);
-    } else if(price > 1){
-      return price.toFixed(4);
+    if(price !== parseInt(price)){
+      if(price > 10){
+        return price.toFixed(2);
+      } else if(price > 1){
+        return price.toFixed(4);
+      }
     }
     return price;
   };
