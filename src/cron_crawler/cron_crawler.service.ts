@@ -193,8 +193,12 @@ export class CronCrawlerService {
         }
         let websitesToProcess = [];
         for (const index of websiteIndexes) {
-          websitesToProcess.push(process.websites[index]);
-        }        
+          let website = process.websites[index];
+          if(website.status & WEBSITE_STATUS_STOPPED){
+            continue;
+          }
+          websitesToProcess.push(website);
+        }
 
         for (const websiteLazy of websitesToProcess) {
           // Reload website if it has changed from first findAll
