@@ -10,7 +10,6 @@ import { CrawlerJsonApiService } from './crawler_json_api_service';
 import { SemProductSaleStatsService } from '../entities/sem_product_sale_stats.service';
 import { ServiceOpenaiService } from '../service_openai/service_openai.service';
 import { parseNum } from 'src/utils/globals';
-
 @Injectable()
 export class DinastycoinCrawlerService {
 
@@ -23,6 +22,7 @@ export class DinastycoinCrawlerService {
     private readonly dinastycoinConfigService: SemDinastycoinConfigService,
     private readonly semProductSaleStatsService: SemProductSaleStatsService,
     private readonly serviceOpenaiService: ServiceOpenaiService,
+    private readonly logger: Logger,
   ) {}
 
   async getApiClient(): Promise<CrawlerJsonApiService> {
@@ -178,7 +178,11 @@ export class DinastycoinCrawlerService {
 
           }
 
-          await this.semProductSaleStatsService.updateTotalSales(product.id, full_product["qtavendute"]);
+          try {
+            await this.semProductSaleStatsService.updateTotalSales(product.id, full_product["qtavendute"]);
+          } catch (error) {
+            this.logger.error('Error updating sales stats for product ' + product.id + ' : ' + error);
+          }
 
         }
 
@@ -200,7 +204,7 @@ export class DinastycoinCrawlerService {
 
 
     } catch (error) {
-      console.error('Error in DinastycoinCrawlerService.crawl', error);
+      this.logger.error('Error in DinastycoinCrawlerService.crawl', error);
     }
 
   }
