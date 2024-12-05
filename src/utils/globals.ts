@@ -1,4 +1,5 @@
 import * as crypto from 'crypto';
+import * as path from 'path';
 
 // export const HTML_ELEMENT_TYPE_UNKNOWN = 0;
 // export const HTML_ELEMENT_TYPE_PRODUCT = 1;
@@ -86,4 +87,12 @@ export function getFormattedUrl(websiteUrl: string, pathUrl: string) {
 
 export function parseNum(num){
   return parseFloat(num.toString().replace(",","."));
+}
+
+export function getClientDir(){
+  return path.join(process.cwd(), 'client');
+}
+
+export function getClientPublicDir(){
+  return path.join(getClientDir(), 'public');
 }

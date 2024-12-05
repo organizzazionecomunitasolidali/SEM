@@ -6,12 +6,12 @@ import { SemProductThumbnail } from '../entities/sem_product_thumbnail.entity';
 import { SemWebsite } from '../entities/sem_website.entity';
 import * as fs from 'fs';
 import * as path from 'path';
-import { hashString } from 'src/utils/globals';
+import { hashString, getClientPublicDir } from 'src/utils/globals';
 
 const {
   VIEW_PRODUCT_ITEMS_PER_PAGE,
   VIEW_PRODUCT_SEARCH_TITLES_LIMIT,
-} = require('../../client/src/utils/globals');
+} = require('src/utils/globals');
 // import * as axios from 'axios';
 
 export interface ProductStructure {
@@ -175,20 +175,12 @@ export class SemProductService {
     });
   }
 
-  getClientDir(){
-    return path.join(process.cwd(), 'client');
-  }
-
-  getClientPublicDir(){
-    return path.join(this.getClientDir(), 'public');
-  }
-
   getThumbnailUrlFromHash(hash){
     return process.env.CORS_ORIGIN + `/product_images/${hash}.jpg`;
   }
 
   getFullThumbnailPathFromHash(hash){
-    const imagesDir = path.join(this.getClientPublicDir(), 'product_images');
+    const imagesDir = path.join(getClientPublicDir(), 'product_images');
     // Ensure the directory exists
     if (!fs.existsSync(imagesDir)) {
       fs.mkdirSync(imagesDir, { recursive: true });
@@ -232,7 +224,7 @@ export class SemProductService {
     website: SemWebsite,
   ): Promise<SemProduct> {
     
-    const no_image_url = "file://" + path.join(this.getClientPublicDir(), 'image_not_found.png');
+    const no_image_url = "file://" + path.join(getClientPublicDir(), 'image_not_found.png');
     let thumbnailImageBuffer = productStructure.thumbnailUrl ? await this.downloadImage(
         productStructure.thumbnailUrl
     ) : null;

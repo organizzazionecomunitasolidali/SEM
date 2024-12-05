@@ -36,6 +36,7 @@ import {
   removeTrailingSlash,
   delay,
   getFormattedUrl,
+  getClientPublicDir,
 } from '../utils/globals';
 import { Connection } from 'typeorm';
 const {
@@ -978,7 +979,7 @@ export class CronCrawlerService {
             console.log('entitiesMatch ' + productStructure.url);
             if (
               entitiesMatch(product, productStructure, {
-                exclude: ['id', 'timestamp'],
+                exclude: ['id', 'timestamp', 'is_used'],
               })
             ) {
               // Product already existing in database
@@ -1120,112 +1121,113 @@ export class CronCrawlerService {
 
   async takeScreenshot(page: puppeteer.Page, website: SemWebsite, pageNumber: number) {
   
-        // Create screenshots directory if it doesn't exist
-        const screenshotsDir = './client/crawler_screenshots';
-        if (!fs.existsSync(screenshotsDir)) {
-          fs.mkdirSync(screenshotsDir, { recursive: true });
+    // Create screenshots directory if it doesn't exist
+    const screenshotsDir = path.join(getClientPublicDir(), 'crawler_screenshots');
+    if (!fs.existsSync(screenshotsDir)) {
+      fs.mkdirSync(screenshotsDir, { recursive: true });
+    }
+
+    // Check if today is first of the month. If so , clean up the directory if there are more than 1000 files
+    const today = new Date();
+    if (today.getDate() === 1) {
+      // Get all files in screenshots directory
+      const files = fs.readdirSync(screenshotsDir);          
+      // If more than 1000 files exist Delete all files
+      if (files.length > 1000) {
+        files.forEach(file => {
+          fs.unlinkSync(path.join(screenshotsDir, file));
+        });            
+        // Reset index.html
+        if (fs.existsSync(path.join(screenshotsDir, 'index.html'))) {
+          fs.writeFileSync(path.join(screenshotsDir, 'index.html'), '');
         }
+      }
+    }
 
-        // Check if today is first of the month. If so , clean up the directory if there are more than 1000 files
-        const today = new Date();
-        if (today.getDate() === 1) {
-          // Get all files in screenshots directory
-          const files = fs.readdirSync(screenshotsDir);          
-          // If more than 1000 files exist Delete all files
-          if (files.length > 1000) {
-            files.forEach(file => {
-              fs.unlinkSync(path.join(screenshotsDir, file));
-            });            
-            // Reset index.html
-            if (fs.existsSync(path.join(screenshotsDir, 'index.html'))) {
-              fs.writeFileSync(path.join(screenshotsDir, 'index.html'), '');
-            }
-          }
-        }
+    // Generate filename with website id, page number and datetime
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0];
+    const timeStr = now.toISOString().split('T')[1].replace(/:/g, '-').split('.')[0];
+    const screenshotFilename = `website_${website.id}_page_${pageNumber}_${dateStr}_${timeStr}.png`;
+    const screenshotPath = path.join(screenshotsDir, screenshotFilename);
 
-        // Generate filename with website id, page number and datetime
-        const now = new Date();
-        const dateStr = now.toISOString().split('T')[0];
-        const timeStr = now.toISOString().split('T')[1].replace(/:/g, '-').split('.')[0];
-        const screenshotFilename = `website_${website.id}_page_${pageNumber}_${dateStr}_${timeStr}.png`;
-        const screenshotPath = path.join(screenshotsDir, screenshotFilename);
+    // Take screenshot
+    await page.screenshot({
+      path: screenshotPath,
+      fullPage: true
+    });
 
-        // Take screenshot
-        await page.screenshot({
-          path: screenshotPath,
-          fullPage: true
-        });
+    // Update index.html
+    const indexPath = path.join(screenshotsDir, 'index.html');
+    let indexHtml = '';
+    
+    if (fs.existsSync(indexPath)) {
+      indexHtml = fs.readFileSync(indexPath, 'utf8');
+    }
 
-        // Update index.html
-        const indexPath = path.join(screenshotsDir, 'index.html');
-        let indexHtml = '';
-        
-        if (fs.existsSync(indexPath)) {
-          indexHtml = fs.readFileSync(indexPath, 'utf8');
-        }
-
-        // If this is first entry for today, add new date section
-        if (!indexHtml.includes(`<h2>${dateStr}</h2>`)) {
-          const newSection = `
-            <h2>${dateStr}</h2>
-            <div class="website-group" data-website="${website.id}">
-              <h3>Website ID: ${website.id}</h3>
-              <div class="screenshots">
-                <a href="${screenshotFilename}" target="_blank">
-                  <img src="${screenshotFilename}" width="300" />
-                  <div>Page ${pageNumber} - ${timeStr}</div>
-                </a>
-              </div>
-            </div>`;
-
-          if (!indexHtml) {
-            // First time creating index.html
-            indexHtml = `
-              <!DOCTYPE html>
-              <html>
-                <head>
-                  <title>Crawler Screenshots</title>
-                  <style>
-                    .website-group { margin-bottom: 30px; }
-                    .screenshots { display: flex; flex-wrap: wrap; gap: 20px; }
-                    .screenshots a { text-decoration: none; color: #333; text-align: center; }
-                  </style>
-                </head>
-                <body>
-                  ${newSection}
-                </body>
-              </html>`;
-          } else {
-            // Add new section after body tag
-            indexHtml = indexHtml.replace(/<body>/, `<body>${newSection}`);
-          }
-        } else {
-          // Add screenshot to existing website group for today
-          const screenshotEntry = `
+    // If this is first entry for today, add new date section
+    if (!indexHtml.includes(`<h2>${dateStr}</h2>`)) {
+      const newSection = `
+        <h2>${dateStr}</h2>
+        <div class="website-group" data-website="${website.id}">
+          <h3>Website ID: ${website.id}</h3>
+          <div class="screenshots">
             <a href="${screenshotFilename}" target="_blank">
               <img src="${screenshotFilename}" width="300" />
               <div>Page ${pageNumber} - ${timeStr}</div>
-            </a>`;
+            </a>
+          </div>
+        </div>`;
 
-          // Find today's website group and add screenshot
-          const websiteGroupRegex = new RegExp(`<div class="website-group" data-website="${website.id}">([\\s\\S]*?)<\\/div>`);
-          if (indexHtml.match(websiteGroupRegex)) {
-            indexHtml = indexHtml.replace(websiteGroupRegex, (match, content) => {
-              return match.replace('</div>', `${screenshotEntry}</div>`);
-            });
-          } else {
-            // Add new website group for today
-            const newWebsiteGroup = `
-              <div class="website-group" data-website="${website.id}">
-                <h3>Website ID: ${website.id}</h3>
-                <div class="screenshots">
-                  ${screenshotEntry}
-                </div>
-              </div>`;
-            indexHtml = indexHtml.replace(`<h2>${dateStr}</h2>`, `<h2>${dateStr}</h2>${newWebsiteGroup}`);
-          }
-        }
+      if (!indexHtml) {
+        // First time creating index.html
+        indexHtml = `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Crawler Screenshots</title>
+              <style>
+                .website-group { margin-bottom: 30px; }
+                .screenshots { display: flex; flex-wrap: wrap; gap: 20px; }
+                .screenshots a { text-decoration: none; color: #333; text-align: center; }
+              </style>
+            </head>
+            <body>
+              ${newSection}
+            </body>
+          </html>`;
+      } else {
+        // Add new section after body tag
+        indexHtml = indexHtml.replace(/<body>/, `<body>${newSection}`);
+      }
+    } else {
+      // Add screenshot to existing website group for today
+      const screenshotEntry = `
+        <a href="${screenshotFilename}" target="_blank">
+          <img src="${screenshotFilename}" width="300" />
+          <div>Page ${pageNumber} - ${timeStr}</div>
+        </a>`;
 
-        fs.writeFileSync(indexPath, indexHtml);
+      // Find today's website group and add screenshot
+      const websiteGroupRegex = new RegExp(`<div class="website-group" data-website="${website.id}">([\\s\\S]*?)<\\/div>`);
+      if (indexHtml.match(websiteGroupRegex)) {
+        indexHtml = indexHtml.replace(websiteGroupRegex, (match, content) => {
+          return match.replace('</div>', `${screenshotEntry}</div>`);
+        });
+      } else {
+        // Add new website group for today
+        const newWebsiteGroup = `
+          <div class="website-group" data-website="${website.id}">
+            <h3>Website ID: ${website.id}</h3>
+            <div class="screenshots">
+              ${screenshotEntry}
+            </div>
+          </div>`;
+        indexHtml = indexHtml.replace(`<h2>${dateStr}</h2>`, `<h2>${dateStr}</h2>${newWebsiteGroup}`);
+      }
+    }
+
+    fs.writeFileSync(indexPath, indexHtml);
   }
+
 }
