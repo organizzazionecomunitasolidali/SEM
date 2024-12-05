@@ -255,14 +255,18 @@ export class SemProductService {
     const url_hash = hashString(productStructure.url);
 
     // create thumbnail record if it does not exist
-    const existingThumbnail = await this.semProductThumbnailRepository.findOne({ where: {url_hash: url_hash}});
+    let existingThumbnail = await this.semProductThumbnailRepository.findOne({ where: {url_hash: url_hash}});
+    const imagePath = this.getFullThumbnailPathFromHash(url_hash);
+    // Check if thumbnail image file already exists
+    if (!existingThumbnail || !fs.existsSync(imagePath)) {
+      existingThumbnail = null;
+    }
     if(!existingThumbnail){
 
       // now download thumbnail data from thumbnailImageBuffer into <project root dir>/client/public/procuct_images/<url_hash>.jpg
       // Define the directory and file path for saving the image
-      const imagePath = this.getFullThumbnailPathFromHash(url_hash);
       // Write the thumbnail image to the file system
-      fs.writeFileSync(imagePath, thumbnailImageBuffer);
+      fs.writeFileSync(imagePath, thumbnailImageBuffer, { flag: 'w' });
 
       const newThumb = await this.semProductThumbnailRepository.create({
         url_hash: url_hash,
