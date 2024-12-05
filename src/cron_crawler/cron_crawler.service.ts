@@ -146,9 +146,7 @@ export class CronCrawlerService {
           continue;
         }
 
-        //intervalMs = process.interval * 60 * 60 * 1000;
-        // temporarily set to 2 hours for debugging
-        intervalMs = 60 * 60 * 1000;
+        intervalMs = process.interval * 60 * 60 * 1000;
 
         if (process.last_start > 0) {
           // Not first run
@@ -179,13 +177,15 @@ export class CronCrawlerService {
 
         this.logger.debug('process id:', process.id);
 
+        let websitesToProcess = process.websites;
+        /*
         // we do just a few random sites at a time, not all of them , for debugging this https://github.com/organizzazionecomunitasolidali/SEM/issues/5
         // We do not take them in a specific order, but randomly ,
         // to avoid any site to crash and prevent other sites from being crawled.
         let numberOfWebsitesToProcess = 2;
         let websiteIndexes = [];
         let stoppedWebsiteIndexes = [];
-        let websitesToProcess = [];
+        websitesToProcess = [];
         for (let i = 0; websiteIndexes.length < numberOfWebsitesToProcess; i++) {
           if(stoppedWebsiteIndexes.length + websiteIndexes.length == process.websites.length){
             break;
@@ -206,6 +206,7 @@ export class CronCrawlerService {
             websitesToProcess.push(website);
           }
         }
+        */
 
         for (const websiteLazy of websitesToProcess) {
           // Reload website if it has changed from first findAll
