@@ -6,13 +6,12 @@ import { SemProductThumbnail } from '../entities/sem_product_thumbnail.entity';
 import { SemWebsite } from '../entities/sem_website.entity';
 import * as fs from 'fs';
 import * as path from 'path';
-import { hashString, getClientPublicDir } from 'src/utils/globals';
+import { hashString, getClientPublicDir } from '../utils/globals';
 
 const {
   VIEW_PRODUCT_ITEMS_PER_PAGE,
   VIEW_PRODUCT_SEARCH_TITLES_LIMIT,
-} = require('src/utils/globals');
-// import * as axios from 'axios';
+} = require('../../client/src/utils/globals');
 
 export interface ProductStructure {
   url: string;
