@@ -108,7 +108,7 @@ export class SemWebsiteService {
     let results = [];
     let startOfWeek = getStartOfWeekTimestamp();
 
-    for(let i = 0;i < 25;i++,startOfWeek.subtract(7, 'days')){
+    for(let i = 0;i < 13;i++,startOfWeek.subtract(7, 'days')){
       
       let dateStart = startOfWeek.format("YYYY-MM-DD");
       let dateEnd = moment(startOfWeek).add(7,'days').format("YYYY-MM-DD");
