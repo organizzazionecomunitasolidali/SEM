@@ -35,10 +35,15 @@ function TaskManager() {
     useState(false);
   const [productUpdateWeeklyData, setProductUpdateWeeklyData] =
     useState(false);
+  let dataFetchStart = 0;
   // const clearTableDataDialogItems = ['Item 1', 'Item 2', 'Item 3'];
 
   useEffect(() => {
     async function fetchData() {
+      if(dataFetchStart > new Date().getTime() - 10000){
+        return;
+      }
+      dataFetchStart = new Date().getTime();
       try {
         const processResponse = await fetch(
           SERVER_BASE_URL + CONTROLLER_PROCESS_ID,
