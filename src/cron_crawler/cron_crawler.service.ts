@@ -110,13 +110,9 @@ export class CronCrawlerService {
     try {
 
       // set the flag to block requests by frontend
-      /* Temporarily commented out, because it gets locked too much time
-      when this issue happens https://github.com/organizzazionecomunitasolidali/SEM/issues/5
-      We will uncomment it when we solve the issue.
       await this.memoryDbConnection.query(
         'INSERT OR IGNORE INTO crawler_lock (is_locked) VALUES (1)',
       );
-      */
 
       const processArray = await this.semProcessService.findAll();
 
@@ -784,6 +780,9 @@ export class CronCrawlerService {
           'before scrollToBottom. once finished , you should see another log here...',
         );
         await this.scrollToBottom(page);
+        await this.memoryDbConnection.query(
+          'INSERT OR IGNORE INTO crawler_lock (is_locked) VALUES (1)',
+        );
         console.log(
           'scrollToBottom finished. Re-downloading the whole HTML from the page.',
         );
