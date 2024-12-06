@@ -118,19 +118,21 @@ export class SemWebsiteService {
       // get added and deleted products on all sites without API.
       // we show the deleted products as estimated sales
       let addedOnAllSites = await this.semProductRepository.createQueryBuilder()
-                            .select('SemProduct.websiteId')
+                            .select(['SemProduct.websiteId', 'COUNT(1) as count'])
                             .innerJoin(SemWebsite, 'website', 'website.id = SemProduct.websiteId')
                             .where('website.api_alias IS NULL')
                             .andWhere('SemProduct.createdAt >= :dateStart', { dateStart: dateStart })
                             .andWhere('SemProduct.createdAt < :dateEnd', { dateEnd: dateEnd })
+                            .groupBy('SemProduct.websiteId')
                             .getRawMany();
       let deletedOnAllSites = await this.semProductRepository.createQueryBuilder()
                             .withDeleted()
-                            .select('SemProduct.websiteId')
+                            .select(['SemProduct.websiteId', 'COUNT(1) as count'])
                             .innerJoin(SemWebsite, 'website', 'website.id = SemProduct.websiteId')
                             .where('website.api_alias IS NULL')
                             .andWhere('SemProduct.deletedAt >= :dateStart', { dateStart: dateStart })
                             .andWhere('SemProduct.deletedAt < :dateEnd', { dateEnd: dateEnd })
+                            .groupBy('SemProduct.websiteId')
                             .getRawMany();      
       let stats = [];
       
@@ -148,12 +150,14 @@ export class SemWebsiteService {
           let deleted = 0;
           for(let p = 0;p < addedOnAllSites.length;p++){
             if(addedOnAllSites[p]["websiteId"] === site.id){
-              added++;
+              added = addedOnAllSites[p]["count"];
+              break;
             }
           }
           for(let p = 0;p < deletedOnAllSites.length;p++){
             if(deletedOnAllSites[p]["websiteId"] === site.id){
-              deleted++;
+              deleted = deletedOnAllSites[p]["count"];
+              break;
             }
           }
           stats.push({
