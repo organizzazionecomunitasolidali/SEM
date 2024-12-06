@@ -5,6 +5,7 @@ import { SemWebsite } from '../entities/sem_website.entity';
 import { SemProduct } from '../entities/sem_product.entity';
 import { SemProcessService } from './sem_process.service';
 import { SemProductSaleStatsService } from '../entities/sem_product_sale_stats.service';
+import { Logger } from '@nestjs/common';
 import * as moment from 'moment';
 import 'moment-timezone';
 import { getStartOfWeekTimestamp } from '../utils/DateUtils';
@@ -53,6 +54,8 @@ export class SemWebsiteDto {
 
 @Injectable()
 export class SemWebsiteService {
+  private readonly logger = new Logger(SemWebsiteService.name);
+
   constructor(
     @InjectRepository(SemWebsite)
     private readonly semWebsiteRepository: Repository<SemWebsite>,
@@ -136,7 +139,9 @@ export class SemWebsiteService {
         if(site.api_alias){
           // this site has an API , so it provides the number of units sold directly , 
           // no need to estimate from added and delete products
+          this.logger.log("querying exact sales stats for site: ", site.name);
           let sales = await this.semProductSaleStatsService.sumAllByWebsiteIdAndWeek(site.id,startOfWeek.unix());
+          this.logger.log("exact sales stats for site: ", site.name, sales);
           stats.push({
             site: site.name, 
             salesEstimate: sales });
@@ -167,6 +172,8 @@ export class SemWebsiteService {
       };
         
     }
+
+    this.logger.log("product sale stats results: ", results);
 
     return results;
 
