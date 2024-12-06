@@ -149,6 +149,7 @@ export class SemWebsiteService {
           let added = 0;
           let deleted = 0;
           for(let p = 0;p < addedOnAllSites.length;p++){
+            this.logger.log(site.name + " addedOnAllSites[p]: ", addedOnAllSites[p]);
             if(addedOnAllSites[p]["websiteId"] === site.id){
               added++;
             }
