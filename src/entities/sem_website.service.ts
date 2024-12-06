@@ -123,7 +123,7 @@ export class SemWebsiteService {
                             .where('website.api_alias IS NULL')
                             .andWhere('SemProduct.createdAt >= :dateStart', { dateStart: dateStart })
                             .andWhere('SemProduct.createdAt < :dateEnd', { dateEnd: dateEnd })
-                            .getMany();
+                            .getRawMany();
       let deletedOnAllSites = await this.semProductRepository.createQueryBuilder()
                             .withDeleted()
                             .select('SemProduct.websiteId')
@@ -131,7 +131,7 @@ export class SemWebsiteService {
                             .where('website.api_alias IS NULL')
                             .andWhere('SemProduct.deletedAt >= :dateStart', { dateStart: dateStart })
                             .andWhere('SemProduct.deletedAt < :dateEnd', { dateEnd: dateEnd })
-                            .getMany();      
+                            .getRawMany();      
       let stats = [];
 
       this.logger.log("addedOnAllSites.length " + dateStart + " - " + dateEnd, addedOnAllSites.length);
