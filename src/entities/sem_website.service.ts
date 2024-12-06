@@ -112,6 +112,23 @@ export class SemWebsiteService {
       
       let dateStart = startOfWeek.format("YYYY-MM-DD");
       let dateEnd = moment(startOfWeek).add(7,'days').format("YYYY-MM-DD");
+      // get added and deleted products on all sites without API.
+      // we show the deleted products as estimated sales
+      let addedOnAllSites = await this.semProductRepository.createQueryBuilder()
+                            .select('websiteId')
+                            .innerJoin(SemWebsite, 'website', 'website.id = product.websiteId')
+                            .where('website.api_alias IS NULL')
+                            .andWhere('createdAt >= :dateStart', { dateStart: dateStart })
+                            .andWhere('createdAt < :dateEnd', { dateEnd: dateEnd })
+                            .getMany();
+      let deletedOnAllSites = await this.semProductRepository.createQueryBuilder()
+                            .withDeleted()
+                            .select('websiteId')
+                            .innerJoin(SemWebsite, 'website', 'website.id = product.websiteId')
+                            .where('website.api_alias IS NULL')
+                            .andWhere('deletedAt >= :dateStart', { dateStart: dateStart })
+                            .andWhere('deletedAt < :dateEnd', { dateEnd: dateEnd })
+                            .getMany();      
       let stats = [];
       
       for(let s = 0;s < allSites.length;s++){
@@ -124,17 +141,18 @@ export class SemWebsiteService {
             site: site.name, 
             salesEstimate: sales });
         } else {
-          let added = await this.semProductRepository.createQueryBuilder()
-          .where('createdAt >= :dateStart', { dateStart: dateStart })
-          .andWhere('createdAt < :dateEnd', { dateEnd: dateEnd })
-          .andWhere('websiteId = :id', { id: site.id } )
-          .getCount();
-          let deleted = await this.semProductRepository.createQueryBuilder()
-          .withDeleted()
-          .where('deletedAt >= :dateStart', { dateStart: dateStart })
-          .andWhere('deletedAt < :dateEnd', { dateEnd: dateEnd })
-          .andWhere('websiteId = :id', { id: site.id })
-          .getCount();
+          let added = 0;
+          let deleted = 0;
+          for(let p = 0;p < addedOnAllSites.length;p++){
+            if(addedOnAllSites[p]["websiteId"] === site.id){
+              added++;
+            }
+          }
+          for(let p = 0;p < deletedOnAllSites.length;p++){
+            if(deletedOnAllSites[p]["websiteId"] === site.id){
+              deleted++;
+            }
+          }
           stats.push({
             site: site.name, 
             added: added, 
