@@ -116,18 +116,18 @@ export class SemWebsiteService {
       // we show the deleted products as estimated sales
       let addedOnAllSites = await this.semProductRepository.createQueryBuilder()
                             .select('websiteId')
-                            .innerJoin(SemWebsite, 'website', 'website.id = product.websiteId')
+                            .innerJoin(SemWebsite, 'website', 'website.id = SemProduct.websiteId')
                             .where('website.api_alias IS NULL')
-                            .andWhere('createdAt >= :dateStart', { dateStart: dateStart })
-                            .andWhere('createdAt < :dateEnd', { dateEnd: dateEnd })
+                            .andWhere('SemProduct.createdAt >= :dateStart', { dateStart: dateStart })
+                            .andWhere('SemProduct.createdAt < :dateEnd', { dateEnd: dateEnd })
                             .getMany();
       let deletedOnAllSites = await this.semProductRepository.createQueryBuilder()
                             .withDeleted()
                             .select('websiteId')
-                            .innerJoin(SemWebsite, 'website', 'website.id = product.websiteId')
+                            .innerJoin(SemWebsite, 'website', 'website.id = SemProduct.websiteId')
                             .where('website.api_alias IS NULL')
-                            .andWhere('deletedAt >= :dateStart', { dateStart: dateStart })
-                            .andWhere('deletedAt < :dateEnd', { dateEnd: dateEnd })
+                            .andWhere('SemProduct.deletedAt >= :dateStart', { dateStart: dateStart })
+                            .andWhere('SemProduct.deletedAt < :dateEnd', { dateEnd: dateEnd })
                             .getMany();      
       let stats = [];
       
