@@ -118,7 +118,7 @@ export class SemWebsiteService {
       // get added and deleted products on all sites without API.
       // we show the deleted products as estimated sales
       let addedOnAllSites = await this.semProductRepository.createQueryBuilder()
-                            .select('SemProduct.*')
+                            .select('SemProduct.websiteId')
                             .innerJoin(SemWebsite, 'website', 'website.id = SemProduct.websiteId')
                             .where('website.api_alias IS NULL')
                             .andWhere('SemProduct.createdAt >= :dateStart', { dateStart: dateStart })
@@ -126,7 +126,7 @@ export class SemWebsiteService {
                             .getMany();
       let deletedOnAllSites = await this.semProductRepository.createQueryBuilder()
                             .withDeleted()
-                            .select('SemProduct.*')
+                            .select('SemProduct.websiteId')
                             .innerJoin(SemWebsite, 'website', 'website.id = SemProduct.websiteId')
                             .where('website.api_alias IS NULL')
                             .andWhere('SemProduct.deletedAt >= :dateStart', { dateStart: dateStart })
