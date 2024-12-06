@@ -133,18 +133,13 @@ export class SemWebsiteService {
                             .andWhere('SemProduct.deletedAt < :dateEnd', { dateEnd: dateEnd })
                             .getRawMany();      
       let stats = [];
-
-      this.logger.log("addedOnAllSites.length " + dateStart + " - " + dateEnd, addedOnAllSites.length);
-      this.logger.log("deletedOnAllSites.length " + dateStart + " - " + dateEnd, deletedOnAllSites.length);
       
       for(let s = 0;s < allSites.length;s++){
         let site = allSites[s];
         if(site.api_alias){
           // this site has an API , so it provides the number of units sold directly , 
           // no need to estimate from added and delete products
-          this.logger.log("querying exact sales stats for site: ", site.name);
           let sales = await this.semProductSaleStatsService.sumAllByWebsiteIdAndWeek(site.id,startOfWeek.unix());
-          this.logger.log("exact sales stats for site: ", site.name, sales);
           stats.push({
             site: site.name, 
             salesEstimate: sales });
@@ -152,7 +147,6 @@ export class SemWebsiteService {
           let added = 0;
           let deleted = 0;
           for(let p = 0;p < addedOnAllSites.length;p++){
-            this.logger.log(site.name + " addedOnAllSites[p]: ", addedOnAllSites[p]);
             if(addedOnAllSites[p]["websiteId"] === site.id){
               added++;
             }
