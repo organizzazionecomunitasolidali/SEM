@@ -133,6 +133,9 @@ export class SemWebsiteService {
                             .andWhere('SemProduct.deletedAt < :dateEnd', { dateEnd: dateEnd })
                             .getMany();      
       let stats = [];
+
+      this.logger.log("addedOnAllSites: ", addedOnAllSites);
+      this.logger.log("deletedOnAllSites: ", deletedOnAllSites);
       
       for(let s = 0;s < allSites.length;s++){
         let site = allSites[s];
