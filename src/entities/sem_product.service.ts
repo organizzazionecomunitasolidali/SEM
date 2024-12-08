@@ -90,14 +90,14 @@ export class SemProductService {
     
     let [results, total] = await query
       .innerJoinAndSelect('product.website', 'website')
-      .leftJoinAndSelect('sem_currency','currency_01','currency_01.id = product.currency_01_id AND currency_01.name = :name AND product.price_01 >= 0.01', { name: 'Euro' })
+      .leftJoinAndSelect('sem_currency','currency_01','currency_01.id = product.currency_01_id AND (currency_01.name = :name OR product.is_value_in_EUR_constant = 1) AND product.price_01 >= 0.01', { name: 'Euro' })
       .select(['product', 'website.name'])
       .addSelect('currency_01.name', 'euro') 
       .andWhere(where)
       .orderBy({
         'product.is_used' : usedOrNew == "usedFirst" ? 'DESC' : 'ASC',
         'euro' : 'DESC',
-        'product.createdAt' : 'DESC'
+        'product.updatedAt' : 'DESC'
       })
       .skip((page - 1) * limit)
       .take(limit)
@@ -306,9 +306,11 @@ export class SemProductService {
     product: SemProduct,
     price_01: number,
     price_02: number = null, // optional
+    is_value_in_EUR_constant: Boolean = null,
   ): Promise<SemProduct> {
     product['price_01'] = price_01; // Update the field
     product['price_02'] = price_02; // Update the field
+    product['is_value_in_EUR_constant'] = is_value_in_EUR_constant;
     await this.semProductRepository.save(product); // Save the updated product
     return product;
   }

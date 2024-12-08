@@ -119,6 +119,8 @@ export class DinastycoinCrawlerService {
             await this.semProductService.updateProductPrice(
               product,
               price_01,
+              null,
+              true
             );
             product = await this.semProductService.updateProductAvailability(
               product,
@@ -166,8 +168,8 @@ export class DinastycoinCrawlerService {
             );
             console.log('Dinastycoin product [' + prod["Id"] + '] ' + productStructure.title + '. categoryName = ' + categoryName);
             const category = await this.semCategoryService.findOneByName(categoryName);
-            productStructure.category_id = category ? category.id : null;      
-          
+            productStructure.category_id = category ? category.id : null;  
+            
             console.log('createProduct Dinastycoin');
             product = await this.semProductService.createProduct(
               productStructure,

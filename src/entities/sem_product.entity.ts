@@ -64,6 +64,9 @@ export class SemProduct {
   @Column({ nullable: false, default: true })
   is_available: Boolean;
 
+  @Column({ nullable: true })
+  is_value_in_EUR_constant: Boolean;
+
   @Index()
   @CreateDateColumn()
   createdAt: Date;
