@@ -25,6 +25,8 @@ import { SemDinastycoinConfig } from '../entities/sem_dinastycoin_config.entity'
 import { SemDinastycoinConfigService } from '../entities/sem_dinastycoin_config.service';
 import { SemProductSaleStats } from '../entities/sem_product_sale_stats.entity';
 import { SemProductSaleStatsService } from '../entities/sem_product_sale_stats.service';
+import { SemDebugLog } from 'src/entities/sem_debug_log.entity';
+import { SemDebugLogService } from 'src/entities/sem_debug_log.service';
 import { join } from 'path';
 import * as appRoot from 'app-root-path';
 import * as path from 'path';
@@ -70,6 +72,7 @@ import * as fs from 'fs';
       SemOpenaiCompletionsRequest,
       SemDinastycoinConfig,
       SemProductSaleStats,
+      SemDebugLog,
     ]),
   ],
   providers: [
@@ -120,6 +123,7 @@ import * as fs from 'fs';
     SemCategoryService,
     SemDinastycoinConfigService,
     SemProductSaleStatsService,
+    SemDebugLogService,
     {
       provide: 'PERSISTENT_DATABASE_CONNECTION',
       useFactory: async (connection: Connection) => connection,
@@ -141,7 +145,8 @@ import * as fs from 'fs';
     SemCurrencyService,
     SemCategoryService,
     SemDinastycoinConfigService,
-    SemProductSaleStatsService
+    SemProductSaleStatsService,
+    SemDebugLogService,
   ],
 })
 export class DatabaseModule {}
