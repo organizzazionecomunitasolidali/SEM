@@ -9,6 +9,7 @@ import { SemDinastycoinConfig } from '../entities/sem_dinastycoin_config.entity'
 import { CrawlerJsonApiService } from './crawler_json_api_service';
 import { SemProductSaleStatsService } from '../entities/sem_product_sale_stats.service';
 import { ServiceOpenaiService } from '../service_openai/service_openai.service';
+import { SemDebugLogService } from '../entities/sem_debug_log.service';
 import { parseNum } from 'src/utils/globals';
 @Injectable()
 export class DinastycoinCrawlerService {
@@ -23,6 +24,7 @@ export class DinastycoinCrawlerService {
     private readonly dinastycoinConfigService: SemDinastycoinConfigService,
     private readonly semProductSaleStatsService: SemProductSaleStatsService,
     private readonly serviceOpenaiService: ServiceOpenaiService,
+    private readonly semDebugLogService: SemDebugLogService,
   ) {}
 
   async getApiClient(): Promise<CrawlerJsonApiService> {
@@ -109,6 +111,14 @@ export class DinastycoinCrawlerService {
             return;
             //throw new Error("price NaN");
           }
+
+          let defaultThumbnailUrl = "https://dinastycoin.club/images/products/" + full_product['recordid'] + ".jpg";
+          let thumbnailUrl = prod["mainimage"] ? prod["mainimage"] : null;
+          thumbnailUrl = full_product["immagine1"] ? full_product["immagine1"] : thumbnailUrl;
+          thumbnailUrl = thumbnailUrl ? thumbnailUrl : defaultThumbnailUrl;
+          if(!thumbnailUrl.startsWith("http")){
+            thumbnailUrl = "https://dinastycoin.club/images/products/" + thumbnailUrl;
+          }
           
           // Find existing product by Url (it's unique)
           let product = await this.semProductService.findOneByUrl(
@@ -134,14 +144,6 @@ export class DinastycoinCrawlerService {
 
           if (!productAlreadyExist) {
             
-            let defaultThumbnailUrl = "https://dinastycoin.club/images/products/" + full_product['recordid'] + ".jpg";
-            let thumbnailUrl = prod["mainimage"] ? prod["mainimage"] : null;
-            thumbnailUrl = full_product["immagine1"] ? full_product["immagine1"] : thumbnailUrl;
-            thumbnailUrl = thumbnailUrl ? thumbnailUrl : defaultThumbnailUrl;
-            if(!thumbnailUrl.startsWith("http")){
-              thumbnailUrl = "https://dinastycoin.club/images/products/" + thumbnailUrl;
-            }
-
             const ticker = full_product['coinmain'].toString().toUpperCase();
             const currency: SemCurrency = await this.semCurrencyService.createCurrency(ticker,ticker,"",true);
 

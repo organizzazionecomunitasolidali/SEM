@@ -223,14 +223,6 @@ export class SemProductService {
     website: SemWebsite,
   ): Promise<SemProduct> {
     
-    const no_image_url = "file://" + path.join(getClientPublicDir(), 'image_not_found.png');
-    let thumbnailImageBuffer = productStructure.thumbnailUrl ? await this.downloadImage(
-        productStructure.thumbnailUrl
-    ) : null;
-    if(!thumbnailImageBuffer){
-      thumbnailImageBuffer = await this.downloadImage(no_image_url);
-    }
-
     const newProduct = this.semProductRepository.create({
       url: productStructure.url,
       thumbnail: null,
@@ -251,8 +243,16 @@ export class SemProductService {
     .values(newProduct)
     .orIgnore()
     .execute();
+    
+    await this.updateProductThumbnail(productStructure.url, productStructure.thumbnailUrl);
 
-    const url_hash = hashString(productStructure.url);
+    return newProduct;
+  }
+
+
+  async updateProductThumbnail(product_url: string, product_thumbnail_url: string, force_update_if_existing: boolean = false){
+
+    const url_hash = hashString(product_url);
 
     // create thumbnail record if it does not exist
     let existingThumbnail = await this.semProductThumbnailRepository.findOne({ where: {url_hash: url_hash}});
@@ -261,27 +261,38 @@ export class SemProductService {
     if (!existingThumbnail || !fs.existsSync(imagePath)) {
       existingThumbnail = null;
     }
-    if(!existingThumbnail){
+    if(!existingThumbnail || force_update_if_existing){
+
+      const no_image_url = "file://" + path.join(getClientPublicDir(), 'image_not_found.png');
+      let thumbnailImageBuffer = product_thumbnail_url ? await this.downloadImage(
+          product_thumbnail_url
+      ) : null;
+      if(!thumbnailImageBuffer){
+        thumbnailImageBuffer = await this.downloadImage(no_image_url);
+      }    
 
       // now download thumbnail data from thumbnailImageBuffer into <project root dir>/client/public/procuct_images/<url_hash>.jpg
       // Define the directory and file path for saving the image
       // Write the thumbnail image to the file system
       fs.writeFileSync(imagePath, thumbnailImageBuffer, { flag: 'w' });
 
-      const newThumb = await this.semProductThumbnailRepository.create({
-        url_hash: url_hash,
-        url: productStructure.url
-      });
-      await this.semProductThumbnailRepository.createQueryBuilder()
-      .insert()
-      .into(SemProductThumbnail)
-      .values(newThumb)
-      .orIgnore()
-      .execute();
+      if(!existingThumbnail){
+        const newThumb = await this.semProductThumbnailRepository.create({
+          url_hash: url_hash,
+          url: product_url
+        });
+        await this.semProductThumbnailRepository.createQueryBuilder()
+        .insert()
+        .into(SemProductThumbnail)
+        .values(newThumb)
+        .orIgnore()
+        .execute();
+      } else {
+        existingThumbnail.url_hash = url_hash;
+        await this.semProductThumbnailRepository.save(existingThumbnail);
+      }
 
     }
-
-    return newProduct;
   }
 
   async updateProductTimestamp(
