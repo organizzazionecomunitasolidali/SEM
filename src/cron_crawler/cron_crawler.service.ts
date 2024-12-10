@@ -985,6 +985,13 @@ export class CronCrawlerService {
                 product,
                 productStructure.timestamp,
               );
+              // update thumbnail if it has changed
+              console.log(
+                'updateProductThumbnail ' + product.url + ' ' + productStructure.thumbnailUrl,
+              );
+              if(product.thumbnail_url != productStructure.thumbnailUrl){
+                await this.semProductService.updateProductThumbnail(product.url, productStructure.thumbnailUrl, true);
+              }
             } else {
               // Delete previous product with same url
               await this.semProductService.delete(product.id);
