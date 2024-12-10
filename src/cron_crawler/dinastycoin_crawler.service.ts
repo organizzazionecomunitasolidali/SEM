@@ -140,6 +140,9 @@ export class DinastycoinCrawlerService {
               product,
               Date.now()
             );
+            if(thumbnailUrl != product.thumbnail_url){
+              await this.semProductService.updateProductThumbnail(url, thumbnailUrl, true);
+            }
           }
 
           if (!productAlreadyExist) {
