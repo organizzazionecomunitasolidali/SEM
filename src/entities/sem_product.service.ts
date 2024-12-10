@@ -92,7 +92,7 @@ export class SemProductService {
       .innerJoinAndSelect('product.website', 'website')
       .leftJoinAndSelect('sem_currency','currency_01','currency_01.id = product.currency_01_id AND (currency_01.name = :name OR product.is_value_in_EUR_constant = 1) AND product.price_01 >= 0.01', { name: 'Euro' })
       .select(['product', 'website.name'])
-      .addSelect('currency_01.name', 'euro') 
+      .addSelect("IIF(product.is_value_in_EUR_constant = 1,'Euro',currency_01.name) = :name", 'euro') 
       .andWhere(where)
       .orderBy({
         'product.is_used' : usedOrNew == "usedFirst" ? 'DESC' : 'ASC',
