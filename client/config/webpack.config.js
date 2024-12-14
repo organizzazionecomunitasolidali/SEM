@@ -85,6 +85,8 @@ const hasJsxRuntime = (() => {
   }
 })();
 
+const CopyPlugin = require('copy-webpack-plugin');
+
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
 module.exports = function (webpackEnv) {
@@ -181,6 +183,21 @@ module.exports = function (webpackEnv) {
             sourceMap: true,
           },
         }
+      );
+    }
+    if (preProcessor === 'sass-loader') {
+      loaders.push(
+        new CopyPlugin({
+          patterns: [
+            {
+              from: 'public',
+              to: 'build', 
+              globOptions: {
+                ignore: ['product_images/**/*'],
+              },
+            },
+          ],
+        })
       );
     }
     return loaders;
