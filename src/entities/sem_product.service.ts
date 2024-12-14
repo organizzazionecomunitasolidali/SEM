@@ -128,6 +128,8 @@ export class SemProductService {
       const existingThumbnail = await this.semProductThumbnailRepository.findOne({ where: {url_hash: url_hash}});
       if(existingThumbnail){
         results[i].thumbnail_url = this.getThumbnailUrlFromHash(url_hash);
+        // replace extension in results[i].thumbnail_url with .webp if it is not already
+        results[i].thumbnail_url = results[i].thumbnail_url.replace(/\.(jpg|jpeg|png|gif)$/i, '.webp');
       }
     }
 
@@ -295,10 +297,12 @@ export class SemProductService {
 
     }
   }
-
   async convertProductImageToWebp(imageFullPath: string){
     const imageBuffer = fs.readFileSync(imageFullPath);
     const image = sharp(imageBuffer);
+
+    // Replace extension with .webp
+    const webpPath = imageFullPath.replace(/\.(jpg|jpeg|png|gif)$/i, '.webp');
     
     // Get image metadata to check dimensions
     const metadata = await image.metadata();
@@ -312,11 +316,12 @@ export class SemProductService {
         })
         .webp()
         .toBuffer();
-      fs.writeFileSync(imageFullPath, webpBuffer, { flag: 'w' });
+      fs.writeFileSync(webpPath, webpBuffer, { flag: 'w' });
+
     } else {
       // Convert to webp without resizing
-      const webpBuffer = await image.webp().toBuffer();
-      fs.writeFileSync(imageFullPath, webpBuffer, { flag: 'w' });
+      const webpBuffer = await image.webp().toBuffer();      
+      fs.writeFileSync(webpPath, webpBuffer, { flag: 'w' });
     }
   }
 
