@@ -298,6 +298,7 @@ export class SemProductService {
 
     }
   }
+  
   async convertProductImageToWebp(imageFullPath: string){
     const imageBuffer = fs.readFileSync(imageFullPath);
     const image = sharp(imageBuffer);
