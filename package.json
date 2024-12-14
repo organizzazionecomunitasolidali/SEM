@@ -46,6 +46,7 @@
     "reflect-metadata": "^0.2.2",
     "robots-txt-parser": "^2.0.3",
     "rxjs": "^7.8.1",
+    "sharp": "^0.32.6",
     "sqlite3": "^5.1.6",
     "supertest": "^6.3.4",
     "typeorm": "^0.3.17"
