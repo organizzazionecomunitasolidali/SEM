@@ -81,7 +81,7 @@ const ProductsView = () => {
         ',',
       )}`;
 
-      if(process.env.REACT_APP_NODE_ENV === 'prd'){
+      if(process.env.REACT_APP_NODE_ENV === 'production'){
 
         // track product filter with Matomo
         let _paq = window._paq = window._paq || [];

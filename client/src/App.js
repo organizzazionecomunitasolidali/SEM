@@ -16,7 +16,7 @@ function App() {
   const { user } = useContext(UserContext);
 
   React.useEffect(() => {
-    if (process.env.REACT_APP_NODE_ENV == 'prd') {
+    if (process.env.REACT_APP_NODE_ENV == 'production') {
       console.log("executing Matomo");
       var _mtm = (window._mtm = window._mtm || []);
       _mtm.push({ 'mtm.startTime': new Date().getTime(), event: 'mtm.Start' });
