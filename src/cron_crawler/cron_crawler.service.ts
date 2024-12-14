@@ -989,7 +989,7 @@ export class CronCrawlerService {
               console.log(
                 'updateProductThumbnail ' + product.url + ' ' + productStructure.thumbnailUrl,
               );
-              if(true ||product.thumbnail_url != productStructure.thumbnailUrl){
+              if(product.thumbnail_url != productStructure.thumbnailUrl){
                 await this.semProductService.updateProductThumbnail(product.url, productStructure.thumbnailUrl, true);
               }
             } else {
