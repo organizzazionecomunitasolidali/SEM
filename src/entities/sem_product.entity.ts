@@ -67,6 +67,9 @@ export class SemProduct {
   @Column({ nullable: true })
   is_value_in_EUR_constant: Boolean;
 
+  @Column({ nullable: false, default: true }) 
+  has_image: Boolean;
+
   @Index()
   @CreateDateColumn()
   createdAt: Date;

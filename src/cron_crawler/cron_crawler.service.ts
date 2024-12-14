@@ -37,6 +37,7 @@ import {
   delay,
   getFormattedUrl,
   getClientPublicDir,
+  getClientDir,
 } from '../utils/globals';
 import { Connection } from 'typeorm';
 const {
@@ -989,8 +990,8 @@ export class CronCrawlerService {
               console.log(
                 'updateProductThumbnail ' + product.url + ' ' + productStructure.thumbnailUrl,
               );
-              if(product.thumbnail_url != productStructure.thumbnailUrl){
-                await this.semProductService.updateProductThumbnail(product.url, productStructure.thumbnailUrl, true);
+              if(true || product.thumbnail_url != productStructure.thumbnailUrl){
+                await this.semProductService.updateProductThumbnail(product, productStructure.thumbnailUrl, true);
               }
             } else {
               // Delete previous product with same url
@@ -1123,7 +1124,7 @@ export class CronCrawlerService {
   async takeScreenshot(page: puppeteer.Page, website: SemWebsite, pageNumber: number) {
   
     // Create screenshots directory if it doesn't exist
-    const screenshotsDir = path.join(getClientPublicDir(), 'crawler_screenshots');
+    const screenshotsDir = path.join(getClientDir(), 'crawler_screenshots');
     if (!fs.existsSync(screenshotsDir)) {
       fs.mkdirSync(screenshotsDir, { recursive: true });
     }
