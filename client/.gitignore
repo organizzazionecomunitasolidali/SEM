@@ -21,3 +21,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# crawler screenshots
+public/crawler_screenshots
+public/product_images
