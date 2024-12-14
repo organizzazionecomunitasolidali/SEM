@@ -18,7 +18,7 @@ $ npm install
 DB_RELATIVE_PATH=data/sqlite.db
 ADMIN_PASSWORD=test1234
 OPENAI_API_KEY=sk-abc........................................xyz
-NODE_ENV=test (or prd)
+NODE_ENV=test (or production)
 CORS_ORIGIN=http://localhost:3001
 SERVER_PORT=3000
 ```
