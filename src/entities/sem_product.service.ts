@@ -278,6 +278,7 @@ export class SemProductService {
       // Define the directory and file path for saving the image
       // Write the thumbnail image to the file system
       fs.writeFileSync(imagePath, thumbnailImageBuffer, { flag: 'w' });
+      await this.convertProductImageToWebp(imagePath);
 
       if(!existingThumbnail){
         const newThumb = await this.semProductThumbnailRepository.create({
