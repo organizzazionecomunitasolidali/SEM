@@ -31,6 +31,10 @@ export class SemProduct {
 
   thumbnail_url: String; // computed by the service , not to be a db column
 
+  @Index()
+  @Column({ nullable: false, default: true }) 
+  has_real_product_thumbnail: Boolean;
+
   @Index() // Simple index on the 'title' column
   // @Index({ fulltext: true }) // Full-text index
   @Column()
@@ -66,9 +70,6 @@ export class SemProduct {
 
   @Column({ nullable: true })
   is_value_in_EUR_constant: Boolean;
-
-  @Column({ nullable: false, default: true }) 
-  has_image: Boolean;
 
   @Index()
   @CreateDateColumn()
