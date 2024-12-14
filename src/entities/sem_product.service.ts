@@ -7,6 +7,7 @@ import { SemWebsite } from '../entities/sem_website.entity';
 import * as fs from 'fs';
 import * as path from 'path';
 import { hashString, getClientPublicDir } from '../utils/globals';
+import * as sharp from 'sharp';
 
 const {
   VIEW_PRODUCT_ITEMS_PER_PAGE,
@@ -292,6 +293,30 @@ export class SemProductService {
         await this.semProductThumbnailRepository.save(existingThumbnail);
       }
 
+    }
+  }
+
+  async convertProductImageToWebp(imageFullPath: string){
+    const imageBuffer = fs.readFileSync(imageFullPath);
+    const image = sharp(imageBuffer);
+    
+    // Get image metadata to check dimensions
+    const metadata = await image.metadata();
+    
+    // Only resize if width is over 400px
+    if (metadata.width > 400) {
+      const webpBuffer = await image
+        .resize(400, null, {
+          fit: 'inside', // Maintains aspect ratio
+          withoutEnlargement: true // Prevents upscaling
+        })
+        .webp()
+        .toBuffer();
+      fs.writeFileSync(imageFullPath, webpBuffer, { flag: 'w' });
+    } else {
+      // Convert to webp without resizing
+      const webpBuffer = await image.webp().toBuffer();
+      fs.writeFileSync(imageFullPath, webpBuffer, { flag: 'w' });
     }
   }
 
