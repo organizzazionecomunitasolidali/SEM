@@ -272,7 +272,7 @@ export class SemProductService {
       ) : null;
       if(!thumbnailImageBuffer){
         thumbnailImageBuffer = await this.downloadImage(no_image_url);
-        product.has_image = false;
+        product.has_real_product_thumbnail = false;
         await this.semProductRepository.save(product);
       }    
 
