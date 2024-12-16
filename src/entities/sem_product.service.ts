@@ -310,23 +310,25 @@ export class SemProductService {
     
     // Get image metadata to check dimensions
     const metadata = await image.metadata();
-    
-    // Only resize if width is over 400px
-    if (metadata.width > 400) {
-      const webpBuffer = await image
-        .resize(400, null, {
-          fit: 'inside', // Maintains aspect ratio
-          withoutEnlargement: true // Prevents upscaling
-        })
-        .webp()
-        .toBuffer();
-      fs.writeFileSync(webpPath, webpBuffer, { flag: 'w' });
 
-    } else {
-      // Convert to webp without resizing
-      const webpBuffer = await image.webp().toBuffer();      
-      fs.writeFileSync(webpPath, webpBuffer, { flag: 'w' });
+    // Only resize if width is over 400px
+    let resized_data = image;
+    if(metadata.width > 400){
+      try{
+        resized_data = await image
+          .resize(400, null, {
+            fit: 'inside', // Maintains aspect ratio
+            withoutEnlargement: true, // Prevents upscaling
+          });
+      } catch(error){
+        console.error('Error resizing image , we then keep the original size:', error);
+      }
     }
+    
+    // Convert to webp without resizing
+    const webpBuffer = await resized_data.webp().toBuffer();      
+    fs.writeFileSync(webpPath, webpBuffer, { flag: 'w' });
+    
   }
 
   async updateProductTimestamp(
