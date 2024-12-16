@@ -42,6 +42,7 @@ client/package-lock.json
 /src/database/database.db
 /src/database/sqlite.db
 /data
+/client/product_images
 /client/public/product_images
 /client/crawler_screenshots
 /client/public/crawler_screenshots

@@ -6,7 +6,7 @@ import { SemProductThumbnail } from '../entities/sem_product_thumbnail.entity';
 import { SemWebsite } from '../entities/sem_website.entity';
 import * as fs from 'fs';
 import * as path from 'path';
-import { hashString, getClientPublicDir } from '../utils/globals';
+import { hashString, getClientDir, getClientPublicDir } from '../utils/globals';
 import * as sharp from 'sharp';
 
 const {
@@ -182,7 +182,7 @@ export class SemProductService {
   }
 
   getFullThumbnailPathFromHash(hash){
-    const imagesDir = path.join(getClientPublicDir(), 'product_images');
+    const imagesDir = path.join(getClientDir(), 'product_images');
     // Ensure the directory exists
     if (!fs.existsSync(imagesDir)) {
       fs.mkdirSync(imagesDir, { recursive: true });
@@ -247,15 +247,15 @@ export class SemProductService {
     .orIgnore()
     .execute();
     
-    await this.updateProductThumbnail(productStructure.url, productStructure.thumbnailUrl);
+    await this.updateProductThumbnail(newProduct, productStructure.thumbnailUrl);
 
     return newProduct;
   }
 
 
-  async updateProductThumbnail(product_url: string, product_thumbnail_url: string, force_update_if_existing: boolean = false){
+  async updateProductThumbnail(product: SemProduct, product_thumbnail_url: string, force_update_if_existing: boolean = false){
 
-    const url_hash = hashString(product_url);
+    const url_hash = hashString(product.url);
 
     // create thumbnail record if it does not exist
     let existingThumbnail = await this.semProductThumbnailRepository.findOne({ where: {url_hash: url_hash}});
@@ -266,12 +266,13 @@ export class SemProductService {
     }
     if(!existingThumbnail || force_update_if_existing){
 
-      const no_image_url = "file://" + path.join(getClientPublicDir(), 'image_not_found.png');
+      const no_image_url = "file://" + path.join(getClientDir(), 'image_not_found.png');
       let thumbnailImageBuffer = product_thumbnail_url ? await this.downloadImage(
           product_thumbnail_url
       ) : null;
       if(!thumbnailImageBuffer){
         thumbnailImageBuffer = await this.downloadImage(no_image_url);
+        product.has_real_product_thumbnail = false;
       }    
 
       // now download thumbnail data from thumbnailImageBuffer into <project root dir>/client/public/procuct_images/<url_hash>.jpg
@@ -283,7 +284,7 @@ export class SemProductService {
       if(!existingThumbnail){
         const newThumb = await this.semProductThumbnailRepository.create({
           url_hash: url_hash,
-          url: product_url
+          url: product.url
         });
         await this.semProductThumbnailRepository.createQueryBuilder()
         .insert()
@@ -308,23 +309,26 @@ export class SemProductService {
     
     // Get image metadata to check dimensions
     const metadata = await image.metadata();
+
+    let resized_data = image;
     
     // Only resize if width is over 400px
     if (metadata.width > 400) {
-      const webpBuffer = await image
-        .resize(400, null, {
-          fit: 'inside', // Maintains aspect ratio
-          withoutEnlargement: true // Prevents upscaling
-        })
-        .webp()
-        .toBuffer();
-      fs.writeFileSync(webpPath, webpBuffer, { flag: 'w' });
-
-    } else {
-      // Convert to webp without resizing
-      const webpBuffer = await image.webp().toBuffer();      
-      fs.writeFileSync(webpPath, webpBuffer, { flag: 'w' });
+      try {
+        resized_data = await image
+          .resize(400, null, {
+            fit: 'inside', // Maintains aspect ratio
+            withoutEnlargement: true // Prevents upscaling
+          });
+      } catch(error){
+        console.error('Error resizing image , we then keep the original size:', error);
+      }
     }
+    
+    // Convert to webp
+    const webpBuffer = await resized_data.webp().toBuffer();      
+    fs.writeFileSync(webpPath, webpBuffer, { flag: 'w' });
+    
   }
 
   async updateProductTimestamp(

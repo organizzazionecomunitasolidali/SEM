@@ -29,6 +29,10 @@ export class SemProduct {
   @Column('blob', { nullable: true })
   thumbnail: Buffer;
 
+  @Index()
+  @Column({ nullable: false, default: true }) 
+  has_real_product_thumbnail: boolean;
+
   thumbnail_url: String; // computed by the service , not to be a db column
 
   @Index() // Simple index on the 'title' column
