@@ -68,8 +68,12 @@ export class DinastycoinCrawlerService {
 
     try {
 
+      this.logger.log("getting Dinastycoin categories");
       const allDinastycoinCategories = await this.getAllCategories();
+      this.logger.log("done getting Dinastycoin categories");
+      this.logger.log("getting Dinastycoin products");
       const productsList = await this.getAllProductsList();
+      this.logger.log("done getting Dinastycoin products");
          
       // flag all products as unavailable for this site. then we will update them as available if they are
       await this.semProductService.updateProductAvailabilityOfWebsite(website.id, false);
@@ -82,13 +86,13 @@ export class DinastycoinCrawlerService {
 
         if(productsCreated < limit_product_creation){
                   
-          console.log(prod);
+          this.logger.log("getting full product " + prod["Id"]);
           let full_product = await apiClient.get<object>(`https://dinastycoin.club/apidcy/ecom/marketplace?productid=${prod["Id"]}`);
           if(!full_product){
             return;
           }
           full_product = full_product["data"] ? full_product["data"] : full_product;
-          console.log("full: ", full_product);
+          this.logger.log("done getting full product " + prod["Id"]);
 
           if(full_product['pubblicato'] === "N" || full_product['donazione']){
             return;
@@ -112,6 +116,9 @@ export class DinastycoinCrawlerService {
             //throw new Error("price NaN");
           }
 
+
+          this.logger.log("getting thumbnail");
+
           let defaultThumbnailUrl = "https://dinastycoin.club/images/products/" + full_product['recordid'] + ".jpg";
           let thumbnailUrl = prod["mainimage"] ? prod["mainimage"] : null;
           thumbnailUrl = full_product["immagine1"] ? full_product["immagine1"] : thumbnailUrl;
@@ -119,6 +126,8 @@ export class DinastycoinCrawlerService {
           if(!thumbnailUrl.startsWith("http")){
             thumbnailUrl = "https://dinastycoin.club/images/products/" + thumbnailUrl;
           }
+
+          this.logger.log("done getting thumbnail : " + thumbnailUrl);
           
           // Find existing product by Url (it's unique)
           let product = await this.semProductService.findOneByUrl(
@@ -126,12 +135,14 @@ export class DinastycoinCrawlerService {
           );
           let productAlreadyExist: boolean = product ? true : false;
           if (product) {
+            this.logger.log("product already exist " + product.id);
             await this.semProductService.updateProductPrice(
               product,
               price_01,
               null,
               true
             );
+            this.logger.log("done updating product price");
             product = await this.semProductService.updateProductAvailability(
               product,
               true,
@@ -140,13 +151,17 @@ export class DinastycoinCrawlerService {
               product,
               Date.now()
             );
+            this.logger.log("updateProductThumbnail " + thumbnailUrl + " " + product.thumbnail_url);
             if(true ||thumbnailUrl != product.thumbnail_url){
               await this.semProductService.updateProductThumbnail(url, thumbnailUrl, true);
             }
+            this.logger.log("done updateProductThumbnail " + thumbnailUrl + " " + product.thumbnail_url);
           }
 
           if (!productAlreadyExist) {
             
+            this.logger.log("new product " + full_product["descrizione"]);
+
             const ticker = full_product['coinmain'].toString().toUpperCase();
             const currency: SemCurrency = await this.semCurrencyService.createCurrency(ticker,ticker,"",true);
 
@@ -165,28 +180,35 @@ export class DinastycoinCrawlerService {
               timestamp: Date.now(),
             }
 
+
+            this.logger.log("mapping Dinastycoin category to Sem category");
+
             // now map Dinastycoin category to Sem category
             let dinastycoinCategoryPath = this.getCategoryPath(allDinastycoinCategories, prod["categoriaid"]);
             const categoryName = await this.serviceOpenaiService.getProductCategory(
               productStructure.title + " (in categoria " + dinastycoinCategoryPath + ")<hr>" + productStructure.description,
               website,
             );
-            console.log('Dinastycoin product [' + prod["Id"] + '] ' + productStructure.title + '. categoryName = ' + categoryName);
+            this.logger.log('Dinastycoin product [' + prod["Id"] + '] ' + productStructure.title + '. categoryName = ' + categoryName);
             const category = await this.semCategoryService.findOneByName(categoryName);
             productStructure.category_id = category ? category.id : null;  
             
-            console.log('createProduct Dinastycoin');
+            this.logger.log('createProduct Dinastycoin');
             product = await this.semProductService.createProduct(
               productStructure,
               website,
             );
+
+            this.logger.log('done createProduct Dinastycoin');
 
             productsCreated++;
 
           }
 
           try {
+            this.logger.log('updating sales stats Dinastycoin');
             await this.semProductSaleStatsService.updateTotalSales(product.id, full_product["qtavendute"]);
+            this.logger.log('done updating sales stats Dinastycoin');
           } catch (error) {
             this.logger.error('Error updating sales stats for product ' + product.id + ' : ' + error);
           }
@@ -194,6 +216,9 @@ export class DinastycoinCrawlerService {
         }
 
       });
+
+
+      this.logger.log('updating currency  Dinastycoin names');
 
       // update currencies with their real name
       let allPairs = await this.apiClient.get<object[]>("https://dinastycoin.club/apidcy/exchange/listallpairs");
@@ -209,7 +234,7 @@ export class DinastycoinCrawlerService {
         }); 
       }
 
-
+      this.logger.log('done updating currency  Dinastycoin names');
     } catch (error) {
       this.logger.error('Error in DinastycoinCrawlerService.crawl', error);
     }
