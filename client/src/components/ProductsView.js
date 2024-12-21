@@ -432,20 +432,29 @@ const ProductsView = () => {
                     {/* Displaying price information only if it's greater than 0 */}
                     {(product.price_01 || product.price_01 === 0) &&
                       product.price_01 > 0 && (
-                        <Typography variant="body1" color="textSecondary">
-                          {t('Price: ')} {getPriceString(product.price_01)}{' '}
-                          {getCurrencyStringById(product.currency_01_id)}
-                        </Typography>
+                        <>
+                          <Typography variant="body1" color="textSecondary" fontSize={"0.8rem"}>
+                          {t('Price: ')}
+                          </Typography> 
+                          <Typography variant="body1" color="textSecondary" fontSize={"1rem"}>
+                            {getPriceString(product.price_01)}{' '}
+                            {getCurrencyStringById(product.currency_01_id)}
+                          </Typography>
+                        </>
                       )}
                     {(product.price_02 || product.price_02 === 0) &&
                       product.price_02 > 0 && (
-                        <Typography variant="body1" color="textSecondary">
-                          {product.price_01 > 0
-                            ? t('Alternate/additional Price: ')
-                            : t('Price: ')}{' '}
-                          {getPriceString(product.price_02)}{' '}
-                          {getCurrencyStringById(product.currency_02_id)}
-                        </Typography>
+                        <>
+                          <Typography variant="body1" color="textSecondary" fontSize={"0.8rem"}>
+                            {product.price_01 > 0
+                              ? t('Alternative/additional Price: ')
+                              : t('Price: ')}{' '}
+                          </Typography>
+                          <Typography variant="body1" color="textSecondary" fontSize={"1rem"}>
+                            {getPriceString(product.price_02)}{' '}
+                            {getCurrencyStringById(product.currency_02_id)}
+                          </Typography>
+                        </>
                       )}
                     {
                       <Typography
