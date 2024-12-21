@@ -302,7 +302,7 @@ export class SemProductService {
   
   async convertProductImageToWebp(imageFullPath: string){
     const imageBuffer = fs.readFileSync(imageFullPath);
-    const image = sharp(imageBuffer);
+    const image = sharp(imageBuffer,{ failOn: "truncated"});
 
     // Replace extension with .webp
     const webpPath = imageFullPath.replace(/\.(jpg|jpeg|png|gif)$/i, '.webp');
@@ -318,7 +318,7 @@ export class SemProductService {
         resized_data = await image
           .resize(400, null, {
             fit: 'inside', // Maintains aspect ratio
-            withoutEnlargement: true // Prevents upscaling
+            withoutEnlargement: true, // Prevents upscaling
           });
       } catch(error){
         console.error('Error resizing image , we then keep the original size:', error);
