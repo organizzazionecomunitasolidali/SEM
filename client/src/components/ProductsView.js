@@ -436,7 +436,7 @@ const ProductsView = () => {
                           <Typography variant="body1" color="textSecondary" fontSize={"0.8rem"}>
                           {t('Price: ')}
                           </Typography> 
-                          <Typography variant="body1" color="textSecondary" fontSize={"1rem"}>
+                          <Typography variant="body1" color="textSecondary" fontSize={"1rem"} fontWeight={900}>
                             {getPriceString(product.price_01)}{' '}
                             {getCurrencyStringById(product.currency_01_id)}
                           </Typography>
@@ -450,7 +450,7 @@ const ProductsView = () => {
                               ? t('Alternative/additional Price: ')
                               : t('Price: ')}{' '}
                           </Typography>
-                          <Typography variant="body1" color="textSecondary" fontSize={"1rem"}>
+                          <Typography variant="body1" color="textSecondary" fontSize={"1rem"} fontWeight={900}>
                             {getPriceString(product.price_02)}{' '}
                             {getCurrencyStringById(product.currency_02_id)}
                           </Typography>
