@@ -151,11 +151,9 @@ export class DinastycoinCrawlerService {
               product,
               Date.now()
             );
-            this.logger.log("updateProductThumbnail " + thumbnailUrl + " " + product.thumbnail_url);
-            if(true ||thumbnailUrl != product.thumbnail_url){
-              await this.semProductService.updateProductThumbnail(url, thumbnailUrl, true);
-            }
-            this.logger.log("done updateProductThumbnail " + thumbnailUrl + " " + product.thumbnail_url);
+            this.logger.log("updateProductThumbnail " + thumbnailUrl);
+            await this.semProductService.updateProductThumbnail(product, thumbnailUrl, true);
+            this.logger.log("done updateProductThumbnail " + thumbnailUrl);
           }
 
           if (!productAlreadyExist) {
