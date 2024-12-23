@@ -86,6 +86,73 @@ Typically you will launch the SEM backend in background:
 - and here is the result:
   ![pm2 ls](https://github.com/Neggia/SEM/assets/148484240/22a91346-45f0-4656-847b-354a4f63d5d4)
 
+
+## Nginx configuration
+
+server {
+    listen 80;
+    server_name mercato.comunitasolidali.it;
+
+    # Redirect HTTP to HTTPS
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name mercato.comunitasolidali.it;
+
+    # SSL configuration
+    ssl_certificate /etc/letsencrypt/live/mercato.comunitasolidali.it/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/mercato.comunitasolidali.it/privkey.pem;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+
+    # More specific location block first
+    location /api/ {
+        proxy_pass http://localhost:<API port>;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Location of the main app
+    location / {
+        proxy_pass http://localhost:<frontend port>;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Serve image files directly from /product_images
+    location ~ ^/product_images/([^/]+)\.(webp|jpg|jpeg|gif|png)$ {
+        root /home/batlia/SEM/client;
+        try_files /product_images/$1.$2 =404;
+        access_log off;   # Optional: Disable logging for image requests (reduce log file size)
+        expires 30d;      # Optional: Cache images for 30 days in the browser
+    }
+
+    #serve crawler_screenshots directly
+    location ~ ^/crawler_screenshots/([^/]+)\.(html|webp|jpg|jpeg|gif|png)$ {
+        root /home/batlia/SEM/client;
+        try_files /crawler_screenshots/$1.$2 =404;
+        access_log off;   # Optional: Disable logging for image requests (reduce log file size)
+        expires 30d;      # Optional: Cache images for 30 days in the browser
+    }
+
+}
+
+# Deny access to API via HTTP
+server {
+    listen <IP>:<API port>;
+    server_name mercato.comunitasolidali.it;
+    return 404;
+}
+
+
+
 ## Support
 
 SEM is an GPL 3-licensed open source project.
