@@ -70,6 +70,10 @@ export class SemProduct {
 
   @Column({ nullable: true })
   is_value_in_EUR_constant: Boolean;
+  
+  @Index()
+  @Column({ nullable: true })
+  random_ordering: number;
 
   @Index()
   @CreateDateColumn()
