@@ -1,10 +1,12 @@
 {
   "Search": "Search",
+  "filterAndSort" : "Filter and Sort",
   "usedOrNew" : "Filter New/Used",
   "newFirst" : "New & Used products (New first)",
   "usedFirst" : "New & Used products (Used first)",
   "newOnly" : "New only",
   "usedOnly" : "Used only",
+  "withImageOnly" : "Only products with image",
   "Task manager": "Task manager",
   "Logout": "Logout",
   "Logged in as ": "Logged in as ",

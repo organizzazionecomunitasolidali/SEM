@@ -54,6 +54,7 @@ export class SemProductService {
     category_ids?: string,
     currencies?: string,
     usedOrNew?: string,
+    withImageOnly?: string
   ): Promise<PaginatedResult<SemProduct>> {
     const query = this.semProductRepository.createQueryBuilder('product').where("is_available = 1");
 

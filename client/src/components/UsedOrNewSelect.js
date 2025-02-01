@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Menu, MenuItem, Radio, Typography, useMediaQuery } from '@mui/material';
+import { Button, Menu, MenuItem, Radio, CheckBox, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew }) => {
+const FilterAndSortSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew, selectedWithImageOnly, setSelectedWithImageOnly }) => {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -18,6 +18,11 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
     setSelectedUsedOrNew(value);
   };
 
+  const handleToggleWithImageOnly = () => {
+    selectedWithImageOnly = !selectedWithImageOnly;
+    setSelectedWithImageOnly(selectedWithImageOnly);
+  }
+
   return (
     <>
       {isOnLeftPane ? (
@@ -26,7 +31,7 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
           
             {/* Title/Label in bold */}
             <Typography variant="h6" style={{ fontWeight: 'bold', padding: '10px 16px' }}>
-            {t('usedOrNew')}
+            {t('filterAndSort')}
             </Typography>
           
             <MenuItem key='newFirst' onClick={() => handleToggle('newFirst')}>
@@ -65,6 +70,16 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
                 />
                 {t('usedOnly')}
             </MenuItem> 
+            <MenuItem key='withImageOnly' onClick={() => handleToggleWithImageOnly()}>
+                <CheckBox
+                style={{
+                    color: '#35a455',
+                    visibility: 'hidden'
+                }}
+                checked={selectedWithImageOnly == true}
+                />
+                {t('withImageOnly')}
+            </MenuItem> 
 
         </div>
 
@@ -86,7 +101,7 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
               width: isMobile ? '100%' : '300px',
             }}
           >
-            {t('usedOrNew')} ▼
+            {t('filterAndSort')} ▼
           </Button>
           <Menu
             id="usednew-menu"
@@ -130,7 +145,16 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
                 checked={selectedUsedOrNew == 'usedOnly'}
                 />
                 {t('usedOnly')}
-            </MenuItem>           
+            </MenuItem>  
+            <MenuItem key='withImageOnly' onClick={() => handleToggleWithImageOnly()}>
+                <CheckBox
+                style={{
+                    color: '#35a455',
+                }}
+                checked={selectedWithImageOnly == true}
+                />
+                {t('withImageOnly')}
+            </MenuItem>          
           </Menu>
 
         </div>    
@@ -142,4 +166,4 @@ const UsedOrNewSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew
   )
 }
 
-export default UsedOrNewSelect;
+export default FilterAndSortSelect;
