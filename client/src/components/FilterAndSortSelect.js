@@ -51,26 +51,8 @@ const FilterAndSortSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedO
                 checked={selectedUsedOrNew == 'usedFirst'}
                 />
                 {t('usedFirst')}
-            </MenuItem>   
-            <MenuItem key='newOnly' onClick={() => handleToggle('newOnly')}>
-                <Radio
-                style={{
-                    color: '#35a455',
-                }}
-                checked={selectedUsedOrNew == 'newOnly'}
-                />
-                {t('newOnly')}
-            </MenuItem>   
-            <MenuItem key='usedOnly' onClick={() => handleToggle('usedOnly')}>
-                <Radio
-                style={{
-                    color: '#35a455',
-                }}
-                checked={selectedUsedOrNew == 'usedOnly'}
-                />
-                {t('usedOnly')}
-            </MenuItem> 
-            <MenuItem key='withImageOnly' style={{visibility: 'hidden'}} onClick={() => handleToggleWithImageOnly()}>
+            </MenuItem>
+            <MenuItem key='withImageOnly' onClick={() => handleToggleWithImageOnly()}>
                 <Checkbox
                 style={{
                     color: '#35a455'
@@ -126,25 +108,7 @@ const FilterAndSortSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedO
                 checked={selectedUsedOrNew == 'usedFirst'}
                 />
                 {t('usedFirst')}
-            </MenuItem>   
-            <MenuItem key='newOnly' onClick={() => handleToggle('newOnly')}>
-                <Radio
-                style={{
-                    color: '#35a455',
-                }}
-                checked={selectedUsedOrNew == 'newOnly'}
-                />
-                {t('newOnly')}
-            </MenuItem>   
-            <MenuItem key='usedOnly' onClick={() => handleToggle('usedOnly')}>
-                <Radio
-                style={{
-                    color: '#35a455',
-                }}
-                checked={selectedUsedOrNew == 'usedOnly'}
-                />
-                {t('usedOnly')}
-            </MenuItem>        
+            </MenuItem>     
             <MenuItem key='withImageOnly' onClick={() => handleToggleWithImageOnly()}>
                 <Checkbox
                 style={{

@@ -89,6 +89,9 @@ export class SemProductService {
     } else if(usedOrNew == "usedOnly"){
       where = "product.is_used = 1";
     } 
+    if(withImageOnly == "" || withImageOnly == "yes" || withImageOnly == "true"){
+      query.andWhere("product.has_real_product_thumbnail = 1");
+    }
     
     let [results, total] = await query
       .innerJoinAndSelect('product.website', 'website')
