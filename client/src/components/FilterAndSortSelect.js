@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Menu, MenuItem, Radio, Typography, useMediaQuery } from '@mui/material';
+import { Button, Menu, MenuItem, Radio, Checkbox, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 const FilterAndSortSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew, selectedWithImageOnly, setSelectedWithImageOnly }) => {
