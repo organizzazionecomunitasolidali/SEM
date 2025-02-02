@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 // import ProductGrid from './ProductGrid';
 import CategorySelect from './CategorySelect';
 import CurrencySelect from './CurrencySelect';
-import FilterAndSortSelect  from './FilterAndSortSelect ';
+import FilterAndSortSelect from './FilterAndSortSelect';
 import {
   SERVER_BASE_URL,
   CONTROLLER_PRODUCT_ID,
