@@ -18,6 +18,7 @@ export class SemProductController {
     @Query('category_ids') category_ids?: string,
     @Query('currencies') currencies?: string,
     @Query('usedOrNew') usedOrNew?: string,
+    @Query('withImageOnly') withImageOnly?: string
   ) {
     return this.semProductService.findAll(
       page,
@@ -25,7 +26,8 @@ export class SemProductController {
       search,
       category_ids,
       currencies,
-      usedOrNew
+      usedOrNew,
+      withImageOnly
     );
   }
 

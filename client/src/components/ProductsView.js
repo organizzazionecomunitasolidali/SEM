@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 // import ProductGrid from './ProductGrid';
 import CategorySelect from './CategorySelect';
 import CurrencySelect from './CurrencySelect';
-import UsedOrNewSelect from './UsedOrNewSelect';
+import FilterAndSortSelect  from './FilterAndSortSelect ';
 import {
   SERVER_BASE_URL,
   CONTROLLER_PRODUCT_ID,
@@ -13,7 +13,6 @@ import {
 import {
   Grid,
   TextField,
-  Select,
   MenuItem,
   Card,
   CardMedia,
@@ -36,6 +35,7 @@ import TelegramImage from '../assets/telegram.png';
 
 let search = '';
 let usedOrNew = 'newFirst';
+let withImageOnly = true;
 
 // can be overridden by REACT_APP_MAX_MATOMO_CUSTOM_VARIABLES env variable
 const DEFAULT_MAX_MATOMO_CUSTOM_VARIABLES = 20;
@@ -124,7 +124,8 @@ const ProductsView = () => {
           `?page=${page ? page : currentPage}&limit=${itemsPerPage}&search=${search}` + 
           categoriesQueryString +
           currenciesQueryString + 
-          `&usedOrNew=${usedOrNew}`,
+          `&usedOrNew=${usedOrNew}` +
+          `&withImageOnly=${withImageOnly ? 'yes' : 'no'}`,
       );
       if (!productResponse.ok) {
         throw new Error(
@@ -193,6 +194,11 @@ const ProductsView = () => {
 
   const handleUsedOrNewChange = (newSelectedUsedOrNew) => {
     usedOrNew = newSelectedUsedOrNew;
+    fetchProductData(1);
+  };
+
+  const handleWithImageOnlyChange = (newSelectedWithImageOnly) => {
+    withImageOnly = newSelectedWithImageOnly;
     fetchProductData(1);
   };
 
@@ -292,10 +298,12 @@ const ProductsView = () => {
           >
             
           {(!isLandscapeLarge &&
-            <UsedOrNewSelect 
+            <FilterAndSortSelect  
               isOnLeftPane={false}
               selectedUsedOrNew={usedOrNew}
               setSelectedUsedOrNew={handleUsedOrNewChange}
+              selectedWithImageOnly={withImageOnly}
+              setSelectedWithImageOnly={handleWithImageOnlyChange}
             />
           )}
             
@@ -366,10 +374,12 @@ const ProductsView = () => {
 
         {( isLandscapeLarge &&
           <Grid item xs={isLandscapeVeryLarge ? 2 : 3}>
-            <UsedOrNewSelect 
+            <FilterAndSortSelect  
               isOnLeftPane={true}
               selectedUsedOrNew={usedOrNew}
               setSelectedUsedOrNew={handleUsedOrNewChange}
+              selectedWithImageOnly={withImageOnly}
+              setSelectedWithImageOnly={handleWithImageOnlyChange}
             />          
             <CategorySelect
               isOnLeftPane={true}
@@ -406,7 +416,7 @@ const ProductsView = () => {
 
                   <CardContent
                     style={{
-                      minHeight: '230px',
+                      minHeight: '220px',
                       paddingBottom: '15px',
                       position: 'relative',
                     }}

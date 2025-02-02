@@ -54,6 +54,7 @@ export class SemProductService {
     category_ids?: string,
     currencies?: string,
     usedOrNew?: string,
+    withImageOnly?: string
   ): Promise<PaginatedResult<SemProduct>> {
     const query = this.semProductRepository.createQueryBuilder('product').where("is_available = 1");
 
@@ -98,7 +99,7 @@ export class SemProductService {
       .orderBy({
         'product.is_used' : usedOrNew == "usedFirst" ? 'DESC' : 'ASC',
         'euro' : 'DESC',
-        'product.updatedAt' : 'DESC'
+        'product.random_ordering' : 'ASC'
       })
       .skip((page - 1) * limit)
       .take(limit)
@@ -336,6 +337,7 @@ export class SemProductService {
     timestamp: number,
   ): Promise<SemProduct> {
     product['timestamp'] = timestamp; // Update the field
+    product['random_ordering'] = Math.random(); // When a product gets updated , we randomize its ordering
     await this.semProductRepository.save(product); // Save the updated product
     return product;
   }
