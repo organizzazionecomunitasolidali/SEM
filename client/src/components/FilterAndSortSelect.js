@@ -70,11 +70,10 @@ const FilterAndSortSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedO
                 />
                 {t('usedOnly')}
             </MenuItem> 
-            <MenuItem key='withImageOnly' onClick={() => handleToggleWithImageOnly()}>
+            <MenuItem key='withImageOnly' style={{visibility: 'hidden'}} onClick={() => handleToggleWithImageOnly()}>
                 <Checkbox
                 style={{
-                    color: '#35a455',
-                    visibility: 'hidden'
+                    color: '#35a455'
                 }}
                 checked={selectedWithImageOnly == true}
                 />
