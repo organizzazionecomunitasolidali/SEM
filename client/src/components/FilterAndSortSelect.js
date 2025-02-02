@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Menu, MenuItem, Radio, CheckBox, Typography, useMediaQuery } from '@mui/material';
+import { Button, Menu, MenuItem, Radio, Checkbox, Typography, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 const FilterAndSortSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedOrNew, selectedWithImageOnly, setSelectedWithImageOnly }) => {
@@ -71,7 +71,7 @@ const FilterAndSortSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedO
                 {t('usedOnly')}
             </MenuItem> 
             <MenuItem key='withImageOnly' onClick={() => handleToggleWithImageOnly()}>
-                <CheckBox
+                <Checkbox
                 style={{
                     color: '#35a455',
                     visibility: 'hidden'
@@ -147,7 +147,7 @@ const FilterAndSortSelect = ({ isOnLeftPane, selectedUsedOrNew, setSelectedUsedO
                 {t('usedOnly')}
             </MenuItem>        
             <MenuItem key='withImageOnly' onClick={() => handleToggleWithImageOnly()}>
-                <CheckBox
+                <Checkbox
                 style={{
                     color: '#35a455',
                 }}
