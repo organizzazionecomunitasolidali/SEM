@@ -416,7 +416,7 @@ const ProductsView = () => {
 
                   <CardContent
                     style={{
-                      minHeight: '240px',
+                      minHeight: '260px',
                       paddingBottom: '15px',
                       position: 'relative',
                     }}
