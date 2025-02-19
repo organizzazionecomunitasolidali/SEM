@@ -269,15 +269,6 @@ export class SemProductService {
       existingThumbnail = null;
     }
 
-    // temp debug
-    if(log){
-      console.log("updateProductThumbnail existingThumbnail:" + existingThumbnail);
-      console.log("updateProductThumbnail url:" + product.url);
-      console.log("updateProductThumbnail product_thumbnail_url:" + product_thumbnail_url);
-      console.log("updateProductThumbnail force_update_if_existing:" + force_update_if_existing);
-    }
-    // temp debug end
-
     if(!existingThumbnail || force_update_if_existing){
 
       const no_image_url = "file://" + path.join(getClientDir(), 'image_not_found.png');
