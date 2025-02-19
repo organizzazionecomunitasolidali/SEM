@@ -842,6 +842,9 @@ export class CronCrawlerService {
             productStructure.thumbnailUrl,
           );
 
+          if(productStructure.thumbnailUrl.indexOf("data:") == 0){
+            productStructure.thumbnailUrl = null;
+          }
           console.log(
             'productStructure.thumbnailUrl =  ' + productStructure.thumbnailUrl,
           );
