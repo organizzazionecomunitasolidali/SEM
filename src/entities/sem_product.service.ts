@@ -340,7 +340,7 @@ export class SemProductService {
     timestamp: number,
   ): Promise<SemProduct> {
     product['timestamp'] = timestamp; // Update the field
-    product['random_ordering'] = Math.random(); // When a product gets updated , we randomize its ordering
+    product['random_ordering'] = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER); // When a product gets updated, we randomize its ordering with an integer between 0 and MAX_SAFE_INTEGER
     await this.semProductRepository.save(product); // Save the updated product
     return product;
   }
