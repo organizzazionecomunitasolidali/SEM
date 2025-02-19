@@ -990,7 +990,7 @@ export class CronCrawlerService {
               console.log(
                 'updateProductThumbnail ' + product.url + ' ' + productStructure.thumbnailUrl,
               );
-              await this.semProductService.updateProductThumbnail(product, productStructure.thumbnailUrl, true);
+              await this.semProductService.updateProductThumbnail(product, productStructure.thumbnailUrl, true, true);
             } else {
               // Delete previous product with same url
               await this.semProductService.delete(product.id);

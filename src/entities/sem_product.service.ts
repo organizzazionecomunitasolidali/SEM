@@ -257,7 +257,7 @@ export class SemProductService {
   }
 
 
-  async updateProductThumbnail(product: SemProduct, product_thumbnail_url: string, force_update_if_existing: boolean = false){
+  async updateProductThumbnail(product: SemProduct, product_thumbnail_url: string, force_update_if_existing: boolean = false, log = false){
 
     const url_hash = hashString(product.url);
 
@@ -270,7 +270,7 @@ export class SemProductService {
     }
 
     // temp debug
-    if(product.website.id == 1){
+    if(log){
       console.log("updateProductThumbnail existingThumbnail:" + existingThumbnail);
       console.log("updateProductThumbnail url:" + product.url);
       console.log("updateProductThumbnail product_thumbnail_url:" + product_thumbnail_url);
