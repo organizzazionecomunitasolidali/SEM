@@ -265,8 +265,8 @@ export class SemProductService {
     let existingThumbnail = await this.semProductThumbnailRepository.findOne({ where: {url_hash: url_hash}});
     const imagePath = this.getFullThumbnailPathFromHash(url_hash);
     // Check if thumbnail image file already exists
-    if (!existingThumbnail || !product_thumbnail_url || product_thumbnail_url.indexOf("data:") == 0 || !fs.existsSync(imagePath)) {
-      existingThumbnail = null;
+    if (!existingThumbnail || !product_thumbnail_url || product_thumbnail_url.startsWith("data:") || !fs.existsSync(imagePath)) {
+      existingThumbnail = product_thumbnail_url = null;
     }
 
     if(!existingThumbnail || force_update_if_existing){

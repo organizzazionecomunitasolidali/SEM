@@ -842,7 +842,7 @@ export class CronCrawlerService {
             productStructure.thumbnailUrl,
           );
 
-          if(productStructure.thumbnailUrl && productStructure.thumbnailUrl.indexOf("data:") == 0){
+          if(productStructure.thumbnailUrl && productStructure.thumbnailUrl.startsWith("data:")){
             productStructure.thumbnailUrl = null;
           }
           console.log(
