@@ -343,8 +343,9 @@ export class ServiceOpenaiService {
     completions: SemOpenaiCompletions,
     // completionsId: number,
   ): Promise<string> {
+    let json = null;
     try {
-      return await this.runCompletions(completions, htmlElement.website, {
+      json = await this.runCompletions(completions, htmlElement.website, {
         placeholder: '<html_element>',
         content: htmlElement.content,
       });
@@ -357,6 +358,20 @@ export class ServiceOpenaiService {
       //   `Failed to parse HTML element: ${htmlElement}, ${error.stack}`,
       // );
     }
+    return this.sanitizeCompletionResponseJson(json);
+  }
+
+  // sometimes the response is embedded in markdown tags like json , remove markdown
+  sanitizeCompletionResponseJson(json){    
+    let bracket_index = json ? json.indexOf("{") : null;
+    if(bracket_index && bracket_index >= 0){
+      json = json.substring(bracket_index);
+      let bracket_end_index = json ? json.lastIndexOf("}") : null;
+      if(bracket_end_index &&  bracket_end_index >= 0){
+        json = json.substring(0,bracket_end_index + 1);
+      }
+    }
+    return json;
   }
 
   async runCompletions(

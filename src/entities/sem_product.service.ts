@@ -265,7 +265,11 @@ export class SemProductService {
     let existingThumbnail = await this.semProductThumbnailRepository.findOne({ where: {url_hash: url_hash}});
     const imagePath = this.getFullThumbnailPathFromHash(url_hash);
     // Check if thumbnail image file already exists
-    if (!existingThumbnail || !product_thumbnail_url || product_thumbnail_url.startsWith("data:") || !fs.existsSync(imagePath)) {
+    if (!existingThumbnail || !fs.existsSync(imagePath)) {
+      existingThumbnail = null;
+    }
+    // if it is a data: image , we assume it's a placeholder for a missing image
+    if (!product_thumbnail_url || product_thumbnail_url.startsWith("data:")) {
       existingThumbnail = product_thumbnail_url = null;
     }
 
@@ -278,6 +282,7 @@ export class SemProductService {
       if(!thumbnailImageBuffer){
         thumbnailImageBuffer = await this.downloadImage(no_image_url);
         product.has_real_product_thumbnail = false;
+        await this.semProductRepository.save(product);
       }    
 
       // now download thumbnail data from thumbnailImageBuffer into <project root dir>/client/public/procuct_images/<url_hash>.jpg

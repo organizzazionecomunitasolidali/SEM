@@ -59,7 +59,7 @@ export class SemCurrencyService {
     let symbol: string;
     let currency: SemCurrency;
 
-    currencyString = currencyString.replace(/\s\s+/g, ' ');
+    currencyString = currencyString.replace(/\s\s+/g, ' ').trim();
 
     // fix bug with some websites: the extracted name includes the amount too
     if (currencyString.indexOf(' ') > 0) {
