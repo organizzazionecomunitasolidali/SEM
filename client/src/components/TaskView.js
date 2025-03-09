@@ -236,6 +236,13 @@ const TaskView = ({
       width: 250,
       headerFilter: 'input',
     },
+    {
+      title: 'Is second currency complementary (true) or alternative (false)?',
+      field: 'is_second_currency_complementary',
+      editor: 'checkbox',
+      width: 50,
+      headerFilter: 'checkbox',
+    }    
   ];
 
   // const handleGroupHeaderPlay = () => {
