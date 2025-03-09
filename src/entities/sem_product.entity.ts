@@ -11,7 +11,6 @@ import {
   OneToMany,
 } from 'typeorm';
 import { SemWebsite } from '../entities/sem_website.entity';
-import { SemCurrency } from './sem_currency.entity';
 import { SemProductSaleStats } from './sem_product_sale_stats.entity';
 
 @Entity()
