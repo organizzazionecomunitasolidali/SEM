@@ -782,7 +782,7 @@ export class CronCrawlerService {
         );
         // infinite scrolling finished , continue the crawling.
         console.log('Downloading html of page ' + page.url());
-        if(!paginationHtmlElementStructure.json || !JSON.parse(paginationHtmlElementStructure.json).is_infinite_scrolling){
+        if(!paginationHtmlElementStructure.hasOwnProperty("json") || !paginationHtmlElementStructure.json || !JSON.parse(paginationHtmlElementStructure.json).is_infinite_scrolling){
           await this.takeScreenshot(page, website, currentPage);
         }
         // now reload the whole html to get all products at once, if the site had infinite scroll

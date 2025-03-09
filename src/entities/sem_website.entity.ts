@@ -51,6 +51,10 @@ export class SemWebsite {
   @Column({ nullable: true })
   api_alias: string;
 
+  // is second price of a product complementary or alternative? true = complementary (usual case) , false = alternative
+  @Column({ nullable: false, default: true })
+  is_second_currency_complementary: boolean;
+
   // @Column()
   // openai_completions_id: number;
 

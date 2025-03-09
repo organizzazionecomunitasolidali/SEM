@@ -33,6 +33,7 @@
   "Currencies": "Valute",
   "Username": "Utente",
   "Price: ": "Prezzo: ",
-  "Alternative/additional Price: ": "Prezzo alternativo/addizionale: ",
+  "Alternative/additional Price: ": "Metodo pagamento alternativo: ",
+  "Complementary Price: ": "+ supplemento di: ",
   "(unknown currency)": "(valuta sconosciuta)"
 }

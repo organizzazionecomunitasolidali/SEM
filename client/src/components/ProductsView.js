@@ -457,7 +457,7 @@ const ProductsView = () => {
                         <>
                           <Typography variant="body1" color="textSecondary" fontSize={"0.8rem"}>
                             {product.price_01 > 0
-                              ? t('Alternative/additional Price: ')
+                              ? t(product.website.is_second_currency_complementary ? 'Complementary Price: ' : 'Alternative/additional Price: ')
                               : t('Price: ')}{' '}
                           </Typography>
                           <Typography variant="body1" color="textSecondary" fontSize={"1rem"} fontWeight={900}>
