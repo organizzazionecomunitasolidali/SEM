@@ -240,7 +240,7 @@ const TaskView = ({
       title: 'Is second currency complementary (true) or alternative (false)?',
       field: 'is_second_currency_complementary',
       editor: 'checkbox',
-      width: 350,
+      width: 500,
       headerFilter: 'checkbox',
     }    
   ];
