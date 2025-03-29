@@ -40,6 +40,8 @@
     "moment-timezone": "^0.5.45",
     "mysql2": "^3.9.7",
     "openai": "^4.38.3",
+    "p-limit": "^6.2.0",
+    "p-queue": "^8.1.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "puppeteer": "^21.5.0",

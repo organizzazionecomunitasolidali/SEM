@@ -11,6 +11,7 @@ import { SemProductSaleStatsService } from '../entities/sem_product_sale_stats.s
 import { ServiceOpenaiService } from '../service_openai/service_openai.service';
 import { SemDebugLogService } from '../entities/sem_debug_log.service';
 import { parseNum } from 'src/utils/globals';
+
 @Injectable()
 export class DinastycoinCrawlerService {
 
@@ -51,12 +52,11 @@ export class DinastycoinCrawlerService {
     return 0;
   }
 
-  async crawl(website: SemWebsite, limit_product_creation: number = 20) {
+  async crawl(website: SemWebsite, maxProductsHourly: number = 50) {
 
     const apiClient = await this.getApiClient();
 
     let exchangeRatesEUR = {};
-    let productsCreated = 0;
 
     let ETHVrate = await this.getExchangeRateEUR("ETHV");
     if(ETHVrate && !isNaN(ETHVrate)){
@@ -74,134 +74,139 @@ export class DinastycoinCrawlerService {
       this.logger.log("getting Dinastycoin products");
       const productsList = await this.getAllProductsList();
       this.logger.log("done getting Dinastycoin products");
+      // each hour , limit the number of products elaborated in a way that each product is elaborated exactly once each month
+      let maxProductsDaily = maxProductsHourly * 24;
+      let productsLimitDaily = Math.min(maxProductsDaily, Math.ceil(productsList.length / 30));
+      let productsLimitHourly = Math.ceil(productsLimitDaily / 24);
+      const dayIndexMondayFirst = (new Date().getDay() + 6) % 7;
+      const hour = new Date().getHours();
+      let productsOffsetDaily = dayIndexMondayFirst * productsLimitDaily;
+      let productsOffsetHourly = productsOffsetDaily + hour * productsLimitHourly;
          
       // flag all products as unavailable for this site. then we will update them as available if they are
       await this.semProductService.updateProductAvailabilityOfWebsite(website.id, false);
 
-      productsList.forEach(async (prod) => {
+      productsList.slice(productsOffsetHourly,productsOffsetHourly + productsLimitHourly).forEach(async (prod) => {
 
         if(prod["qtydisp"] === 0){
           return;
         }
-
-        if(productsCreated < limit_product_creation){
                   
-          this.logger.log("getting full product " + prod["Id"]);
-          let full_product = await apiClient.get<object>(`https://dinastycoin.club/apidcy/ecom/marketplace?productid=${prod["Id"]}`);
-          if(!full_product){
-            return;
-          }
-          full_product = full_product["data"] ? full_product["data"] : full_product;
-          this.logger.log("done getting full product " + prod["Id"]);
+        this.logger.log("getting full product " + prod["Id"]);
+        let full_product = await apiClient.get<object>(`https://dinastycoin.club/apidcy/ecom/marketplace?productid=${prod["Id"]}`);
+        if(!full_product){
+          return;
+        }
+        full_product = full_product["data"] ? full_product["data"] : full_product;
+        this.logger.log("done getting full product " + prod["Id"]);
 
-          if(full_product['pubblicato'] === "N" || full_product['donazione']){
-            return;
-          }
-          
-          let url = prod["Originalproductpath"] ? prod["Originalproductpath"] : null;
-          if(!url){
-            url = full_product['originalpath'] ? full_product['originalpath'] : "https://dinastycoin.club?art=" + prod["id"];
-          }
+        if(full_product['pubblicato'] === "N" || full_product['donazione']){
+          return;
+        }
+        
+        let url = prod["Originalproductpath"] ? prod["Originalproductpath"] : null;
+        if(!url){
+          url = full_product['originalpath'] ? full_product['originalpath'] : "https://dinastycoin.club?art=" + prod["id"];
+        }
 
-          if (!exchangeRatesEUR[full_product['coinmain']]) {
-            let rate = await this.getExchangeRateEUR(full_product['coinmain']);
-            if(rate && !isNaN(rate)){
-              exchangeRatesEUR[full_product['coinmain']] = rate;
-            } 
-          }
-          const price_01 = exchangeRatesEUR[full_product['coinmain']] ? (parseNum(full_product['prezzoeuro']) / exchangeRatesEUR[full_product['coinmain']]) : 0;
-          if(!price_01 || isNaN(price_01)){
-            console.log("Error: price Nan. skipping to next product");
-            return;
-            //throw new Error("price NaN");
-          }
+        if (!exchangeRatesEUR[full_product['coinmain']]) {
+          let rate = await this.getExchangeRateEUR(full_product['coinmain']);
+          if(rate && !isNaN(rate)){
+            exchangeRatesEUR[full_product['coinmain']] = rate;
+          } 
+        }
+        const price_01 = exchangeRatesEUR[full_product['coinmain']] ? (parseNum(full_product['prezzoeuro']) / exchangeRatesEUR[full_product['coinmain']]) : 0;
+        if(!price_01 || isNaN(price_01)){
+          console.log("Error: price Nan. skipping to next product");
+          return;
+          //throw new Error("price NaN");
+        }
 
 
-          this.logger.log("getting thumbnail");
+        this.logger.log("getting thumbnail");
 
-          let defaultThumbnailUrl = "https://dinastycoin.club/images/products/" + full_product['recordid'] + ".jpg";
-          let thumbnailUrl = prod["mainimage"] ? prod["mainimage"] : null;
-          thumbnailUrl = full_product["immagine1"] ? full_product["immagine1"] : thumbnailUrl;
-          thumbnailUrl = thumbnailUrl ? thumbnailUrl : defaultThumbnailUrl;
-          if(!thumbnailUrl.startsWith("http")){
-            thumbnailUrl = "https://dinastycoin.club/images/products/" + thumbnailUrl;
-          }
+        let defaultThumbnailUrl = "https://dinastycoin.club/images/products/" + full_product['recordid'] + ".jpg";
+        let thumbnailUrl = prod["mainimage"] ? prod["mainimage"] : null;
+        thumbnailUrl = full_product["immagine1"] ? full_product["immagine1"] : thumbnailUrl;
+        thumbnailUrl = thumbnailUrl ? thumbnailUrl : defaultThumbnailUrl;
+        if(!thumbnailUrl.startsWith("http")){
+          thumbnailUrl = "https://dinastycoin.club/images/products/" + thumbnailUrl;
+        } else {
+          let httpIndex = thumbnailUrl.lastIndexOf("http");
+          thumbnailUrl = thumbnailUrl.substring(httpIndex);
+        }
 
-          this.logger.log("done getting thumbnail : " + thumbnailUrl);
-          
-          // Find existing product by Url (it's unique)
-          let product = await this.semProductService.findOneByUrl(
-            url,
+        this.logger.log("done getting thumbnail : " + thumbnailUrl);
+        
+        // Find existing product by Url (it's unique)
+        let product = await this.semProductService.findOneByUrl(
+          url,
+        );
+        let productAlreadyExist: boolean = product ? true : false;
+        if (product) {
+          this.logger.log("product already exist " + product.id);
+          await this.semProductService.updateProductPrice(
+            product,
+            price_01,
+            null,
+            true
           );
-          let productAlreadyExist: boolean = product ? true : false;
-          if (product) {
-            this.logger.log("product already exist " + product.id);
-            await this.semProductService.updateProductPrice(
-              product,
-              price_01,
-              null,
-              true
-            );
-            this.logger.log("done updating product price");
-            product = await this.semProductService.updateProductAvailability(
-              product,
-              true,
-            );
-            product = await this.semProductService.updateProductTimestamp(
-              product,
-              Date.now()
-            );
-            this.logger.log("updateProductThumbnail " + thumbnailUrl);
-            await this.semProductService.updateProductThumbnail(product, thumbnailUrl, true);
-            this.logger.log("done updateProductThumbnail " + thumbnailUrl);
+          this.logger.log("done updating product price");
+          product = await this.semProductService.updateProductAvailability(
+            product,
+            true,
+          );
+          product = await this.semProductService.updateProductTimestamp(
+            product,
+            Date.now()
+          );
+          this.logger.log("updateProductThumbnail " + thumbnailUrl);
+          await this.semProductService.updateProductThumbnail(product, thumbnailUrl, true);
+          this.logger.log("done updateProductThumbnail " + thumbnailUrl);
+        }
+
+        if (!productAlreadyExist) {
+          
+          this.logger.log("new product " + full_product["descrizione"]);
+
+          const ticker = full_product['coinmain'].toString().toUpperCase();
+          const currency: SemCurrency = await this.semCurrencyService.createCurrency(ticker,ticker,"",true);
+
+          let productStructure: ProductStructure = {
+            url: url,
+            title: full_product["descrizione"],
+            description: full_product["descrizionefull"],
+            description_long: null,
+            is_used: full_product["stato"] !== "N",
+            thumbnailUrl:  thumbnailUrl,
+            price_01: price_01,
+            currency_01_id: currency.id,
+            price_02: null,
+            currency_02_id: null,
+            category_id: null,
+            timestamp: Date.now(),
           }
 
-          if (!productAlreadyExist) {
-            
-            this.logger.log("new product " + full_product["descrizione"]);
 
-            const ticker = full_product['coinmain'].toString().toUpperCase();
-            const currency: SemCurrency = await this.semCurrencyService.createCurrency(ticker,ticker,"",true);
+          this.logger.log("mapping Dinastycoin category to Sem category");
 
-            let productStructure: ProductStructure = {
-              url: url,
-              title: full_product["descrizione"],
-              description: full_product["descrizionefull"],
-              description_long: null,
-              is_used: full_product["stato"] !== "N",
-              thumbnailUrl:  thumbnailUrl,
-              price_01: price_01,
-              currency_01_id: currency.id,
-              price_02: null,
-              currency_02_id: null,
-              category_id: null,
-              timestamp: Date.now(),
-            }
+          // now map Dinastycoin category to Sem category
+          let dinastycoinCategoryPath = this.getCategoryPath(allDinastycoinCategories, prod["categoriaid"]);
+          const categoryName = await this.serviceOpenaiService.getProductCategory(
+            productStructure.title + " (in categoria " + dinastycoinCategoryPath + ")<hr>" + productStructure.description,
+            website,
+          );
+          this.logger.log('Dinastycoin product [' + prod["Id"] + '] ' + productStructure.title + '. categoryName = ' + categoryName);
+          const category = await this.semCategoryService.findOneByName(categoryName);
+          productStructure.category_id = category ? category.id : null;  
+          
+          this.logger.log('createProduct Dinastycoin');
+          product = await this.semProductService.createProduct(
+            productStructure,
+            website,
+          );
 
-
-            this.logger.log("mapping Dinastycoin category to Sem category");
-
-            // now map Dinastycoin category to Sem category
-            let dinastycoinCategoryPath = this.getCategoryPath(allDinastycoinCategories, prod["categoriaid"]);
-            const categoryName = await this.serviceOpenaiService.getProductCategory(
-              productStructure.title + " (in categoria " + dinastycoinCategoryPath + ")<hr>" + productStructure.description,
-              website,
-            );
-            this.logger.log('Dinastycoin product [' + prod["Id"] + '] ' + productStructure.title + '. categoryName = ' + categoryName);
-            const category = await this.semCategoryService.findOneByName(categoryName);
-            productStructure.category_id = category ? category.id : null;  
-            
-            this.logger.log('createProduct Dinastycoin');
-            product = await this.semProductService.createProduct(
-              productStructure,
-              website,
-            );
-
-            this.logger.log('done createProduct Dinastycoin');
-
-            productsCreated++;
-
-          }
+          this.logger.log('done createProduct Dinastycoin');
 
           try {
             this.logger.log('updating sales stats Dinastycoin');
@@ -238,8 +243,7 @@ export class DinastycoinCrawlerService {
     }
 
   }
-
-
+  
   async getAllCategories(): Promise<object[]> {
     
     const apiClient = await this.getApiClient();
