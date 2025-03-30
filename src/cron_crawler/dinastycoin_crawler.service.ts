@@ -76,7 +76,7 @@ export class DinastycoinCrawlerService {
       this.logger.log("done getting Dinastycoin products");
       // each hour , limit the number of products elaborated in a way that each product is elaborated exactly once each month
       let maxProductsDaily = maxProductsHourly * 24;
-      let productsLimitDaily = Math.min(maxProductsDaily, Math.ceil(productsList.length / 30));
+      let productsLimitDaily = Math.min(maxProductsDaily, Math.ceil(productsList.length / 31));
       let productsLimitHourly = Math.ceil(productsLimitDaily / 24);
       const dayIndex = new Date().getDate() - 1;
       const hour = new Date().getHours();
@@ -88,7 +88,7 @@ export class DinastycoinCrawlerService {
 
       productsList.slice(productsOffsetHourly,productsOffsetHourly + productsLimitHourly).forEach(async (prod) => {
 
-        if(prod["qtydisp"] === 0){
+        if(prod["qtydisp"] === 0 || parseInt(prod["qtydisp"]) === 0){
           return;
         }
                   
