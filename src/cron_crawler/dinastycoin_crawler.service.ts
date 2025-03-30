@@ -78,9 +78,9 @@ export class DinastycoinCrawlerService {
       let maxProductsDaily = maxProductsHourly * 24;
       let productsLimitDaily = Math.min(maxProductsDaily, Math.ceil(productsList.length / 30));
       let productsLimitHourly = Math.ceil(productsLimitDaily / 24);
-      const dayIndexMondayFirst = (new Date().getDay() + 6) % 7;
+      const dayIndex = new Date().getDate() - 1;
       const hour = new Date().getHours();
-      let productsOffsetDaily = dayIndexMondayFirst * productsLimitDaily;
+      let productsOffsetDaily = dayIndex * productsLimitDaily;
       let productsOffsetHourly = productsOffsetDaily + hour * productsLimitHourly;
          
       // flag all products as unavailable for this site. then we will update them as available if they are
