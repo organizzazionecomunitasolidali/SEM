@@ -73,7 +73,7 @@ export class DinastycoinCrawlerService {
       this.logger.log("done getting Dinastycoin categories");
       this.logger.log("getting Dinastycoin products");
       const productsList = await this.getAllProductsList();
-      this.logger.log("done getting Dinastycoin products");
+      this.logger.log("done getting Dinastycoin products: " + productsList.length);
       // each hour , limit the number of products elaborated in a way that each product is elaborated exactly once each month
       let maxProductsDaily = maxProductsHourly * 24;
       let productsLimitDaily = Math.min(maxProductsDaily, Math.ceil(productsList.length / 31));
@@ -82,9 +82,13 @@ export class DinastycoinCrawlerService {
       const hour = new Date().getHours();
       let productsOffsetDaily = dayIndex * productsLimitDaily;
       let productsOffsetHourly = productsOffsetDaily + hour * productsLimitHourly;
+
+      this.logger.log("productsLimitHourly: " + productsLimitHourly);
+      this.logger.log("productsOffsetHourly: " + productsOffsetHourly);
          
-      // flag all products as unavailable for this site. then we will update them as available if they are
-      await this.semProductService.updateProductAvailabilityOfWebsite(website.id, false);
+      // flag all products as unavailable for this site , if they have not been updated for > 31d. then we will update them as available if they are
+      let timestamp_31d_ago = Math.floor( Date.now() - 31 * 24 * 60 * 60 * 1000 );
+      await this.semProductService.updateProductAvailabilityOfWebsite(website.id, false, timestamp_31d_ago);
 
       productsList.slice(productsOffsetHourly,productsOffsetHourly + productsLimitHourly).forEach(async (prod) => {
 

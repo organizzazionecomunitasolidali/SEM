@@ -376,12 +376,16 @@ export class SemProductService {
   async updateProductAvailabilityOfWebsite(
     websiteId: number,
     is_available: Boolean,
+    olderThanTimestamp: number = null
   ) {
-    await this.semProductRepository.createQueryBuilder()
+    const query = this.semProductRepository.createQueryBuilder()
     .update(SemProduct)
-    .set({ is_available: is_available })
-    .andWhere('websiteId = :websiteId', { websiteId })
-    .execute();
+    .set({ is_available: is_available });
+    if(olderThanTimestamp){
+      query.andWhere('timestamp < :timestamp', { timestamp: olderThanTimestamp });
+    }
+    query.andWhere('websiteId = :websiteId', { websiteId });
+    await query.execute();
   }
 
   async deleteOlderThan(timestamp: number, website: SemWebsite, isSoftDelete: boolean): Promise<void> {
