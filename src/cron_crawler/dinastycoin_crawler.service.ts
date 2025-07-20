@@ -148,7 +148,7 @@ export class DinastycoinCrawlerService {
         );
         let productAlreadyExist: boolean = product ? true : false;
         if (product) {
-          this.logger.log("product already exist " + product.id);
+          this.logger.log("product already exist [" + product.id + "] " + product.title + " - price01 " + product.price_01 + " - price02 " + product.price_02);
           await this.semProductService.updateProductPrice(
             product,
             price_01,
@@ -190,7 +190,6 @@ export class DinastycoinCrawlerService {
             category_id: null,
             timestamp: Date.now(),
           }
-
 
           this.logger.log("mapping Dinastycoin category to Sem category");
 

@@ -367,7 +367,9 @@ export class SemProductService {
     is_value_in_EUR_constant: Boolean = null,
   ): Promise<SemProduct> {
     product['price_01'] = price_01; // Update the field
-    product['price_02'] = price_02; // Update the field
+    if(price_02 !== null){
+      product['price_02'] = price_02; // Update the field
+    }
     product['is_value_in_EUR_constant'] = is_value_in_EUR_constant;
     await this.semProductRepository.save(product); // Save the updated product
     return product;

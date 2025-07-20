@@ -404,7 +404,12 @@ export class CronCrawlerService {
 
         // Deal with pagination
         const page = await browser.newPage();
-        await page.goto(pageUrl, { waitUntil: 'networkidle0' });
+        try {
+          await page.goto(pageUrl, { waitUntil: 'networkidle0' });
+        } catch (error) {
+          console.error(`Failed to navigate to ${pageUrl}:`, error);
+          break;
+        }
         // await page.goto(url, { waitUntil: 'domcontentloaded' });
         // await page.waitForSelector('your-dynamic-content-selector');
         await page.waitForTimeout(1000); // Additional time buffer, if necessary

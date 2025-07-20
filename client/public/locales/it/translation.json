@@ -34,6 +34,6 @@
   "Username": "Utente",
   "Price: ": "Prezzo: ",
   "Alternative/additional Price: ": "Metodo pagamento alternativo: ",
-  "Complementary Price: ": "+ supplemento di: ",
+  "Complementary Price: ": "e ",
   "(unknown currency)": "(valuta sconosciuta)"
 }
